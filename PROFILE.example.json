@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 3,
+  "name": "اسمك أو اسم البراند",
+  "handle": null,
+  "language": "ar-EG",
+  "ending": {
+    "followCard": false,
+    "ctaDefault": null,
+    "signOff": null
+  },
+  "brand": {
+    "primary": "#4D8DFF",
+    "accent": "#FFB020",
+    "background": null,
+    "text": null
+  },
+  "platforms": ["instagram", "tiktok"],
+  "preferences": {
+    "style": {"mode": "auto", "value": null},
+    "captionsGrouping": {"mode": "auto", "value": null},
+    "captionsPresentation": {"mode": "auto", "value": null},
+    "font": {"mode": "auto", "value": null},
+    "writingStyle": {"mode": "auto", "value": null},
+    "palette": {"mode": "auto", "value": null}
+  }
+}

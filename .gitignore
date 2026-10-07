@@ -1,0 +1,36 @@
+# Everything below belongs to you. Updates (git pull) never touch it.
+/PROFILE.json
+/Raw/
+/Projects/
+/Outputs/
+/Tools/
+/state/
+/.remotion/
+/node_modules/
+/engine/node_modules/
+/engine/public/projects/
+/engine/public/_prepared/
+/engine/public/_redacted/
+/engine/public/fonts/*.woff2
+/engine/public/fonts/manifest.json
+/engine/plates.json
+/engine/proxies.json
+/engine/out/
+/.claude/settings.local.json
+
+# Local credentials. Safe templates can be committed deliberately.
+.env
+.env.*
+!.env.example
+!.env.template
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Private planning notes are not part of the distributed studio.
+/docs/superpowers/
+
+*.partial
+Thumbs.db
+.DS_Store

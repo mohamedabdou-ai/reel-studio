@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-09-06",
+  "snapshotNormalization": "A single final LF was added by the project patch workflow; upstreamSha256 hashes the fetched bytes and sha256 hashes the stored snapshot.",
+  "repositories": [
+    {
+      "repository": "av/remotion-bits",
+      "commit": "6c71169aa061f15313fadbdc6e29a3a3a87f2c03",
+      "commitDate": "2026-03-11T21:53:24Z",
+      "license": "MIT",
+      "licenseEvidence": [
+        "https://raw.githubusercontent.com/av/remotion-bits/6c71169aa061f15313fadbdc6e29a3a3a87f2c03/package.json",
+        "https://raw.githubusercontent.com/av/remotion-bits/6c71169aa061f15313fadbdc6e29a3a3a87f2c03/README.md"
+      ],
+      "licenseNotice": "LICENSES.md#avremotion-bits",
+      "components": [
+        {
+          "name": "StaggeredMotion",
+          "upstreamPath": "src/components/StaggeredMotion.tsx",
+          "url": "https://raw.githubusercontent.com/av/remotion-bits/6c71169aa061f15313fadbdc6e29a3a3a87f2c03/src/components/StaggeredMotion.tsx",
+          "snapshot": "sources/av-remotion-bits/StaggeredMotion.tsx",
+          "upstreamSha256": "d8da8b1041d23c1e7ec3ff4569c9b4a59d21aa6b16c883fa07ecbc753a19bfad",
+          "sha256": "53c558829dedc1d0c876e22a3605d21ce1ceb3d40cbe986b3056ce0e148bb256",
+          "adaptedAs": ["FrameReveal"]
+        },
+        {
+          "name": "AnimatedCounter",
+          "upstreamPath": "src/components/AnimatedCounter.tsx",
+          "url": "https://raw.githubusercontent.com/av/remotion-bits/6c71169aa061f15313fadbdc6e29a3a3a87f2c03/src/components/AnimatedCounter.tsx",
+          "snapshot": "sources/av-remotion-bits/AnimatedCounter.tsx",
+          "upstreamSha256": "fea81e6e51bfd894065b5e2d435827a493586f56fd4f9b21230f9f08a89d89e7",
+          "sha256": "cdccb5b57b41a760b1d3cb9a1266401457153ea67fcfca149c560b18e9efe622",
+          "adaptedAs": ["AnimatedNumber"]
+        }
+      ]
+    },
+    {
+      "repository": "riaz37/remotion-ui",
+      "commit": "c0729bd638a1265995fd25a3b620bd2824d0cdc7",
+      "commitDate": "2026-09-01T16:35:06Z",
+      "license": "MIT",
+      "licenseEvidence": [
+        "https://raw.githubusercontent.com/riaz37/remotion-ui/c0729bd638a1265995fd25a3b620bd2824d0cdc7/LICENSE"
+      ],
+      "licenseNotice": "LICENSES.md#riaz37remotion-ui",
+      "components": [
+        {
+          "name": "MaskedSlideReveal",
+          "upstreamPath": "apps/web/registry/bases/default/primitives/masked-slide-reveal.tsx",
+          "url": "https://raw.githubusercontent.com/riaz37/remotion-ui/c0729bd638a1265995fd25a3b620bd2824d0cdc7/apps/web/registry/bases/default/primitives/masked-slide-reveal.tsx",
+          "snapshot": "sources/riaz37-remotion-ui/masked-slide-reveal.tsx",
+          "upstreamSha256": "9530059e12a8dddd5d1877d95be0f19401d0a805684cc2424a9caa7539506ab6",
+          "sha256": "3fcea59c3f372934ec7fc26a0e893acd544b3fa06be5f51a99f417486472da21",
+          "adaptedAs": ["MaskedBlockReveal"]
+        },
+        {
+          "name": "PathDraw",
+          "upstreamPath": "apps/web/registry/bases/default/primitives/path-draw.tsx",
+          "url": "https://raw.githubusercontent.com/riaz37/remotion-ui/c0729bd638a1265995fd25a3b620bd2824d0cdc7/apps/web/registry/bases/default/primitives/path-draw.tsx",
+          "snapshot": "sources/riaz37-remotion-ui/path-draw.tsx",
+          "upstreamSha256": "153886f3fb0bdd89292dbbd49fec44891ebd48101241eca2f23a38518333b163",
+          "sha256": "17393bea9222e3d175aff95a5de384c76ec82d2b1ca31106aeffe549dc8cb106",
+          "adaptedAs": ["DrawProgress"]
+        },
+        {
+          "name": "SimulatedCursor",
+          "upstreamPath": "apps/web/registry/bases/default/primitives/simulated-cursor.tsx",
+          "url": "https://raw.githubusercontent.com/riaz37/remotion-ui/c0729bd638a1265995fd25a3b620bd2824d0cdc7/apps/web/registry/bases/default/primitives/simulated-cursor.tsx",
+          "snapshot": "sources/riaz37-remotion-ui/simulated-cursor.tsx",
+          "upstreamSha256": "bde397251f972cd70fbbc2c7347743824812c7a8ab517dd45674c853173f9c5e",
+          "sha256": "9c761ffd88cc4570a45e3415d754726bcff3e9818d6df2cda1ba21772b67753f",
+          "adaptedAs": ["FocusCursor"]
+        }
+      ]
+    }
+  ]
+}

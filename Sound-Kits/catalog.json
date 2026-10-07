@@ -1,0 +1,99 @@
+{
+  "version": 1,
+  "sampleRate": 48000,
+  "provenance": "Original deterministic synthesis through scripts/sfx.mjs. No downloads, external recordings, paid generation or cloned voices. Recipe placements are optional editing controls; approved Style DNA and review gates still decide their use.",
+  "sounds": [
+    { "id": "whoosh", "use": "A deliberate scene transition; leave room for speech.", "defaultDuration": 0.38 },
+    { "id": "whooshSoft", "use": "A quiet short join or small overlay arrival.", "defaultDuration": 0.24 },
+    { "id": "impact", "use": "A weighted landing on an important visual reveal.", "defaultDuration": 0.5 },
+    { "id": "pop", "use": "A compact interface element or label arrival.", "defaultDuration": 0.11 },
+    { "id": "click", "use": "A button action or precise mechanical cut.", "defaultDuration": 0.055 },
+    { "id": "riser", "use": "Anticipation immediately before a reveal.", "defaultDuration": 0.8 },
+    { "id": "swipe", "use": "A line, highlight or strike-through moving across the frame.", "defaultDuration": 0.26 },
+    { "id": "paper", "use": "An editorial card or genuine paper/collage element.", "defaultDuration": 0.3 },
+    { "id": "chime", "use": "A confirmation event before the spoken sign-off.", "defaultDuration": 0.7 },
+    { "id": "tick", "use": "A brief counter increment or small emphasis.", "defaultDuration": 0.03 },
+    { "id": "keyTap", "use": "One keyboard key inside a typing burst; vary seed and fc per key.", "defaultDuration": 0.045 },
+    { "id": "mouseClick", "use": "A mouse press and release for an on-screen cursor click.", "defaultDuration": 0.06 },
+    { "id": "whooshShort", "use": "A short directional air sweep: f0 below f1 rises, f0 above f1 falls.", "defaultDuration": 0.2 }
+  ],
+  "recipes": [
+    {
+      "id": "soft-transition", "name": "Soft transition", "use": "Low-level air for a short join. Align the middle of the whoosh with the picture cut.", "duration": 0.4,
+      "hits": [{ "t": 0, "sound": "whooshSoft", "gain": 0.34, "pan": -0.12, "opts": { "seed": 123 } }]
+    },
+    {
+      "id": "paper-reveal", "name": "Paper reveal", "use": "Paper arrival with a restrained low landing for an approved editorial card.", "duration": 0.85,
+      "hits": [
+        { "t": 0, "sound": "paper", "gain": 0.27, "pan": -0.16, "opts": { "seed": 183, "dur": 0.3 } },
+        { "t": 0.16, "sound": "impact", "gain": 0.13, "pan": 0.08, "opts": { "seed": 131, "dur": 0.45, "f0": 100, "f1": 48 } }
+      ]
+    },
+    {
+      "id": "ui-confirmation", "name": "Interface confirmation", "use": "A button press followed by a quiet positive confirmation; keep it before the final spoken signature.", "duration": 0.9,
+      "hits": [
+        { "t": 0, "sound": "click", "gain": 0.24, "pan": -0.06, "opts": { "seed": 253 } },
+        { "t": 0.08, "sound": "chime", "gain": 0.2, "pan": 0.12, "opts": { "dur": 0.65 } }
+      ]
+    },
+    {
+      "id": "counter-accent", "name": "Counter accent", "use": "Three sparse counter steps followed by a light landing.", "duration": 0.7,
+      "hits": [
+        { "t": 0, "sound": "tick", "gain": 0.16, "pan": -0.1, "opts": { "seed": 301 } },
+        { "t": 0.12, "sound": "tick", "gain": 0.18, "pan": 0, "opts": { "seed": 302 } },
+        { "t": 0.24, "sound": "tick", "gain": 0.2, "pan": 0.1, "opts": { "seed": 303 } },
+        { "t": 0.37, "sound": "pop", "gain": 0.16, "pan": 0, "opts": { "freq": 640 } }
+      ]
+    },
+    {
+      "id": "highlight-swipe", "name": "Highlight swipe", "use": "A restrained swipe that follows a drawn highlight.", "duration": 0.4,
+      "hits": [{ "t": 0, "sound": "swipe", "gain": 0.22, "pan": 0.08, "opts": { "seed": 471, "dur": 0.26 } }]
+    },
+    {
+      "id": "restrained-reveal", "name": "Restrained reveal", "use": "A short rise ending on a soft impact for an approved reveal beat.", "duration": 1.1,
+      "hits": [
+        { "t": 0, "sound": "riser", "gain": 0.15, "pan": -0.08, "opts": { "seed": 567, "dur": 0.45 } },
+        { "t": 0.44, "sound": "impact", "gain": 0.18, "pan": 0.05, "opts": { "seed": 531, "dur": 0.5, "f0": 115, "f1": 45 } }
+      ]
+    },
+    {
+      "id": "typing-burst", "name": "Typing burst", "use": "Seven uneven key presses for text being typed into a prompt box, search bar or comment field; the last key lands heavier like Enter.", "duration": 0.6,
+      "hits": [
+        { "t": 0, "sound": "keyTap", "gain": 0.2, "pan": -0.06, "opts": { "seed": 701, "fc": 3900 } },
+        { "t": 0.07, "sound": "keyTap", "gain": 0.17, "pan": 0.04, "opts": { "seed": 702, "fc": 3500 } },
+        { "t": 0.15, "sound": "keyTap", "gain": 0.19, "pan": -0.02, "opts": { "seed": 703, "fc": 4200 } },
+        { "t": 0.21, "sound": "keyTap", "gain": 0.16, "pan": 0.06, "opts": { "seed": 704, "fc": 3700 } },
+        { "t": 0.3, "sound": "keyTap", "gain": 0.2, "pan": -0.04, "opts": { "seed": 705, "fc": 4000 } },
+        { "t": 0.38, "sound": "keyTap", "gain": 0.18, "pan": 0.02, "opts": { "seed": 706, "fc": 3600 } },
+        { "t": 0.47, "sound": "keyTap", "gain": 0.22, "pan": 0, "opts": { "seed": 707, "fc": 3300, "dur": 0.06 } }
+      ]
+    },
+    {
+      "id": "cursor-click", "name": "Cursor click", "use": "One mouse click for an on-screen cursor pressing a real product button.", "duration": 0.2,
+      "hits": [{ "t": 0, "sound": "mouseClick", "gain": 0.3, "pan": 0.04, "opts": { "seed": 811 } }]
+    },
+    {
+      "id": "directional-whoosh", "name": "Directional whoosh", "use": "A short rising sweep for a push, slide or cut; its peak is 0.077 s after the start.", "duration": 0.3,
+      "hits": [{ "t": 0, "sound": "whooshShort", "gain": 0.3, "pan": -0.18, "opts": { "seed": 907, "dur": 0.22, "f0": 700, "f1": 4600 } }]
+    },
+    {
+      "id": "count-tick", "name": "Count tick", "use": "Six accelerating ticks and a light landing under a rolling number.", "duration": 0.5,
+      "hits": [
+        { "t": 0, "sound": "tick", "gain": 0.12, "pan": -0.08, "opts": { "seed": 1001 } },
+        { "t": 0.08, "sound": "tick", "gain": 0.13, "pan": 0.08, "opts": { "seed": 1002 } },
+        { "t": 0.15, "sound": "tick", "gain": 0.14, "pan": -0.06, "opts": { "seed": 1003 } },
+        { "t": 0.21, "sound": "tick", "gain": 0.15, "pan": 0.06, "opts": { "seed": 1004 } },
+        { "t": 0.26, "sound": "tick", "gain": 0.16, "pan": -0.04, "opts": { "seed": 1005 } },
+        { "t": 0.3, "sound": "tick", "gain": 0.17, "pan": 0.04, "opts": { "seed": 1006 } },
+        { "t": 0.36, "sound": "pop", "gain": 0.15, "pan": 0, "opts": { "freq": 880, "dur": 0.09 } }
+      ]
+    },
+    {
+      "id": "chapter-shift", "name": "Chapter shift", "use": "A falling sweep settling on a soft low landing for a new section or chapter; the sweep peaks 0.105 s after the start.", "duration": 0.7,
+      "hits": [
+        { "t": 0, "sound": "whooshShort", "gain": 0.28, "pan": 0.14, "opts": { "seed": 1103, "dur": 0.3, "f0": 3800, "f1": 600 } },
+        { "t": 0.2, "sound": "impact", "gain": 0.13, "pan": -0.04, "opts": { "seed": 1131, "dur": 0.4, "f0": 110, "f1": 46 } }
+      ]
+    }
+  ]
+}

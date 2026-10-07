@@ -1,0 +1,21 @@
+{
+  "schema": 2,
+  "techniques": [
+    {"id": "prepared-edit", "label": "Prepared edit", "purpose": "Render one continuous source through authored cuts, captions, scenes, brand colours and sound.", "implementationPath": "engine/src/prepared-edit/PreparedEdit.tsx", "status": "ready", "requires": []},
+    {"id": "scene-families", "label": "Scene families", "purpose": "Hooks, proof, processes, comparisons, comment CTA, follow card, checklists, counters and data stories.", "implementationPath": "engine/src/creative-kit/scenes.tsx", "status": "ready", "requires": []},
+    {"id": "screen-recording", "label": "Full-frame screen recording", "purpose": "Show a screen-recording source with camera keys, click ripples at the real pointer and pinned callouts.", "implementationPath": "engine/src/screen-recording/ScreenRecordingScene.tsx", "status": "ready", "requires": []},
+    {"id": "screen-focus", "label": "Screen capture inside a presenter video", "purpose": "Frame a separate screen capture or image with focus moves inside a talking-head reel.", "implementationPath": "engine/src/motion-library/scenes.tsx", "status": "ready", "requires": []},
+    {"id": "brand-colours", "label": "Brand colours", "purpose": "Turn the profile colours into readable per-scene palettes for split-canvas and section-deck.", "implementationPath": "engine/src/core/brand.ts", "status": "ready", "requires": []},
+    {"id": "endings", "label": "Endings", "purpose": "Comment CTA, follow card and recorded sign-off per profile and per video, in a fixed order.", "implementationPath": "scripts/lib/endings.mjs", "status": "ready", "requires": []},
+    {"id": "source-intake", "label": "Source intake", "purpose": "HDR/HLG to BT.709 SDR, variable to constant frame rate, real motion rate and delivery rate.", "implementationPath": "scripts/intake.mjs", "status": "ready", "requires": ["ffmpeg", "ffprobe"]},
+    {"id": "privacy-blur", "label": "Privacy blur for screen recordings", "purpose": "Blur or pixelate the private regions the creator confirmed into a new screen-recording plate.", "implementationPath": "scripts/redact.mjs", "status": "ready", "requires": ["ffmpeg", "ffprobe"]},
+    {"id": "auto-cut", "label": "Rough-cut proposals", "purpose": "Propose silence, retake and filler cuts from reviewed words and audio; the creator approves them.", "implementationPath": "scripts/auto-cut.mjs", "status": "ready", "requires": ["ffmpeg"]},
+    {"id": "sound", "label": "Sound effects", "purpose": "Synthesise licence-clean effects on scene cues and mix them under the voice.", "implementationPath": "scripts/sfx.mjs", "status": "ready", "requires": ["ffmpeg"]},
+    {"id": "voice-cleanup", "label": "Voice clean-up", "purpose": "Clean or denoise the dialogue inside the final mix (editor render --voice).", "implementationPath": "scripts/mix.mjs", "status": "ready", "requires": ["ffmpeg"]},
+    {"id": "captions", "label": "Caption export", "purpose": "Export reviewed word timing to SRT and ASS.", "implementationPath": "scripts/export-captions.mjs", "status": "ready", "requires": []},
+    {"id": "face-check", "label": "Face check", "purpose": "Prove no graphic covers the presenter's face, move the video when one does, and ask when no face is found.", "implementationPath": "scripts/face-check.mjs", "status": "ready", "requires": ["Remotion Chromium", "BlazeFace models"]},
+    {"id": "delivery-qc", "label": "Delivery checks", "purpose": "Safe zones, presenter motion, face check, plate cadence and the Instagram encode contract.", "implementationPath": "scripts/render.mjs", "status": "ready", "requires": ["ffmpeg", "ffprobe", "Remotion Chromium"]},
+    {"id": "publish-pack", "label": "Publish pack", "purpose": "TikTok and Instagram captions checked against the profile and the video's keyword.", "implementationPath": "scripts/publish-pack.mjs", "status": "ready", "requires": []},
+    {"id": "transcription", "label": "Transcription", "purpose": "Local same-language transcript drafts with word timing.", "implementationPath": "engine/tools/transcribe.mjs", "status": "optional-install", "requires": ["Whisper.cpp runtime", "model download"]}
+  ]
+}

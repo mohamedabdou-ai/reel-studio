@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+node scripts/publication-check.mjs
+node scripts/publication-check.mjs --history

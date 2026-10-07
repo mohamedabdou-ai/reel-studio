@@ -1,0 +1,84 @@
+{
+  "$comment": "SINGLE SOURCE OF TRUTH for Instagram Reels delivery: safe zones + encode contract. Read by engine/src/core/safe.tsx (TypeScript) and scripts/lib/ig.mjs (Node). Every number carries a `basis`: official = quoted from a live Meta page on 2026-09-01; derived = arithmetic from an official percentage on the 1080x1920 canvas; community = measured by third parties from the live app / Meta's safe-zone checker file (Meta publishes NO organic pixel figures); engine = a choice this project made. Zone semantics: content must satisfy y >= top, y < bottom, x >= left, x < right; if `rail` is set, additionally NOT (x >= rail.x && y >= rail.y). All values are delivery pixels on 1080x1920.",
+  "verifiedOn": "2026-09-01",
+  "frame": { "width": 1080, "height": 1920, "aspect": "9:16" },
+  "defaultProfile": "ig-reels-organic",
+  "profiles": {
+    "ig-reels-ads": {
+      "label": "Instagram Reels ads safe zone (Meta official: top 14%, bottom 35%, sides 6%)",
+      "top": 269,
+      "bottom": 1248,
+      "left": 65,
+      "right": 1015,
+      "rail": null,
+      "basis": "derived from official percentages: 0.14*1920=268.8->269; 1920-0.35*1920=1248; 0.06*1080=64.8->65; 1080-65=1015",
+      "source": "https://www.facebook.com/business/ads-guide/update/video/instagram-reels",
+      "quote": "Consider leaving at least 14% of the top, 35% of the bottom, and 6% on each side of your asset free from text, logos, or other important creative elements."
+    },
+    "ig-reels-ads-disclaimer": {
+      "label": "Instagram Reels ads WITH disclaimers (Meta official: bottom 40%)",
+      "top": 269,
+      "bottom": 1152,
+      "left": 65,
+      "right": 1015,
+      "rail": null,
+      "basis": "derived: 1920-0.40*1920=1152; other edges as ig-reels-ads",
+      "source": "https://www.facebook.com/business/help/980593475366490",
+      "quote": "If you're including disclaimers on your Reels ads, you should leave the bottom 40% of your ad free from text, logos and other key creative elements."
+    },
+    "ig-reels-organic": {
+      "label": "Instagram Reels organic UI (community-measured: header 250, caption block 450, action rail 227 px from y 1150)",
+      "top": 250,
+      "bottom": 1470,
+      "left": 65,
+      "right": 1015,
+      "rail": { "x": 853, "y": 1150 },
+      "basis": "community: Meta publishes no organic pixel/percentage figures (help.instagram.com/1038071743007909 and the @instagramforbusiness safe-zone post carry none). top 250 / bottom 450 measured from the live app (adkit.so, March 2026); rail 227 px wide starting 1150 px from the top traced from Meta's safe-zone-checker-2023-08-24 file (cadenus.io, July 2026) -> rail.x = 1080-227 = 853; sides 65 = the official 6% ad margin applied to organic (engine choice)",
+      "source": "https://www.instagram.com/p/CqDh1Efg7pv/",
+      "quote": "Build your reels with these safe zones in mind so your products and messages don't get covered by text or the Instagram interface. (no numeric values published)"
+    },
+    "legacy-02": {
+      "label": "Zones used by the first two projects before this spec existed (kept for regression comparison only)",
+      "top": 250,
+      "bottom": 1560,
+      "left": 72,
+      "right": 1008,
+      "rail": { "x": 880, "y": 1080 },
+      "basis": "engine: retained legacy profile values for compatibility",
+      "source": "legacy-profile",
+      "quote": ""
+    }
+  },
+  "cover": {
+    "$comment": "Where the cover frame survives Instagram's crops. Official: the Reels tab uses the middle-most 9:16; a feed share uses the middle-most 1:1 square (Graph API). The profile grid moved to a taller crop in Jan 2025 (3:4 per press, no Meta page found) -> derived centred 1080x1440.",
+    "square": { "top": 420, "bottom": 1500, "basis": "derived: centred 1080x1080 of 1920" },
+    "grid34": { "top": 240, "bottom": 1680, "basis": "derived from 3:4 (unofficial): centred 1080x1440" },
+    "recommendedUploadPx": { "width": 420, "height": 654, "basis": "official: help.instagram.com/1038071743007909 'recommended size for cover photos is 420px by 654px (or 1:1.55 ratio)'" }
+  },
+  "video": {
+    "resolution": { "width": 1080, "height": 1920, "basis": "official: Graph API 'Maximum columns (horizontal pixels): 1920'; FB Reels help 'Recommended resolution: 1080p'; Ads Guide recommends 1440x2560 for ads (same 9:16)" },
+    "fps": { "recommended": 30, "organicMin": 30, "apiMin": 23, "max": 60, "constant": true, "basis": "official: help.instagram.com 'minimum frame rate of 30 FPS'; Graph API 'Frame rate: 23-60 FPS'; Ads Guide 'fixed frame rate'. Engine rule: the delivery rate must divide the plate's REAL motion rate evenly (30 for a 30-real plate, 50 for a genuine 50 fps plate, 60 only for genuine 60) - never a 1.667:1 cadence" },
+    "codec": { "name": "h264", "profile": "High", "level": { "upTo30fps": "4.1", "above30fps": "4.2" }, "basis": "official: Ads Guide 'H.264 compression', Graph API 'HEVC or H264, progressive scan, closed GOP, 4:2:0'; profile/level are community convention (Meta names neither)" },
+    "pixelFormat": { "pixFmt": "yuv420p", "range": "tv", "colorPrimaries": "bt709", "colorTransfer": "bt709", "colorSpace": "bt709", "basis": "official for 4:2:0 (Graph API, FB Reels help); bt709 SDR is Meta's pipeline target (engineering.fb.com 2023-07-17 'target SDR colorspace (BT.709)'); explicit VUI tags are an engine rule because Remotion's default output is tagged yuvj420p/pc/bt470bg with unknown primaries/transfer" },
+    "bitrate": { "maxMbps": 25, "targetMbps": 10, "vbvMaxrate": "20M", "vbvBufsize": "40M", "basis": "official max: Graph API 'Video bitrate: VBR, 25Mbps maximum'. target/VBV are ENGINE choices (Meta publishes no recommended video bitrate)" },
+    "gop": { "minSec": 2, "maxSec": 5, "closed": true, "basis": "official: FB Reels help 'Closed GOP recommended: 2s to 5s'; Graph API 'closed GOP'" },
+    "audio": { "codec": "aac", "profile": "LC", "sampleRateHz": 48000, "channels": 2, "minKbps": 128, "renderKbps": 320, "basis": "official: Graph API 'AAC, 48khz sample rate maximum, 1 or 2 channels', 'Audio bitrate: 128kbps'; FB Reels help 'AAC Low Complexity, Stereo, 44.1kHz or 48kHz, 128kbs+'. 320k is the engine's render bitrate (above the floor)" },
+    "container": { "format": "mp4", "faststart": true, "noEditLists": true, "basis": "official: Graph API 'MOV or MP4, no edit lists, moov atom at the front of the file'; Ads Guide 'should not contain edit lists or special boxes'" },
+    "durationSec": { "adsMax": 900, "apiMax": 900, "organicMax": 1200, "reachSoftCap": 180, "apiMin": 3, "basis": "official: Ads Guide '0 seconds to 15 minutes'; Graph API '15 mins maximum, 3 seconds minimum'; help.instagram.com 'clips that add up to 20 minutes' and 'Reels over 3 minutes won't be recommended to new audiences'" },
+    "fileSize": { "apiMaxMB": 300, "adsMaxGB": 4, "basis": "official: Graph API 'File size: 300MB maximum'; Ads Guide 'Maximum File Size: 4GB'; organic in-app cap not published" },
+    "loudness": { "integratedLUFS": -14, "truePeakDBTP": -1.0, "basis": "engine: delivery audio target; Meta publishes no loudness spec" }
+  },
+  "sources": [
+    { "url": "https://www.facebook.com/business/ads-guide/update/video/instagram-reels", "official": true, "what": "ads safe zone 14/35/6, 1440x2560, H.264, fixed frame rate, AAC 128kbps+, 15 min, 4GB, no edit lists" },
+    { "url": "https://www.facebook.com/business/help/980593475366490", "official": true, "what": "shared 9:16 safe zone across Stories/Reels/Feed, 40% bottom with disclaimers, zoom/letterbox on tall screens" },
+    { "url": "https://developers.facebook.com/docs/instagram-platform/instagram-graph-api/reference/ig-user/media/", "official": true, "what": "container/moov/no edit lists, codec, 23-60 fps, 25 Mbps max, 15 min, 300 MB, AAC 48k 128k, cover crops" },
+    { "url": "https://help.instagram.com/1038071743007909", "official": true, "what": "aspect 1.91:1-9:16, minimum 30 fps, minimum 720 px, cover 420x654" },
+    { "url": "https://help.instagram.com/2720958398006062", "official": true, "what": "up to 20 minutes; over 3 minutes not recommended to new audiences" },
+    { "url": "https://www.facebook.com/business/help/1197310377458196", "official": true, "what": "Facebook Reels: H.264/H.265, 24-60 fps, closed GOP 2-5 s, 4:2:0, AAC-LC stereo 44.1/48 kHz 128 kbps+" },
+    { "url": "https://engineering.fb.com/2023/07/17/video-engineering/hdr-video-reels-meta/", "official": true, "what": "Meta pipeline targets SDR BT.709" },
+    { "url": "https://www.facebook.com/business/ads/facebook-instagram-reels-ads", "official": true, "what": "safe-zone checker downloads (safe-zone-checker-2023-08-24.pptx/.psd/.key)" },
+    { "url": "https://www.instagram.com/p/CqDh1Efg7pv/", "official": true, "what": "@instagramforbusiness organic safe-zone reminder, no numbers" },
+    { "url": "https://cadenus.io/resources/blog/instagram-safe-zone/", "official": false, "what": "rail 227 px wide from y 1150, traced from Meta's checker file" },
+    { "url": "https://adkit.so/tools/safe-zones/meta", "official": false, "what": "top 250 / bottom 450 measured from live previews (March 2026)" }
+  ]
+}

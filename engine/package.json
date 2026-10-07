@@ -1,0 +1,58 @@
+{
+  "name": "@reel-studio/engine-runtime",
+  "version": "0.6.0",
+  "description": "Curated Reel Studio Remotion runtime",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mohamedabdou-ai/reel-studio.git",
+    "directory": "engine"
+  },
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@mediapipe/tasks-vision": "1.0.1",
+    "@remotion/animation-utils": "4.0.521",
+    "@remotion/cli": "4.0.521",
+    "@remotion/fonts": "4.0.521",
+    "@remotion/google-fonts": "4.0.521",
+    "@remotion/install-whisper-cpp": "4.0.521",
+    "@remotion/layout-utils": "4.0.521",
+    "@remotion/lottie": "4.0.521",
+    "@remotion/media": "4.0.521",
+    "@remotion/media-utils": "4.0.521",
+    "@remotion/motion-blur": "4.0.521",
+    "@remotion/noise": "4.0.521",
+    "@remotion/paths": "4.0.521",
+    "@remotion/shapes": "4.0.521",
+    "@remotion/studio": "4.0.521",
+    "@remotion/tailwind-v4": "4.0.521",
+    "@remotion/transitions": "4.0.521",
+    "@remotion/zod-types": "4.0.521",
+    "lottie-web": "^5.13.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "remotion": "4.0.521",
+    "tailwindcss": "4.3.3",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.18",
+    "@types/web": "0.0.355",
+    "eslint": "10.10.0",
+    "prettier": "3.9.6",
+    "typescript": "7.0.2"
+  },
+  "scripts": {
+    "build": "node ../scripts/engine.mjs bundle",
+    "typecheck": "tsc --noEmit",
+    "practice": "node ../scripts/practice.mjs",
+    "studio": "node ../scripts/studio.mjs"
+  },
+  "sideEffects": [
+    "*.css"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=22.20.0"
+  }
+}

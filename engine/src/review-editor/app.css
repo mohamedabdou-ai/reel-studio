@@ -1,0 +1,78 @@
+/* Same reset the Remotion bundle gets from `@import "tailwindcss"` in src/index.css: the engine's
+   components were authored against Tailwind's preflight (border-box, zero margins, video/img rules),
+   so the preview must have it or layouts drift from the export. Utilities are NOT needed: no engine
+   component that reaches PreparedEdit uses Tailwind classes. Panel files may `import "./x.css"`; esbuild
+   concatenates every CSS import into this one /app.css. */
+@import "tailwindcss/preflight.css";
+
+:root {
+  --bg: #12161b;
+  --surface: #1b2129;
+  --surface-2: #232b35;
+  --line: #2f3946;
+  --text: #e8edf3;
+  --muted: #8d9aab;
+  --accent: #4fa3ff;
+  --ok: #4cc38a;
+  --warn: #f0b429;
+  --bad: #ef6461;
+  color-scheme: dark;
+}
+
+html, body, #root { height: 100%; }
+html { font-family: Cairo, Tajawal, ui-sans-serif, system-ui, sans-serif; line-height: 1.5; }
+body { background: var(--bg); color: var(--text); font-size: 14px; }
+button { font: inherit; color: inherit; background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 4px 12px; cursor: pointer; }
+button:hover:not(:disabled) { border-color: var(--accent); }
+button:disabled { opacity: 0.4; cursor: not-allowed; }
+button.primary { background: var(--accent); color: #06121f; border-color: var(--accent); font-weight: 700; }
+input, select, textarea { font: inherit; color: inherit; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px; }
+h3 { font-weight: 700; margin: 14px 0 6px; }
+.muted { color: var(--muted); }
+.pad { padding: 12px; }
+
+.shell { display: grid; grid-template-rows: auto auto minmax(0, 1fr) 150px; height: 100%; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; padding: 8px 14px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.toolbar-title, .toolbar-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.banner { padding: 6px 14px; background: #3a3016; color: var(--warn); border-bottom: 1px solid var(--line); }
+.chip { display: inline-block; padding: 1px 10px; border-radius: 999px; font-size: 12px; border: 1px solid currentColor; }
+.chip.ok { color: var(--ok); } .chip.warn { color: var(--warn); } .chip.bad { color: var(--bad); }
+
+.main { display: grid; grid-template-columns: minmax(280px, 420px) minmax(0, 1fr); min-height: 0; }
+.preview-col { min-height: 0; padding: 10px; border-inline-end: 1px solid var(--line); }
+.panel-col { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.tabs { display: flex; gap: 2px; padding: 6px 8px 0; background: var(--surface); border-bottom: 1px solid var(--line); overflow-x: auto; }
+.tabs button { border-radius: 6px 6px 0 0; border-bottom: 0; background: transparent; }
+.tabs button.on { background: var(--bg); border-color: var(--line); color: var(--accent); }
+.panel-body { flex: 1; min-height: 0; overflow: auto; }
+
+.preview { display: flex; flex-direction: column; gap: 8px; height: 100%; min-height: 0; }
+.preview-frame { flex: 1; min-height: 0; display: flex; justify-content: center; }
+.preview-frame > * { aspect-ratio: 9 / 16; max-width: 100%; max-height: 100%; height: 100%; background: #000; border-radius: 8px; overflow: hidden; }
+.preview-empty { display: grid; place-items: center; padding: 20px; text-align: center; color: var(--muted); border: 1px dashed var(--line); }
+.preview-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-height: 28px; }
+
+.timeline { display: flex; flex-direction: column; gap: 4px; padding: 8px 14px; background: var(--surface); border-top: 1px solid var(--line); }
+.timeline-head { display: flex; justify-content: space-between; font: 12px/1 ui-monospace, Consolas, monospace; color: var(--muted); }
+.timeline-track { position: relative; flex: 1; min-height: 70px; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; cursor: pointer; overflow: hidden; }
+.tl-seg { position: absolute; top: 0; height: 14px; background: #35506e; border-inline-end: 2px solid var(--bg); }
+.tl-scene { position: absolute; top: 22px; height: 34px; padding: 0 6px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: start; font-size: 12px; background: #2b3f57; border-radius: 4px; }
+.tl-scene.on { border-color: var(--accent); background: #2f5f94; }
+.tl-playhead { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--bad); pointer-events: none; }
+
+.boundary { padding: 12px; border: 1px solid var(--bad); border-radius: 8px; background: #2a1719; }
+.boundary pre { white-space: pre-wrap; margin: 8px 0; font: 12px ui-monospace, Consolas, monospace; }
+#fatal { position: fixed; inset-inline: 0; bottom: 0; max-height: 40%; overflow: auto; margin: 0; padding: 8px 14px; background: #3a1214; color: #ffb3b0; font: 12px ui-monospace, Consolas, monospace; white-space: pre-wrap; z-index: 99; }
+
+.summary dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; }
+.summary dt { color: var(--muted); }
+.issues { display: grid; gap: 4px; }
+.issues li { padding: 4px 8px; border-radius: 6px; background: var(--surface); border-inline-start: 3px solid var(--muted); cursor: pointer; }
+.issues li.error { border-color: var(--bad); } .issues li.warning { border-color: var(--warn); }
+.issues .where { color: var(--muted); }
+
+@media (max-width: 900px) {
+  .shell { grid-template-rows: auto auto auto 150px; height: auto; min-height: 100%; }
+  .main { grid-template-columns: minmax(0, 1fr); }
+  .preview-col { height: 70vh; border-inline-end: 0; border-bottom: 1px solid var(--line); }
+}

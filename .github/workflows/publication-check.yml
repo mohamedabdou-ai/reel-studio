@@ -1,0 +1,14 @@
+name: Check publication content
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  publication:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - run: node scripts/publication-check.mjs
+      - run: node scripts/publication-check.mjs --history

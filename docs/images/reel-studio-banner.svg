@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="300" viewBox="0 0 1280 300" role="img" aria-labelledby="title desc">
+  <title id="title">Reel Studio</title>
+  <desc id="desc">مونتاج ريلز بطريقتك. Local video editing with Arabic captions.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#152a32"/><stop offset="1" stop-color="#0d1a22"/></linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f4d19a"/><stop offset="1" stop-color="#dfaa68"/></linearGradient>
+  </defs>
+  <rect width="1280" height="300" rx="24" fill="url(#bg)"/>
+  <circle cx="1130" cy="30" r="210" fill="#213a42" opacity=".5"/>
+  <circle cx="1145" cy="300" r="165" fill="#203a3e" opacity=".5"/>
+  <path d="M35 255H1235" stroke="#e8d6ba" stroke-opacity=".12"/>
+  <g transform="translate(72 76)">
+    <rect width="82" height="102" rx="22" fill="url(#accent)"/>
+    <rect x="9" y="10" width="64" height="82" rx="15" fill="none" stroke="#142b33" stroke-width="2" opacity=".25"/>
+    <path d="M34 31L58 51L34 71Z" fill="#132930"/>
+    <circle cx="70" cy="5" r="13" fill="#d1e2cb"/>
+    <path d="M65 5h10M70 0v10" stroke="#243a32" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <text x="183" y="150" fill="#f9f5ed" font-family="Segoe UI,Arial,sans-serif" font-size="76" font-weight="700" letter-spacing="-3">Reel Studio</text>
+  <text x="184" y="199" fill="#cfdbd9" font-family="Segoe UI,Tahoma,Arial,sans-serif" font-size="27" direction="rtl" text-anchor="end">مونتاج ريلز بطريقتك</text>
+  <text x="74" y="282" fill="#9eb2b6" font-family="Segoe UI,Arial,sans-serif" font-size="14" font-weight="600" letter-spacing="3">LOCAL EDITING · ARABIC CAPTIONS · YOUR STYLE</text>
+  <g transform="translate(995 41) rotate(9 69 100)">
+    <rect x="-43" y="15" width="132" height="197" rx="16" fill="#78958c"/>
+    <rect width="137" height="216" rx="19" fill="#f1e9d8"/>
+    <rect x="14" y="16" width="110" height="60" rx="8" fill="#e6d5b8"/>
+    <rect x="24" y="28" width="64" height="7" rx="3.5" fill="#26444b"/>
+    <rect x="24" y="44" width="84" height="5" rx="2.5" fill="#8f9b91"/>
+    <rect x="24" y="55" width="53" height="5" rx="2.5" fill="#8f9b91"/>
+    <rect x="14" y="89" width="110" height="100" rx="9" fill="#1b353e"/>
+    <path d="M61 122L82 139L61 156Z" fill="#efc890"/>
+    <rect x="38" y="198" width="60" height="4" rx="2" fill="#8c9c96"/>
+    <g transform="translate(-64 152) rotate(-9)">
+      <rect width="95" height="40" rx="10" fill="#d7e3cd"/>
+      <path d="M15 20h4m4-7v14m8-20v26m8-19v12m8-23v34m8-25v16m8-22v28m8-19v10m8-8v6" stroke="#3f6154" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    <circle cx="151" cy="69" r="18" fill="#eab779"/>
+    <path d="M144 69l5 5 9-11" fill="none" stroke="#233c40" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
