@@ -1,6 +1,7 @@
 import type { EditManifest } from "../../prepared-edit/schema.ts";
 import { editSceneSchema } from "../../prepared-edit/schema.ts";
 import { creativeGalleryDefaults, sceneFamilies } from "../../creative-kit/schema.ts";
+import {semanticFamilies} from '../../creative-kit/semantic/schema.ts';
 import { totalFrames } from "../time.ts";
 import { carryEntrances, dropForegrounds, repairForegrounds } from "./anchors.ts";
 import { deepEqual, removeIn, setIn, type Path } from "./paths.ts";
@@ -16,7 +17,7 @@ export type SceneLayout = (typeof LAYOUTS)[number];
 export type SceneMotion = (typeof MOTIONS)[number];
 
 
-export const TEMPLATE_FAMILIES = sceneFamilies;
+export const TEMPLATE_FAMILIES = [...sceneFamilies,...semanticFamilies];
 const MIN_SCENE_FRAMES = 30;
 const DEFAULT_SCENE_FRAMES = creativeGalleryDefaults.framesPerScene;
 

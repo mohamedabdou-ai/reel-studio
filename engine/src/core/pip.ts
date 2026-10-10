@@ -271,6 +271,10 @@ export type PipPolicy = { allowed: boolean; basis: "observed" | "inference"; evi
 
 
 export const PIP_POLICY: Record<StyleId, PipPolicy> = {
+  'liquid-glass':{allowed:false,basis:'inference',evidence:'Use the split presenter window; glass detail panels reserve the takeover canvas.'},
+  'campaign-tickets':{allowed:false,basis:'inference',evidence:'Use the split presenter window to keep tickets and comments clear.'},
+  'magazine-interview':{allowed:false,basis:'inference',evidence:'Use the split presenter window with speaker attribution above it.'},
+  'scrapbook-route':{allowed:false,basis:'inference',evidence:'Use the split presenter window; map stops reserve the takeover canvas.'},
   "split-canvas": {
     allowed: true,
     basis: "observed",

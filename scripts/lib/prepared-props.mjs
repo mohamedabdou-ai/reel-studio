@@ -3,6 +3,7 @@ import {editManifestSchema} from '../../engine/src/prepared-edit/schema.ts';
 import {compileEdit} from '../../engine/src/prepared-edit/timeline.ts';
 import {kineticSceneSchema,kineticAssets} from '../../engine/src/creative-kit/kinetic/schema.ts';
 import {librarySceneSchema,libraryAssets} from '../../engine/src/motion-library/schema.ts';
+import {semanticSceneSchema,semanticAssets} from '../../engine/src/creative-kit/semantic/schema.ts';
 import {captureWarnings} from '../../engine/src/motion-library/capture.ts';
 import {readJson,fileSnapshot,digest,checkedPath} from './job-paths.mjs';
 import {ffprobeJson,run} from './media.mjs';
@@ -19,10 +20,10 @@ export async function hasForegroundAlpha(video){
 export async function verifyKineticAssets(edit){
   const assets=new Map();
   for(const input of edit.scenes){
-    const parsed=kineticSceneSchema.safeParse(input),library=librarySceneSchema.safeParse(input);
-    if(!parsed.success && !library.success)continue;
-    const scene=parsed.success?parsed.data:library.data;
-    const sources=parsed.success?kineticAssets(parsed.data):libraryAssets(library.data);
+    const parsed=kineticSceneSchema.safeParse(input),library=librarySceneSchema.safeParse(input),semantic=semanticSceneSchema.safeParse(input);
+    if(!parsed.success && !library.success && !semantic.success)continue;
+    const scene=parsed.success?parsed.data:library.success?library.data:semantic.data;
+    const sources=parsed.success?kineticAssets(parsed.data):library.success?libraryAssets(library.data):semanticAssets(semantic.data);
     for(const src of sources){
       if(!assets.has(src)){
         const file=`engine/public/${src}`,absolute=await checkedPath(file,{mustExist:true});
@@ -33,6 +34,23 @@ export async function verifyKineticAssets(edit){
       }
       const isMoving=(scene.family==='kinetic-hook' && scene.data.foreground?.src===src) || ((scene.family==='screens' || scene.family==='screen-focus') && scene.data.steps.some(step=>step.src===src&&step.kind==='video'));
       if(!isMoving && !['png','mjpeg','webp','gif','bmp','tiff','svg'].includes(assets.get(src).video.codec_name))throw new Error(`Static scene asset must contain an image: ${src}`);
+    }
+    if(scene.family==='chapter-quote' && scene.data.cover){
+      const supplied=scene.data.cover.foreground,asset=assets.get(supplied.src);
+      if(asset.video.codec_name!=='png')throw new Error('Magazine cover foreground must contain a transparent PNG.');
+      if(asset.sha256!==supplied.sha256)throw new Error('Magazine cover foreground bytes do not match the supplied hash.');
+      if(asset.video.width!==supplied.width || asset.video.height!==supplied.height)throw new Error('Magazine cover foreground dimensions disagree with its provided image.');
+      if(!await hasForegroundAlpha(asset.video))throw new Error('Magazine cover foreground needs an alpha channel.');
+      if(!asset.coverAlphaVerified){
+        const decoded=await run('ffmpeg',['-v','error','-i',asset.absolute,'-vf','alphaextract','-frames:v','1','-threads','1','-f','rawvideo','-pix_fmt','gray','pipe:1'],{encoding:'buffer'});
+        const alpha=decoded.stdout;
+        if(!Buffer.isBuffer(alpha) || alpha.length!==supplied.width*supplied.height)throw new Error('Magazine cover foreground alpha could not be verified.');
+        let transparent=false,visible=false;
+        for(const value of alpha){if(value<255)transparent=true;if(value>0)visible=true;}
+        if(!transparent || !visible)throw new Error('Magazine cover foreground must have real transparent pixels and a visible subject.');
+        if((await fileSnapshot(asset.path)).sha256!==asset.sha256)throw new Error('Magazine cover foreground bytes changed during transparency verification.');
+        asset.coverAlphaVerified=true;
+      }
     }
     if(scene.family==='screen-focus')for(let i=0;i<scene.data.steps.length;i++){
       const step=scene.data.steps[i],asset=assets.get(step.src),video=asset.video;

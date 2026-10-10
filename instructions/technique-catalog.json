@@ -1,6 +1,11 @@
 {
   "schema": 2,
   "techniques": [
+    {"id":"semantic-scenes","label":"Meaning-led scenes","purpose":"Authored token lenses, meters, tickets, questions, chapters and route stops; optional supplied transparent PNG cover.","implementationPath":"engine/src/creative-kit/semantic/scenes.tsx","status":"ready","requires":[]},
+    {"id":"resumable-render","label":"Resumable render","purpose":"Bounded verified chunks and exact-input resume for full renders.","implementationPath":"scripts/lib/render-chunks.mjs","status":"ready","requires":["ffmpeg","ffprobe","Remotion Chromium"]},
+    {"id":"audio-revision","label":"Audio revision","purpose":"Sample-accurate separate audio tracks with unchanged picture verification.","implementationPath":"scripts/render-audio.mjs","status":"ready","requires":["ffmpeg","ffprobe"]},
+    {"id":"picture-revision","label":"Picture range revision","purpose":"Replace prepared picture frames and retain original audio with full delivery checks.","implementationPath":"scripts/splice-segment.mjs","status":"ready","requires":["ffmpeg","ffprobe","Remotion Chromium"]},
+    {"id":"podcast-batches","label":"Podcast batches","purpose":"Reviewed proposals, explicit clip selection, rebased late source windows and verified sequential exports.","implementationPath":"scripts/podcast.mjs","status":"ready","requires":["ffmpeg","ffprobe","Remotion Chromium"]},
     {"id": "prepared-edit", "label": "Prepared edit", "purpose": "Render one continuous source through authored cuts, captions, scenes, brand colours and sound.", "implementationPath": "engine/src/prepared-edit/PreparedEdit.tsx", "status": "ready", "requires": []},
     {"id": "scene-families", "label": "Scene families", "purpose": "Hooks, proof, processes, comparisons, comment CTA, follow card, checklists, counters and data stories.", "implementationPath": "engine/src/creative-kit/scenes.tsx", "status": "ready", "requires": []},
     {"id": "screen-recording", "label": "Full-frame screen recording", "purpose": "Show a screen-recording source with camera keys, click ripples at the real pointer and pinned callouts.", "implementationPath": "engine/src/screen-recording/ScreenRecordingScene.tsx", "status": "ready", "requires": []},

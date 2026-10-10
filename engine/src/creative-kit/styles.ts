@@ -1,11 +1,11 @@
-export const STYLE_IDS=['split-canvas','section-deck','kinetic-paper','calligraphic-receipts','paper-collage','judgment-board','stepped-editorial'] as const;
+export const STYLE_IDS=['split-canvas','section-deck','kinetic-paper','calligraphic-receipts','paper-collage','judgment-board','stepped-editorial','liquid-glass','campaign-tickets','magazine-interview','scrapbook-route'] as const;
 export type StyleId=(typeof STYLE_IDS)[number];
 
 export const EDITION_STYLE_IDS:readonly StyleId[]=STYLE_IDS;
 
 export const EDITION_DEFAULT_STYLE_IDS:readonly StyleId[]=['split-canvas','section-deck'];
 export type StyleUseCase='explainer'|'case-study'|'tutorial'|'comparison'|'opinion'|'story';
-export type StyleGrammar={typography:'product-sans'|'heavy-poster'|'naskh-receipt'|'mixed-paper'|'serif-verdict'|'serif-editorial';card:'rounded-ui'|'ink-frame'|'receipt-sheet'|'taped-paper'|'verdict-board'|'offset-plate';annotation:'accent-rule'|'terminal-period'|'signal-strip'|'brush-rule'|'tape-tabs'|'verdict-divider'|'yellow-marker';composition:'split-panel'|'section-stack'|'poster-lockup'|'claim-receipt'|'collage-stack'|'two-column-board'|'editorial-spread';caption:'pill'|'ink-strip'|'boxless'|'paper-label';motion:'land'|'stagger'|'quiet'};
+export type StyleGrammar={typography:'product-sans'|'heavy-poster'|'naskh-receipt'|'mixed-paper'|'serif-verdict'|'serif-editorial';card:'rounded-ui'|'ink-frame'|'receipt-sheet'|'taped-paper'|'verdict-board'|'offset-plate'|'glass-panel'|'perforated-ticket'|'magazine-rule'|'route-paper';annotation:'accent-rule'|'terminal-period'|'signal-strip'|'brush-rule'|'tape-tabs'|'verdict-divider'|'yellow-marker'|'lens-rim'|'ticket-stub'|'chapter-rule'|'route-marker';composition:'split-panel'|'section-stack'|'poster-lockup'|'claim-receipt'|'collage-stack'|'two-column-board'|'editorial-spread'|'aurora-lens'|'ticket-stack'|'magazine-column'|'route-map';caption:'pill'|'ink-strip'|'boxless'|'paper-label';motion:'land'|'stagger'|'quiet'};
 export type StyleProfile={id:StyleId;label:string;description:string;useCases:readonly StyleUseCase[];source:{document:string;confidence:'high'|'medium'|'low';references:readonly {file:string;timecodes:readonly string[];observed:string}[];limitations:readonly string[]};approval:{status:'approved-style'|'approved-edit'|'not-style-approved';scope:string;evidence:string};implementation:'implemented';grammar:StyleGrammar};
 
 const source={document:'instructions/TECHNIQUES.md',confidence:'medium' as const,references:[],limitations:['Adapt every style to the customer source and obtain creative approval from the customer.']};
@@ -19,6 +19,10 @@ const profiles:Record<StyleId,StyleProfile>={
   'paper-collage':define('paper-collage','Paper collage','Layered cards, tabs and restrained depth.',['story','comparison','case-study'],{typography:'mixed-paper',card:'taped-paper',annotation:'tape-tabs',composition:'collage-stack',caption:'paper-label',motion:'land'}),
   'judgment-board':define('judgment-board','Judgment board','A clear two-column verdict or comparison.',['comparison','opinion','case-study'],{typography:'serif-verdict',card:'verdict-board',annotation:'verdict-divider',composition:'two-column-board',caption:'boxless',motion:'quiet'}),
   'stepped-editorial':define('stepped-editorial','Stepped editorial','Editorial spreads with offset plates and marked evidence.',['opinion','case-study','story'],{typography:'serif-editorial',card:'offset-plate',annotation:'yellow-marker',composition:'editorial-spread',caption:'boxless',motion:'land'}),
+  'liquid-glass':define('liquid-glass','Liquid glass','Dark aurora, translucent panels and a magnifying lens for grouped ideas.',['explainer','tutorial','comparison'],{typography:'product-sans',card:'glass-panel',annotation:'lens-rim',composition:'aurora-lens',caption:'pill',motion:'land'}),
+  'campaign-tickets':define('campaign-tickets','Campaign tickets','Warm gold tickets, coral stubs and audience comment cards.',['explainer','case-study','story'],{typography:'heavy-poster',card:'perforated-ticket',annotation:'ticket-stub',composition:'ticket-stack',caption:'ink-strip',motion:'stagger'}),
+  'magazine-interview':define('magazine-interview','Magazine interview','Numbered chapters, restrained quote rules and clear speaker attribution.',['opinion','case-study','story'],{typography:'serif-editorial',card:'magazine-rule',annotation:'chapter-rule',composition:'magazine-column',caption:'boxless',motion:'quiet'}),
+  'scrapbook-route':define('scrapbook-route','Scrapbook route','Paper routes, station markers and optional taped local photos.',['story','tutorial','case-study'],{typography:'mixed-paper',card:'route-paper',annotation:'route-marker',composition:'route-map',caption:'paper-label',motion:'land'}),
 };
 
 export const getStyleProfile=(id:string):StyleProfile=>{

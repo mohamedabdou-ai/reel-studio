@@ -7,7 +7,7 @@ const usage='Usage: editor.mjs styles | motions [--style id] [--family screen-fo
 try {
   const [action,...tokens]=process.argv.slice(2);
   const allowed={styles:[],motions:['style','family','query'],recommend:[],plan:['out','deliver','replace'],prepare:['no-proxy'],
-    render:['out','review','deliver','motion-plan','motion-crop','frames','concurrency','no-proxy','media-engine','png','crf','face-reviewed-by','voice'],validate:['deliver']};
+    render:['out','review','deliver','motion-plan','motion-crop','frames','concurrency','no-proxy','media-engine','png','crf','face-reviewed-by','voice','chunk-frames','chunk-jobs','intentional-black'],validate:['deliver']};
   if(!Object.hasOwn(allowed,action)) throw new Error(usage);
   const args=cliArgs(tokens,allowed[action],['deliver','replace','review','no-proxy','png']);
   if(args._.length!==(['styles','motions'].includes(action)?0:1)) throw new Error(usage);
@@ -23,7 +23,8 @@ try {
   else result=await renderEditorManifest(file,{out:args.out,delivery:!!args.deliver,review:!!args.review,motionPlan:args['motion-plan'],
     motionCrop:args['motion-crop'],frames:args.frames,concurrency:args.concurrency===undefined?4:Number(args.concurrency),
     noProxy:!!args['no-proxy'],mediaEngine:args['media-engine']??'offthread',png:!!args.png,
-    crf:args.crf===undefined?undefined:Number(args.crf),faceReviewedBy:args['face-reviewed-by'],voice:args.voice??'off',onProgress});
+    crf:args.crf===undefined?undefined:Number(args.crf),faceReviewedBy:args['face-reviewed-by'],voice:args.voice??'off',
+    chunkFrames:args['chunk-frames']===undefined?undefined:Number(args['chunk-frames']),chunkJobs:args['chunk-jobs']===undefined?undefined:Number(args['chunk-jobs']),intentionalBlack:args['intentional-black'],onProgress});
   console.log(JSON.stringify(result,null,2));
 } catch(error) {
   console.error(JSON.stringify({ok:false,error:error.message}));

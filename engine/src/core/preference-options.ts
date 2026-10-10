@@ -33,6 +33,10 @@ export const STYLE_LABELS: Record<string, {label: string; description: string}> 
   'paper-collage': {label: 'كولاج', description: 'ورق وصور تشرح كل فكرة'},
   'judgment-board': {label: 'مقارنة ورأي', description: 'اختيارات ومقارنات على لوحة'},
   'stepped-editorial': {label: 'تحريري', description: 'تكوينات مرتبة وحضور قوي للكلام'},
+  'liquid-glass': {label: 'زجاج مضيء', description: 'كروت شفافة وعدسة توضح التفاصيل'},
+  'campaign-tickets': {label: 'تذاكر وحملات', description: 'تذاكر دهبية وكروت للأسئلة والتعليقات'},
+  'magazine-interview': {label: 'حوار مجلة', description: 'فصول واقتباسات واسم المتحدث بوضوح'},
+  'scrapbook-route': {label: 'رحلة على ورق', description: 'خريطة ومحطات وصور متثبتة على الورق'},
 };
 export const WRITING_GUIDES: Record<WritingStyle, string> = {
   short: 'اكتب وصف منشور مختصر: جملة افتتاحية واضحة، فايدة واحدة، وطلب واحد مناسب. من غير حشو.',
@@ -45,11 +49,11 @@ export function resolvePreferences(preferences: Preferences, {purpose, tone, sty
   const fixed = <K extends keyof Preferences>(key: K) => preferences[key].mode === 'fixed' ? preferences[key].value : null;
   const clauses = ['explainer', 'tutorial'].includes(purpose) && tone !== 'energetic';
   const font: PreferredFont = style === 'calligraphic-receipts' ? 'Noto Naskh Arabic'
-    : style === 'paper-collage' ? 'Tajawal' : ['kinetic-paper', 'judgment-board', 'stepped-editorial'].includes(style) ? 'Plex Display' : 'Cairo';
+    : ['paper-collage','scrapbook-route'].includes(style) ? 'Tajawal' : ['kinetic-paper', 'judgment-board', 'stepped-editorial'].includes(style) ? 'Plex Display' : 'Cairo';
   const writing: WritingStyle = purpose === 'story' ? 'storytelling' : ['explainer', 'tutorial'].includes(purpose) ? 'educational' : 'short';
   return {
     captionsGrouping: fixed('captionsGrouping') ?? (clauses ? 'clauses' : 'compact'),
-    captionsPresentation: fixed('captionsPresentation') ?? (style === 'stepped-editorial' || style === 'judgment-board' ? 'ink-strip' : 'pill'),
+    captionsPresentation: fixed('captionsPresentation') ?? (style === 'magazine-interview' ? 'minimal' : ['stepped-editorial','judgment-board','campaign-tickets'].includes(style) ? 'ink-strip' : 'pill'),
     fontFamily: fixed('font') ?? font, writingStyle: fixed('writingStyle') ?? writing,
   };
 }

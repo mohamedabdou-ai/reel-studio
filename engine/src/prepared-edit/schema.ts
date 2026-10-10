@@ -5,6 +5,7 @@ import {kineticSceneVariants,kineticSceneSchema,validateKineticTiming} from "../
 import {foregroundSourceFrame} from "./visibility.ts";
 import {librarySceneVariants,librarySceneSchema,validateLibraryTiming} from '../motion-library/schema.ts';
 import {screenRecordingVariants,screenRecordingSceneSchema,screenRecordingIssues} from '../screen-recording/schema.ts';
+import {semanticSceneVariants,semanticSceneSchema,validateSemanticTiming} from '../creative-kit/semantic/schema.ts';
 import {validateChapter,describeIssues,contrastRatio,relativeLuminance,mixToHex,CHAPTER_MIN_CONTRAST} from '../core/chapters.ts';
 import {pipAllowed,PIP_REACH} from '../core/pip.ts';
 import {TRANSITION_KINDS,TRANSITION_DIRS,graphicsTransitionIssues} from './graphics-transitions.ts';
@@ -46,6 +47,7 @@ const sceneUnion = z.discriminatedUnion("family",[
   ...kineticSceneVariants,
   ...librarySceneVariants,
   ...screenRecordingVariants,
+  ...semanticSceneVariants,
 ]);
 
 export const editSceneSchema = z.intersection(sceneUnion,z.object({chapter:chapterSchema.optional()}));
@@ -122,6 +124,11 @@ export const editManifestSchema = z.object({
     if(ids.has(s.id)) issue("Scene IDs must be unique."); ids.add(s.id);
     if(s.fromFrame<last || s.fromFrame+s.durationInFrames>total) issue("Visual scenes must be ordered, disjoint and inside the edit.");
     last=s.fromFrame+s.durationInFrames;
+    const semantic=semanticSceneSchema.safeParse(s);
+    if(semantic.success){
+      for(const message of validateSemanticTiming(semantic.data))issue(message);
+      if(semantic.data.family==='chapter-quote' && semantic.data.data.cover && m.style!=='magazine-interview')issue(`${s.id}: magazine cover is available only in magazine-interview`);
+    }
     const library=librarySceneSchema.safeParse(s);
     if(library.success)for(const message of validateLibraryTiming(library.data))issue(message);
     const screen=screenRecordingSceneSchema.safeParse(s);

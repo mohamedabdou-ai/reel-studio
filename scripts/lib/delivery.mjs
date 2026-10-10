@@ -2,6 +2,7 @@ import './project-tmp.mjs';
 import path from 'node:path';
 import { promises as fs } from 'node:fs';
 import { assertProjectOutput } from './project-paths.mjs';
+import {acquireRenderLock} from './render-lock.mjs';
 
 
 export async function withOutputTransaction(output, produceAndValidate, { sidecars = [] } = {}) {
@@ -11,10 +12,7 @@ export async function withOutputTransaction(output, produceAndValidate, { sideca
   await fs.mkdir(path.dirname(target), { recursive: true });
   const parsed = path.parse(target);
   const lockPath = assertProjectOutput(`${target}.render.lock`);
-  const lock = await fs.open(lockPath, 'wx').catch((error) => {
-    if (error.code === 'EEXIST') throw new Error(`Output is already being produced: ${target}`);
-    throw error;
-  });
+  const lock = await acquireRenderLock(lockPath);
   let work;
   let preserveWork = false;
   try {
@@ -62,7 +60,6 @@ export async function withOutputTransaction(output, produceAndValidate, { sideca
       assertProjectOutput(work);
       await fs.rm(work, { recursive: true, force: true });
     }
-    await lock.close();
-    await fs.rm(lockPath, { force: true });
+    await lock.release();
   }
 }

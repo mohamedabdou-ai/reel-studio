@@ -31,6 +31,8 @@ import {librarySceneSchema} from '../motion-library/schema.ts';
 import {LibrarySceneRenderer} from '../motion-library/scenes';
 import {PreparedPlateProvider,ScreenRecordingScene} from '../screen-recording/ScreenRecordingScene';
 import {screenRecordingSceneSchema} from '../screen-recording/schema.ts';
+import {semanticSceneSchema} from '../creative-kit/semantic/schema.ts';
+import {SemanticSceneRenderer} from '../creative-kit/semantic/scenes';
 
 export type PreparedEditProps = SafeProps & {
   edit:EditManifest|null;
@@ -61,6 +63,8 @@ export const calculatePreparedMetadata:CalculateMetadataFunction<PreparedEditPro
 };
 
 export const SceneLayer:React.FC<{scene:EditScene;style:EditManifest["style"];geometry:WindowGeo;aspect:number;seam:number;headBox?:HeadBoxPx|null}> = ({scene,style,geometry,aspect,seam,headBox=null})=>{
+  const semantic=semanticSceneSchema.safeParse(scene);
+  if(semantic.success)return <SemanticSceneRenderer scene={semantic.data} style={style}/>;
   const screen=screenRecordingSceneSchema.safeParse(scene);
   if(screen.success)return <ScreenRecordingScene scene={screen.data} style={style}/>;
   const library=librarySceneSchema.safeParse(scene);

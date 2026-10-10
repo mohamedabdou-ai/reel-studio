@@ -1,7 +1,9 @@
 import { creativeGalleryDefaults } from "../../creative-kit/schema.ts";
+import {semanticTemplateData} from '../../creative-kit/semantic/schema.ts';
 
 
 export const TEMPLATE_DATA: Record<string, unknown> = {
+  ...semanticTemplateData,
   intro: creativeGalleryDefaults.intro,
   proof: creativeGalleryDefaults.proof,
   process: creativeGalleryDefaults.process,

@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "edition": "1.8.6",
-  "engine": "0.6.0",
+  "edition": "2.0.0",
+  "engine": "1.0.0",
   "node": {
     "version": "22.20.0",
     "url": "https://nodejs.org/dist/v22.20.0/node-v22.20.0-win-x64.zip",

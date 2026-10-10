@@ -1,6 +1,6 @@
 ---
 name: reel-studio
-description: Use for Reel Studio setup, updates, interactive preferences, fonts, styles, caption appearance, editing a named video, review, delivery or Instagram and TikTok publication descriptions in this folder.
+description: Use for Reel Studio setup, updates, preferences, editing a named video, podcast batches, resumable rendering, audio or picture revisions, review, delivery and platform publication descriptions in this folder.
 ---
 
 # Reel Studio
@@ -24,14 +24,14 @@ Each preference independently uses `{"mode":"auto","value":null}` or `{"mode":"f
 
 | Preference | Fixed choices |
 | --- | --- |
-| `style` | Seven ids in `instructions/STYLES.md` |
+| `style` | Eleven ids in `instructions/STYLES.md` |
 | `captionsGrouping` | `compact`, `clauses`, `single` |
 | `captionsPresentation` | `pill`, `minimal`, `ink-strip` |
 | `font` | `Cairo`, `Tajawal`, `Noto Naskh Arabic`, `Plex Display` |
 | `writingStyle` | `short`, `educational`, `storytelling` |
 | `palette` | `brand` (colours on supported styles) |
 
-Automatic style selection keeps the proven Split Canvas / Section Deck pool; others require selection. Style cards are illustrations; font previews use actual installed fonts and label missing downloads.
+Automatic selection retains Split Canvas / Section Deck for ordinary briefs and includes an eligible new style when authored semantic beats warrant it. Explicit choices win. Style cards are illustrations; font previews use installed fonts and label missing downloads.
 
 **One video only:** keep PROFILE.json. Copy **all fields** printed by `node scripts/profile.mjs brief` into that video's brief. Add explicit `style`, `fontFamily`, `captionsGrouping`, `captionsPresentation` or `writingStyle` only for a user-requested override; these win over saved defaults. Example: saved paper-collage/Tajawal + «الفيديو ده بس خطوات منظمة» → brief `style: "section-deck"`, retain `preferences`, omit `fontFamily` override so Tajawal stays fixed. Explain the chosen style in the preview; don't repeat settled questions.
 
@@ -51,6 +51,8 @@ Ask, one at a time, and never invent an answer:
 Write it like `PROFILE.example.json` (schema 3, `language` "ar-EG", all six `preferences`) and validate with `node scripts/profile.mjs check`. Relay Arabic errors and fix the answer. A request to change defaults authorizes that change; preserve all other fields. Prefer the screen's backed-up save.
 
 ## Editing a video
+
+For several clips from a long recording, read `instructions/PODCAST.md` first. Use reviewed proposals and explicit selected windows; prepare and open each clip's live editor, then export sequentially and complete each publish pack. For audio-only revisions, a small picture change or render/resume controls, read `instructions/PRODUCTION.md`. Preserve every original input and write a new revision output. These modes retain the ordinary review and delivery gates.
 
 Work only on a file the creator names. Follow `instructions/EDITING.md` step by step:
 

@@ -2,7 +2,7 @@ import React from "react";
 import { cancelRender, continueRender, delayRender } from "remotion";
 import { assertFontsReady, FAMILY, fontsReady } from "../core/fonts";
 import { clamp01, mix, px, useClock, useEnterF, useRamp } from "../core/motion";
-import { CanvasFill, FRAME, zone } from "../core/safe";
+import { CanvasFill, FRAME, zone, SafeExempt, useProbe } from "../core/safe";
 import {
   fitOnLines,
   fitPillToSafeWidth,
@@ -89,6 +89,14 @@ export const getSceneTheme = (style: StyleFamily): SceneTheme => {
     };
   const mono = FAMILY.plexMono;
   switch (style) {
+    case "liquid-glass":
+      return {background:'#050916',card:'#172338',border:'#647991',text:'#F5FAFF',dim:'#C2D0E4',accent:'#64E4FF',good:'#86E8BC',bad:'#FF8DAB',pill:'#172338',pillText:'#F5FAFF',ar:FAMILY.cairo,display:FAMILY.plexDisplay,mono,onAccent:'#050916',grammar};
+    case "campaign-tickets":
+      return {background:'#1A100D',card:'#35231B',border:'#BA8755',text:'#FFF4E5',dim:'#DEC8AD',accent:'#FFD075',good:'#9FE0B0',bad:'#F09576',pill:'#2E1D17',pillText:'#FFF4E5',ar:FAMILY.cairo,display:FAMILY.plexDisplay,mono,onAccent:'#35210A',grammar};
+    case "magazine-interview":
+      return {background:'#081321',card:'#102338',border:'#4F6D80',text:'#F5F3EC',dim:'#BBCED9',accent:'#F3C776',good:'#79CBBB',bad:'#F2A3A3',pill:'transparent',pillText:'#F5F3EC',ar:FAMILY.cairo,display:FAMILY.latinSerif,mono,onAccent:'#081321',grammar};
+    case "scrapbook-route":
+      return {background:'#EFE5D4',card:'#FFFCF3',border:'#5B554C',text:'#24242B',dim:'#665E53',accent:'#C93474',good:'#276D52',bad:'#B43E31',pill:'#FFFCF3',pillText:'#24242B',ar:FAMILY.tajawal,display:FAMILY.plexDisplay,mono,onAccent:'#FFFFFF',grammar};
     case "kinetic-paper":
       return {
         background: "#F6F1E8",
@@ -207,6 +215,10 @@ export const getSceneGeometry = (
   getStyleProfile(style);
   const adapted = style !== "split-canvas" && style !== "section-deck";
   const layouts = {
+    "liquid-glass": {seam:1080,caption:1340,title:138,body:208,titleTop:40},
+    "campaign-tickets": {seam:1080,caption:1320,title:138,body:210,titleTop:40},
+    "magazine-interview": {seam:1080,caption:1300,title:148,body:218,titleTop:40},
+    "scrapbook-route": {seam:1080,caption:1320,title:136,body:208,titleTop:40},
     "kinetic-paper": {
       seam: 1056,
       caption: 1320,
@@ -325,12 +337,20 @@ export const SceneCanvas: React.FC<{
   theme: SceneTheme;
   geometry: SceneGeometry;
   children: React.ReactNode;
-}> = ({ theme, geometry, children }) => (
-  <>
+}> = ({ theme, geometry, children }) => {
+  const {frame}=useClock();
+  const composition=theme.grammar?.composition;
+  return <>
     <CanvasFill
       background={theme.background}
       style={{ bottom: "auto", height: geometry.canvasHeight }}
     />
+    <SafeExempt>
+      {composition==='aurora-lens'?<div style={{position:'absolute',left:0,top:0,width:FRAME.width,height:geometry.canvasHeight,background:`radial-gradient(ellipse 68% 52% at ${30+Math.sin(frame/110)*10}% 35%, #514AC86B, transparent 76%), radial-gradient(ellipse 55% 50% at 78% ${52+Math.sin(frame/130)*9}%, #10ADC047, transparent 75%)`}}/>:null}
+      {composition==='ticket-stack'?<div style={{position:'absolute',left:0,top:0,width:FRAME.width,height:geometry.canvasHeight,background:'radial-gradient(ellipse 80% 55% at 50% 48%, #B9772A35, transparent 75%), repeating-conic-gradient(from 20deg at 50% 55%, transparent 0deg 14deg, #FFC86B09 14deg 22deg)'}}/>:null}
+      {composition==='magazine-column'?<div style={{position:'absolute',left:geometry.left,top:geometry.top-48,width:geometry.width,height:geometry.height+70,borderTop:`1px solid ${theme.accent}`,borderBottom:`1px solid ${theme.border}`}}/>:null}
+      {composition==='route-map'?<div style={{position:'absolute',left:0,top:0,width:FRAME.width,height:geometry.canvasHeight,backgroundImage:'linear-gradient(#625D4B0B 1px, transparent 1px), linear-gradient(90deg,#625D4B0B 1px, transparent 1px)',backgroundSize:'42px 42px'}}/>:null}
+    </SafeExempt>
     <div
       style={{
         position: "absolute",
@@ -342,8 +362,8 @@ export const SceneCanvas: React.FC<{
     >
       {children}
     </div>
-  </>
-);
+  </>;
+};
 
 
 export const Reveal: React.FC<{
@@ -689,6 +709,7 @@ export const SceneCard: React.FC<{
   children: React.ReactNode;
 }> = ({ theme, motion, order = 2, left = 0, top, width, height, children }) => {
   const card = theme.grammar?.card;
+  const probe=useProbe();
   const treatment: React.CSSProperties =
     card === "ink-frame"
       ? {
@@ -725,6 +746,12 @@ export const SceneCard: React.FC<{
                   transform: `rotate(${order % 2 === 0 ? -0.4 : 0.4}deg)`,
                 }
               : {};
+  const modernTreatment:React.CSSProperties=card==='glass-panel'?{
+    borderRadius:32,background:'linear-gradient(140deg,#FFFFFF28,#FFFFFF08 65%), #102139B8',border:'1.5px solid #D5F3FF55',
+    backdropFilter:probe?undefined:'blur(18px) saturate(150%)',boxShadow:probe?undefined:'inset 2px 2px 0 #FFFFFF40, inset -2px -2px 0 #72D8FF20, 0 15px 30px #00000030',
+  }:card==='perforated-ticket'?{borderRadius:16,border:`2px solid ${theme.border}`,borderInlineEnd:`4px dashed ${theme.accent}`,background:`linear-gradient(110deg,${theme.card},#463021)`,boxShadow:probe?undefined:'0 14px 28px #00000035'}
+    :card==='magazine-rule'?{borderRadius:0,border:0,borderInlineStart:`5px solid ${theme.accent}`,background:'transparent'}
+    :card==='route-paper'?{borderRadius:2,border:`2px solid ${theme.border}`,boxShadow:probe?undefined:'5px 6px 0 #B6AC984A',transform:`rotate(${order%2===0?-0.6:0.6}deg)`}:{};
   return (
     <Reveal
       motion={motion}
@@ -741,9 +768,10 @@ export const SceneCard: React.FC<{
           boxSizing: "border-box",
           background: theme.card,
           ...treatment,
+          ...modernTreatment,
         }}
       >
-        {card === "taped-paper" ? (
+        {card === "taped-paper" || card==='route-paper' ? (
           <>
             <div
               aria-hidden="true"

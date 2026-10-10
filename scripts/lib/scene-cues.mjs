@@ -37,6 +37,21 @@ export function sceneCues(scene) {
 
   add(0, 'transition');
   switch (scene.family) {
+    case 'token-lens':
+      for(const group of list(data.groups))add(group?.atFrame,'reveal');
+      add(data.lens?.atFrame,'swap');
+      break;
+    case 'meter-receipt':
+      for(const row of list(data.rows))add(row?.atFrame,'count');
+      break;
+    case 'ticket-offer':add(data.ticket?.atFrame,'stamp');break;
+    case 'comment-stack':
+      for(const comment of list(data.comments))add(comment?.atFrame,'reveal');
+      break;
+    case 'chapter-quote':add(data.quoteFrame,'reveal');break;
+    case 'route-stops':
+      for(const stop of list(data.stops))add(stop?.atFrame,'reveal');
+      break;
     case 'kinetic-hook':
       add(data.swapFrame, 'swap');
       add(data.stampFrame, 'stamp');

@@ -14,6 +14,7 @@ import { readRenderProps } from './lib/render-props.mjs';
 import { renderBudget, freeBytes } from './lib/disk-report.mjs';
 import { VOICE_MODES } from './lib/mix-contract.mjs';
 import { plateGate, validateHeadFlags, headGatePlan, headCheckArgv, headGateResult, envelopeProblems, headBanner, installHeadEnvelope, readEnvelopeBack, headMethodConflict } from './lib/delivery-gates.mjs';
+import {renderIdentity,createRenderInputGuard,chunkProfile,chunkBudget,renderChunks,validateChunk,assembleChunks,CHUNK_POLICY,mediaContract} from './lib/render-chunks.mjs';
 
 const args = parseArgs(process.argv.slice(2));
 const comp = args._[0];
@@ -107,8 +108,24 @@ if (args.frames) {
 }
 
 
-if (mode !== 'preview') {
-  const budget = renderBudget({ frames: frameRange ? frameRange[1] - frameRange[0] + 1 : composition.durationInFrames, freeRamBytes: os.freemem(), freeDiskBytes: freeBytes(ROOT), width: composition.width, height: composition.height, png: !!args.png });
+const requestedChunkFrames=args['chunk-frames']===undefined?null:Number(args['chunk-frames']);
+const chunkJobs=Number(args['chunk-jobs']??1);
+if(requestedChunkFrames!==null&&(!Number.isInteger(requestedChunkFrames)||requestedChunkFrames<1))throw new Error('--chunk-frames must be a positive integer.');
+if(!Number.isInteger(chunkJobs)||chunkJobs<1||chunkJobs>2)throw new Error('--chunk-jobs must be 1 or 2.');
+if(args['chunk-frames']&&frameRange)throw new Error('Chunk rendering is for a full composition; use render-segment.mjs for a picture range.');
+const ordinaryBudget=renderBudget({frames:frameRange?frameRange[1]-frameRange[0]+1:composition.durationInFrames,freeRamBytes:os.freemem(),freeDiskBytes:freeBytes(ROOT),width:composition.width,height:composition.height,png:!!args.png});
+const useChunks=!frameRange&&(requestedChunkFrames!==null||composition.durationInFrames>composition.fps*20||(mode!=='preview'&&!ordinaryBudget.ok));
+const chunkSize=useChunks?Math.max(gopFrames(composition.fps),Math.floor((requestedChunkFrames??composition.fps*10)/gopFrames(composition.fps))*gopFrames(composition.fps)):null;
+const allowBlackRanges=args['intentional-black']?String(args['intentional-black']).split(',').map(value=>{
+  const match=value.match(/^(\d+)-(\d+)$/);if(!match)throw new Error('--intentional-black needs inclusive a-b frame intervals.');
+  const range=match.slice(1).map(Number);if(range[1]<range[0]||range[1]>=composition.durationInFrames)throw new Error('--intentional-black intervals must be inside the composition.');return range;
+}):[];
+if(useChunks){
+  const budget=chunkBudget({frames:composition.durationInFrames,chunkFrames:chunkSize,jobs:chunkJobs,fps:composition.fps,width:Math.round(composition.width*PRESET.scale),height:Math.round(composition.height*PRESET.scale),freeRamBytes:os.freemem(),freeDiskBytes:freeBytes(ROOT),png:!!args.png,videoMaxBitsPerSec:25e6});
+  log(budget.message);
+  if(!budget.ok)throw new Error(`Not enough disk for safe chunk rendering. ${budget.message} Free project scratch space or use fewer chunk jobs and smaller chunks.`);
+}else if (mode !== 'preview') {
+  const budget = ordinaryBudget;
   log(`budget: ${budget.message}`);
   if (!budget.ok && !args['no-budget-check']) throw new Error(`Not enough disk for this render. ${budget.message} Free space (node scripts/disk-report.mjs --clean), close other renders, or pass --no-budget-check.`);
 }
@@ -197,7 +214,7 @@ const igOverride = ({ args: ffArgs }) => {
 log(`mode ${mode}: crf ${crf}, x264 ${PRESET.x264Preset}, jpeg ${jpegQuality}, scale ${PRESET.scale}, concurrency ${concurrency}, gop ${gop}, level ${level}`);
 let lastPct = -5;
 const renderStart = Date.now();
-await renderMedia({
+const renderOptions={
   composition,
   serveUrl,
   codec: 'h264',
@@ -234,7 +251,25 @@ await renderMedia({
       log(`${pct}%  rendered ${renderedFrames}  encoded ${encodedFrames}  ${fpsNow.toFixed(2)} fps`);
     }
   },
-});
+};
+let chunks=null;
+if(useChunks){
+  const {out:ignoredOutput,'force-bundle':ignoredForce,...identityArgs}=args;
+  const identityInputs={engineRoot:ENGINE,props:{inputProps,resolvedProps:composition.props},files:args.sfx?[path.resolve(String(args.sfx))]:[]};
+  const guard=await createRenderInputGuard(identityInputs);
+  const settings={args:identityArgs,comp,mode,bundleHash:hash,inputRevision:guard.revision,composition:{width:composition.width,height:composition.height,fps:composition.fps,frames:composition.durationInFrames},preset:PRESET,crf,jpegQuality,concurrency,chunkSize,spec:SPEC.video};
+  const key=await renderIdentity({...identityInputs,settings});await guard.check();
+  const expected={width:Math.round(composition.width*PRESET.scale),height:Math.round(composition.height*PRESET.scale),fps:composition.fps,codec:'h264',profile:chunkProfile(PRESET.x264Preset),pixelFormat:'yuv420p',allowBlackRanges};
+  chunks=await renderChunks({key,frames:composition.durationInFrames,chunkFrames:chunkSize,jobs:chunkJobs,log,assertInputs:guard.check,
+    render:({range,out:part})=>renderMedia({...renderOptions,outputLocation:part,frameRange:range,muted:true,enforceAudioTrack:false,onProgress:undefined}),
+    validate:(file,range)=>validateChunk(file,range,expected)});
+  const audioFile=args.muted?null:path.join(outParts.dir,'full-duration-audio.wav');
+  if(audioFile)await renderMedia({composition,serveUrl,inputProps,codec:'wav',outputLocation:audioFile,overwrite:true,sampleRate:48000,enforceAudioTrack:true,logLevel:'warn'});
+  await guard.check();
+  await assembleChunks({parts:chunks.parts,audio:audioFile,out:raw,fps:composition.fps,frames:composition.durationInFrames});
+  if(audioFile)await fs.rm(audioFile,{force:true});
+  chunks={key,reused:chunks.reused,rendered:chunks.rendered,total:chunks.parts.length,chunkFrames:chunkSize,jobs:chunkJobs,policy:CHUNK_POLICY};
+}else await renderMedia(renderOptions);
 const renderSec = +((Date.now() - renderStart) / 1000).toFixed(1);
 const rawStat = await fs.stat(raw).catch(() => null);
 if (!rawStat || rawStat.size === 0) throw new Error(`Render reported success but ${raw} is missing or empty.`);
@@ -328,6 +363,11 @@ if (mode !== 'preview' && !args['no-check']) {
 }
 
 if (check && !check.ok) throw new Error(`Encode QC failed: ${check.fails.join(', ')}`);
+if(mode!=='preview'){
+  const decoded=await mediaContract(out);
+  const expectedFrames=frameRange?frameRange[1]-frameRange[0]+1:composition.durationInFrames;
+  if(decoded.frames!==expectedFrames||Math.abs(decoded.fps-composition.fps)>.00001)throw new Error('Final decoded frame count or cadence disagrees with the composition.');
+}
 let motion = null;
 if (mode === 'deliver' && (args['motion-crop'] || args['motion-plan'])) {
   const motionArgs=args['motion-plan']?['--plan',path.resolve(String(args['motion-plan']))]:['--crop',String(args['motion-crop'])];
@@ -338,7 +378,7 @@ if (mode === 'deliver' && (args['motion-crop'] || args['motion-plan'])) {
 } else if (mode === 'deliver') motion = { exempt: 'static-graphics', presenterChecked: false };
 const digest = createHash('sha256');
 for await (const chunk of createReadStream(out)) digest.update(chunk);
-const report = { ok: true, comp, mode, out: finalOut, bytes: stat.size, outputSha256: digest.digest('hex'), bundle: { hash, cached }, frames: frameRange ?? [0, composition.durationInFrames - 1], timing: { renderSec, finalizeSec, totalSec: +sec() }, master, sfx: sfxStem ? { stem: sfxStem, mix } : null, igCheck: check, safe, motion, plates: plateDecision, head, warnings, inputProps, mediaSelection:composition.props.__editorMediaSelection??null };
+const report = { ok: true, comp, mode, out: finalOut, bytes: stat.size, outputSha256: digest.digest('hex'), bundle: { hash, cached }, chunks, frames: frameRange ?? [0, composition.durationInFrames - 1], timing: { renderSec, finalizeSec, totalSec: +sec() }, master, sfx: sfxStem ? { stem: sfxStem, mix } : null, igCheck: check, safe, motion, plates: plateDecision, head, warnings, inputProps, mediaSelection:composition.props.__editorMediaSelection??null };
 await writeJson(`${out}.qc.json`, report);
 return report;
 }, { sidecars: ['.qc.json', ...(mode === 'deliver' ? ['.checks'] : [])] });

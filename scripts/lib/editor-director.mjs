@@ -6,6 +6,7 @@ import {introSchema, proofSchema, processSchema, comparisonSchema, commentSchema
 import {kineticSceneVariants} from '../../engine/src/creative-kit/kinetic/schema.ts';
 import {librarySceneVariants} from '../../engine/src/motion-library/schema.ts';
 import {screenRecordingVariants} from '../../engine/src/screen-recording/schema.ts';
+import {semanticSceneVariants} from '../../engine/src/creative-kit/semantic/schema.ts';
 import {editManifestSchema, editSceneSchema} from '../../engine/src/prepared-edit/schema.ts';
 import {compileEdit} from '../../engine/src/prepared-edit/timeline.ts';
 import {ROOT, atomicJson, checkedPath, ensureOutput, readJson, relativePath, slug, object, finite, digest, fileSnapshot, withFileLock} from './job-paths.mjs';
@@ -29,13 +30,14 @@ import {emphasisPunch, composeTrack, toManifestKeys, PUNCH_KINDS, PUNCH_CAPS} fr
 export const EDITOR_PURPOSES = Object.freeze(['explainer','case-study','tutorial','comparison','opinion','story']);
 export const EDITOR_TONES = Object.freeze(['energetic','calm','editorial']);
 export const EDITOR_SOUND_MODES = Object.freeze(['recipes','auto']);
-const KINETIC_SCHEMAS=Object.fromEntries([...kineticSceneVariants,...librarySceneVariants,...screenRecordingVariants].map(schema=>[schema.shape.family.value,schema]));
+const KINETIC_SCHEMAS=Object.fromEntries([...kineticSceneVariants,...librarySceneVariants,...screenRecordingVariants,...semanticSceneVariants].map(schema=>[schema.shape.family.value,schema]));
 export const BEAT_FAMILIES = Object.freeze({hook:'intro',intro:'intro',evidence:'proof',proof:'proof',steps:'process',process:'process',
   comparison:'comparison',comment:'comment','comment-cta':'comment',follow:'follow','follow-cta':'follow',
   ...Object.fromEntries(Object.keys(KINETIC_SCHEMAS).map(family=>[family,family]))});
 const DATA_SCHEMAS = {intro:introSchema,proof:proofSchema,process:processSchema,comparison:comparisonSchema,comment:commentSchema,follow:followSchema,
   ...Object.fromEntries(Object.entries(KINETIC_SCHEMAS).map(([family,schema])=>[family,schema.shape.data]))};
-const defaultLayout=family=>KINETIC_SCHEMAS[family]?.shape.layout.value??(['process','comparison','follow','data-story'].includes(family)?'takeover':'split');
+const SEMANTIC_FAMILIES=semanticSceneVariants.map(schema=>schema.shape.family.value);
+const defaultLayout=family=>SEMANTIC_FAMILIES.includes(family)?'takeover':KINETIC_SCHEMAS[family]?.shape.layout.value??(['process','comparison','follow','data-story'].includes(family)?'takeover':'split');
 
 const PURPOSE_FIT = {
   explainer: {'section-deck':16,'split-canvas':13,'kinetic-paper':12,'stepped-editorial':10},
@@ -51,6 +53,7 @@ const TONE_FIT = {
   editorial: {'stepped-editorial':6,'judgment-board':4,'calligraphic-receipts':4,'paper-collage':2},
 };
 const SOUND_FOR_FAMILY = {intro:'soft-transition',proof:'counter-accent',process:'paper-reveal',comparison:'paper-reveal',comment:'ui-confirmation',follow:'soft-transition',
+  'token-lens':'highlight-swipe','meter-receipt':'counter-accent','ticket-offer':'restrained-reveal','comment-stack':'ui-confirmation','chapter-quote':'chapter-shift','route-stops':'paper-reveal',
   'kinetic-hook':'restrained-reveal','image-compare':'paper-reveal',checklist:'highlight-swipe',count:'counter-accent',screens:'soft-transition',
   statement:'soft-transition',outcome:'ui-confirmation','creator-cta':'ui-confirmation','screen-focus':'soft-transition','screen-recording':'soft-transition','data-story':'counter-accent'};
 const text = (value,label,max=200) => {
@@ -142,14 +145,20 @@ export function validateEditorBrief(raw) {
 
 export function recommendEditorStyle(raw) {
   const brief=validateEditorBrief(raw);
-  const candidates=DEFAULT_STYLE_IDS.map((id,index)=>{
+  // New styles enter the automatic pool only when authored semantic beats warrant them.
+  // Legacy briefs retain the original automatic pool and explicit choices always win.
+  const eligibility={'liquid-glass':['token-lens','meter-receipt'],'campaign-tickets':['ticket-offer','comment-stack'],'magazine-interview':['chapter-quote'],'scrapbook-route':['route-stops']};
+  const eligible=Object.entries(eligibility).filter(([,families])=>brief.beats.some(beat=>families.includes(BEAT_FAMILIES[beat.intent]))).map(([id])=>id);
+  const candidates=[...DEFAULT_STYLE_IDS,...eligible].map((id,index)=>{
     const contentScore=PURPOSE_FIT[brief.purpose][id]??4;
     const toneScore=TONE_FIT[brief.tone][id]??0;
+    const semanticScore=eligible.includes(id)?24:0;
     const recentIndex=(brief.recentStyles??[]).indexOf(id);
     const repetitionPenalty=recentIndex<0?0:Math.max(2,12-recentIndex*2);
     const reasons=[`Content fit: ${brief.purpose} (${contentScore} editorial points).`,`Tone fit: ${brief.tone} (${toneScore} points).`];
+    if(semanticScore)reasons.push(`Authored ${eligibility[id].join('/')} beats qualify this visual grammar (${semanticScore} points).`);
     if(repetitionPenalty) reasons.push(`Used recently at position ${recentIndex+1}; subtract ${repetitionPenalty} points to reduce repetition.`);
-    return {style:id,score:contentScore+toneScore-repetitionPenalty,contentScore,toneScore,repetitionPenalty,reasons,index};
+    return {style:id,score:contentScore+toneScore+semanticScore-repetitionPenalty,contentScore,toneScore,...(semanticScore?{semanticScore}:{}),repetitionPenalty,reasons,index};
   }).sort((a,b)=>b.score-a.score || a.index-b.index).map(({index:_,...candidate})=>candidate);
   const savedStyle=brief.preferences?.style.mode==='fixed'?brief.preferences.style.value:undefined;
   const selected=brief.style??savedStyle??candidates[0].style;
@@ -412,7 +421,7 @@ export async function planEditorBrief(briefPath,{out,delivery=false,replace=fals
 
 
 
-export function editorRenderCommand(manifest,prepared,{delivery=false,review=false,out,frames,motionPlan,motionCrop,concurrency=4,noProxy=false,mediaEngine='offthread',png=false,crf,faceReviewedBy,voice='off'}={}) {
+export function editorRenderCommand(manifest,prepared,{delivery=false,review=false,out,frames,motionPlan,motionCrop,concurrency=4,noProxy=false,mediaEngine='offthread',png=false,crf,faceReviewedBy,voice='off',chunkFrames,chunkJobs,intentionalBlack}={}) {
   if(delivery && review) throw new Error('Choose one render mode.');
   if(delivery) assertDeliveryReady(manifest);
   if(motionPlan!==undefined && motionCrop!==undefined) throw new Error('Choose one motion mode: motionPlan or motionCrop.');
@@ -429,6 +438,21 @@ export function editorRenderCommand(manifest,prepared,{delivery=false,review=fal
   assertOutput(`${output}.qc.json`,manifest.id,inputs);assertOutput(`${output}.checks`,manifest.id,inputs);
   if(path.extname(output).toLowerCase()!=='.mp4') throw new Error('Editor render output must end in .mp4.');
   const args=['PreparedEdit','--out',output,'--props-file',prepared.propsFile,'--sfx',prepared.sfxFile,'--channel','organic','--concurrency',String(concurrency),'--media-engine',mediaEngine,...(choice(voice,['off','clean','denoise'],'voice')==='off'?[]:['--voice',voice])];
+  if(chunkFrames!==undefined){
+    if(!Number.isSafeInteger(chunkFrames)||chunkFrames<1)throw new Error('chunkFrames must be a positive integer.');
+    args.push('--chunk-frames',String(chunkFrames));
+  }
+  if(chunkJobs!==undefined){
+    if(!Number.isInteger(chunkJobs)||chunkJobs<1||chunkJobs>2)throw new Error('chunkJobs must be 1 or 2.');
+    args.push('--chunk-jobs',String(chunkJobs));
+  }
+  if(intentionalBlack!==undefined){
+    const duration=compileEdit(manifest).durationInFrames;
+    if(typeof intentionalBlack!=='string'||!intentionalBlack.length||intentionalBlack.length>4000)throw new Error('intentionalBlack must list reviewed a-b frame intervals.');
+    const ranges=intentionalBlack.split(',');
+    if(ranges.length>100||ranges.some(value=>{const match=/^(\d+)-(\d+)$/.exec(value);return !match||Number(match[1])>Number(match[2])||Number(match[2])>=duration;}))throw new Error('intentionalBlack intervals must be ordered a-b bounds inside the edit.');
+    args.push('--intentional-black',intentionalBlack);
+  }
   if(delivery) args.push('--deliver');else if(!review) args.push('--preview');
   if(faceReviewedBy!==undefined){if(!delivery) throw new Error('faceReviewedBy is a delivery option.');args.push('--face-reviewed-by',text(faceReviewedBy,'face reviewer'));}
   if(noProxy || delivery || review) args.push('--no-proxy');

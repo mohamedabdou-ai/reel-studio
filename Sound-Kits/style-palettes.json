@@ -437,6 +437,250 @@
           "evidence": "Style-specific sound palette; review each cue with the creator."
         }
       }
+    },
+    "liquid-glass": {
+      "dna": "instructions/STYLES.md",
+      "kinds": {
+        "transition": {
+          "recipe": "soft-transition",
+          "gain": 0.32,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "stamp": {
+          "recipe": "restrained-reveal",
+          "gain": 0.32,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "swap": {
+          "recipe": "highlight-swipe",
+          "gain": 0.32,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "click": {
+          "recipe": "ui-confirmation",
+          "gain": 0.32,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "count": {
+          "recipe": "count-tick",
+          "gain": 0.32,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "reveal": {
+          "recipe": "highlight-swipe",
+          "gain": 0.32,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "type": {
+          "recipe": "typing-burst",
+          "gain": 0.32,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        }
+      }
+    },
+    "campaign-tickets": {
+      "dna": "instructions/STYLES.md",
+      "kinds": {
+        "transition": {
+          "recipe": "chapter-shift",
+          "gain": 0.32,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "stamp": {
+          "recipe": "restrained-reveal",
+          "gain": 0.32,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "swap": {
+          "recipe": "soft-transition",
+          "gain": 0.32,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "click": {
+          "recipe": "ui-confirmation",
+          "gain": 0.32,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "count": {
+          "recipe": "counter-accent",
+          "gain": 0.32,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "reveal": {
+          "recipe": "paper-reveal",
+          "gain": 0.32,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "type": {
+          "recipe": "typing-burst",
+          "gain": 0.32,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        }
+      }
+    },
+    "magazine-interview": {
+      "dna": "instructions/STYLES.md",
+      "kinds": {
+        "transition": {
+          "recipe": "chapter-shift",
+          "gain": 0.22,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "stamp": {
+          "recipe": null,
+          "gain": 0,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "swap": {
+          "recipe": null,
+          "gain": 0,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "click": {
+          "recipe": "cursor-click",
+          "gain": 0.22,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "count": {
+          "recipe": null,
+          "gain": 0,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "reveal": {
+          "recipe": "soft-transition",
+          "gain": 0.22,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "type": {
+          "recipe": null,
+          "gain": 0,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        }
+      }
+    },
+    "scrapbook-route": {
+      "dna": "instructions/STYLES.md",
+      "kinds": {
+        "transition": {
+          "recipe": "paper-reveal",
+          "gain": 0.32,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "stamp": {
+          "recipe": "paper-reveal",
+          "gain": 0.32,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "swap": {
+          "recipe": "soft-transition",
+          "gain": 0.32,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "click": {
+          "recipe": "cursor-click",
+          "gain": 0.32,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "count": {
+          "recipe": "count-tick",
+          "gain": 0.32,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "reveal": {
+          "recipe": "paper-reveal",
+          "gain": 0.32,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        },
+        "type": {
+          "recipe": null,
+          "gain": 0,
+          "leadSec": 0,
+          "confidence": "none",
+          "basis": "authored",
+          "evidence": "Authored reusable sound direction. Review cue timing and balance with the creator."
+        }
+      }
     }
   }
 }

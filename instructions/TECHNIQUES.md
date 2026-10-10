@@ -2,6 +2,12 @@
 
 What the runtime can do, where it lives, and its limits. `technique-catalog.json` is the same list as data.
 
+- **Semantic scenes** (`engine/src/creative-kit/semantic/`): token lens, shared-scale meter, ticket offer, comment stack, chapter quote and route stops with local images. Authored reveals follow reviewed speech. Optional magazine covers use a supplied verified transparent PNG; no automatic masking.
+- **Resumable render** (`scripts/lib/render-chunks.mjs`): bounded chunks, exact input/preset cache identity, decode/black checks and verified resume. Full renders choose this automatically when long or resource constrained.
+- **Audio revision** (`scripts/render-audio.mjs`): sample-accurate placement, separate voice/music/effects gains, unchanged picture verification and final audio/encode gates.
+- **Picture revision** (`scripts/render-segment.mjs`, `scripts/splice-segment.mjs`): rerender selected PreparedEdit frames, join the picture exactly, retain original audio and rerun delivery checks.
+- **Podcast batches** (`scripts/podcast.mjs`): reviewed proposals, explicit selection, rebased late-source clips and sequential exports with verified media-aware resume.
+
 - **Prepared edit** (`engine/src/prepared-edit/PreparedEdit.tsx`): one continuous source through authored cuts, captions, scenes, brand colours and sound. The director (`scripts/editor.mjs`) writes and checks its manifest.
 - **Scene families** (`engine/src/creative-kit/scenes.tsx` and `engine/src/creative-kit/kinetic/`): hook, proof, three-step process, comparison, comment CTA, follow card, kinetic hook, image comparison, checklist, counter, screens, statement, outcome and data story.
 - **Screen recordings** (`engine/src/screen-recording/`): the `screen-recording` family for a screen-recording source (camera keys, click ripples at the real pointer, pinned callouts); `screen-focus` (`engine/src/motion-library/`) for a separate capture inside a presenter video.

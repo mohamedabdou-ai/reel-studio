@@ -2,6 +2,8 @@
 
 Read `instructions/RULES.md` first. Run every command from the studio root. `<slug>` is a lowercase project id such as `ai-tools-01`; every output of one video lives in `Projects/<slug>/`. Work only on the files the creator names; never scan or change `Raw/`.
 
+Several clips from one long recording use `instructions/PODCAST.md` before this per-clip workflow. Audio-only and picture-range revisions use `instructions/PRODUCTION.md`. Eleven styles and the six semantic scene families are available through `instructions/STYLES.md`. Keep existing explicit preferences and approved manifests; a new recommendation does not rewrite an old project.
+
 ## Live editor throughout the session
 
 The creator watches the edit being built. After intake and any approved privacy blur, transcribe, create a simple uncut draft with the saved preferences (captions still `draft`), and prepare its footage. Start `node scripts/review-editor.mjs Projects/<slug>/edit.json` as a long-running command and open its printed URL in the user's browser/panel; use `--open` if the host has no panel-opening tool. Do this before applying proposed cuts and before the first full rendered preview. Keep the server and tab open while editing and waiting for decisions; restart and reopen if the connection ends.

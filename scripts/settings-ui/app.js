@@ -112,7 +112,7 @@ function stylePage() {
     const copy = el('div', null, {class: 'card-copy'}); copy.append(el('strong', catalog.styles[id].label), el('small', catalog.styles[id].description)); card.append(art, copy);
     if (selected) card.append(el('span', '✓', {class: 'selected', 'aria-hidden': 'true'})); grid.append(card);
   }
-  content.append(grid, el('p', 'دي رسومات توضيحية للستايلات. المونتاج النهائي بيتصمم على محتوى فيديوك.', {class: 'sample-note'}), note('الاختيار التلقائي بيرشّح بين «شرح بصري» و«خطوات منظمة». باقي الستايلات متاحة باختيارك.'));
+  content.append(grid, el('p', 'دي رسومات توضيحية للستايلات. المونتاج النهائي بيتصمم على محتوى فيديوك.', {class: 'sample-note'}), note('الاختيار التلقائي يبدأ بالستايلين الأساسيين، ويضيف الستايلات الجديدة لما مشاهد فيديوك تناسبها. تقدر تختار أي ستايل بنفسك.'));
 }
 function captionsPage() {
   title('الكلام اللي بيظهر مع صوتك.', 'شكل وترتيب الكلام على الفيديو. الكلام المسجّل نفسه بيتحافظ عليه.');

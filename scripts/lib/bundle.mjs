@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { promises as fs } from 'node:fs';
+import { promises as fs,createReadStream } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { ROOT } from './media.mjs';
@@ -24,8 +24,10 @@ async function walk(dir, onFile) {
   entries.sort((a, b) => a.name.localeCompare(b.name));
   for (const e of entries) {
     const p = path.join(dir, e.name);
+    if(e.isSymbolicLink())throw new Error(`Bundle input scan refuses a symbolic link: ${p}`);
     if (e.isDirectory()) await walk(p, onFile);
-    else await onFile(p);
+    else if(e.isFile())await onFile(p);
+    else throw new Error(`Bundle input scan found a non-regular file: ${p}`);
   }
 }
 
@@ -68,15 +70,18 @@ export async function linkPublic(srcDir, dstDir) {
 }
 
 
+export async function publicContentHash(dir){
+  const hash=createHash('sha256');
+  await walk(dir,async file=>{hash.update(path.relative(dir,file));for await(const data of createReadStream(file))hash.update(data);});
+  return hash.digest('hex');
+}
+
 export async function engineHash() {
   const h = createHash('sha1');
   await walk(path.join(ENGINE, 'src'), async (p) => {
     h.update(path.relative(ENGINE, p)).update(await fs.readFile(p));
   });
-  await walk(path.join(ENGINE, 'public'), async (p) => {
-    const st = await fs.stat(p);
-    h.update(path.relative(ENGINE, p)).update(String(st.size)).update(String(Math.floor(st.mtimeMs)));
-  });
+  h.update(await publicContentHash(path.join(ENGINE,'public')));
   h.update(requireFromEngine('remotion/package.json').version);
   h.update(await fs.readFile(path.join(ENGINE, 'tsconfig.json')));
   h.update(await fs.readFile(path.join(ENGINE, 'package-lock.json')).catch(() => Buffer.alloc(0)));

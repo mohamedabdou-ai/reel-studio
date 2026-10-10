@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "selectionApproved": true,
+  "approvedBy": "Fixture reviewer",
+  "clips": [
+    {
+      "id": "late-window",
+      "fromSec": 630,
+      "toSec": 634,
+      "signoff": {"mode": "none"},
+      "editor": {
+        "purpose": "story",
+        "tone": "calm",
+        "style": "section-deck",
+        "beats": [
+          {"id": "opening", "fromSec": 630, "toSec": 632, "intent": "intro", "data": {
+            "kicker": "تجربة", "title": "شرح", "subtitle": "واضح", "caption": "تجربة شرح واضح"
+          }}
+        ]
+      }
+    }
+  ]
+}

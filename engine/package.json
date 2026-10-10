@@ -1,6 +1,6 @@
 {
   "name": "@reel-studio/engine-runtime",
-  "version": "0.6.0",
+  "version": "1.0.0",
   "description": "Curated Reel Studio Remotion runtime",
   "repository": {
     "type": "git",

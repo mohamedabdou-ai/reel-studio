@@ -6,7 +6,6 @@ import {compileEdit} from '../../engine/src/prepared-edit/timeline.ts';
 import {EDITION_STYLE_IDS} from '../../engine/src/creative-kit/styles.ts';
 import {ROOT,atomicJson,checkedPath,readJson,slug,relativePath,withFileLock,fileSnapshot,digest} from './job-paths.mjs';
 import {ffprobeJson,run,writeJson} from './media.mjs';
-import {assertProjectOutput} from './project-paths.mjs';
 import {withOutputTransaction} from './delivery.mjs';
 import {normalizeCreatorProfile} from './branding.mjs';
 import {soundRecipe,validateHits} from './job-sound.mjs';
@@ -131,7 +130,7 @@ export async function prepareEditProject(manifestPath,{proxy=true,onProgress=()=
     const key=digest({version:1,source:m.source,segments:m.segments,code:code.map(x=>[x.path,x.sha256])});
     const publicSrc=`_prepared/${m.id}/${key}.mp4`;
     const plateFile=`engine/public/${publicSrc}`;
-    const plateAbsolute=assertProjectOutput(path.join(ROOT,plateFile));
+    const plateAbsolute=await checkedPath(plateFile);
     const prior=await fs.readFile(`${plateAbsolute}.prepared.json`,'utf8').then(JSON.parse).catch(()=>null);
     let plateCached=prior?.key===key && await fileSnapshot(plateFile).then(s=>s.sha256===prior.outputHash).catch(()=>false);
     if(!plateCached){
