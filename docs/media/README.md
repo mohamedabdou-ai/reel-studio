@@ -11,7 +11,7 @@ The README gallery features Mohamed Abdou's work made with the full editing syst
 - The podcast example comes from a batch of 30 short videos, including 10 with explanatory motion scenes.
 - The ChatGPT and Canva tutorial combines the presenter, screen steps and visual callouts.
 - The clinic workflow uses paper cards and connections to explain a customer journey.
-- The seven style previews demonstrate the kit's style directions.
+- The seven original motion previews and four additional rendered stills demonstrate the kit's eleven style directions. The four new stills use illustrative content and are not playback links.
 
 ## Published sources
 
@@ -25,4 +25,4 @@ The original product-page examples are available at https://store.pyraai.cloud/p
 | Arabic typography | [Video](https://store.pyraai.cloud/wp-content/uploads/2026/09/reel-studio-v1-loop-calligraphy.mp4) |
 | Data story | [Video](https://store.pyraai.cloud/wp-content/uploads/2026/09/reel-studio-v1-loop-data-story.mp4) |
 
-The banner and start button are original artwork. The settings screenshot shows the application's Arabic interface. Source media, personal profiles and editing projects are not included in this gallery.
+The banner and start button are original artwork. The current settings screenshot shows the application's Arabic style selection screen with an illustrative profile. Source media, personal profiles and editing projects are not included in this gallery.
