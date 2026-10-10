@@ -30,22 +30,6 @@
 
 كود Reel Studio مجاني بترخيص MIT. استخدام المساعد وتراخيص الأدوات الخارجية منفصلين؛ التفاصيل في [تراخيص الأدوات](NOTICE.md).
 
-<a id="whats-new"></a>
-<a id="motion-explainers"></a>
-
-## إيه الجديد في 2.0؟
-
-| الجديد | فايدته في شغلك |
-| --- | --- |
-| **٤ ستايلات جديدة** | زجاج مضيء للشرح، تذاكر وحملات للعروض، حوار مجلة للمقابلات، ورحلة على ورق للمحطات والمؤتمرات. |
-| **٦ مشاهد تشرح المعنى** | عدسة، مقارنة بمقياس واحد، تذكرة، أسئلة وتعليقات، فصل واقتباس، وخريطة بمحطات وصور. |
-| **استكمال الرندر** | لو التصدير وقف، كرّر نفس الطلب؛ الأجزاء السليمة تتستخدم تاني لما الملفات والإعدادات ما تتغيّرش. |
-| **تعديل الصوت لوحده** | بدّل التسجيل أو ظبّط المزيكا والمؤثرات في نسخة جديدة تحافظ على الصورة؛ مدة الصوت وتوقيته لازم يتوافقوا مع الفيديو. |
-| **تعديل جزء من الصورة** | المساعد يعيد رندر الفريمات المتغيّرة، ويجهّز النسخة الكاملة مع الاحتفاظ بصوت الأصل. |
-| **دفعات بودكاست منظمة** | مقترحات تراجعها، مقاطع تختارها، وتجهيز وتصدير بالترتيب مع استكمال الدفعة بعد التوقف. |
-
-الستايلات السابقة وإعداداتك موجودة. [تفاصيل إصدار 2.0.0](https://github.com/mohamedabdou-ai/reel-studio/releases/tag/v2.0.0) · [سجل التغييرات](CHANGELOG.md).
-
 <a id="start"></a>
 
 ## ابدأ في ٣ خطوات
@@ -60,6 +44,10 @@
    ```
 
 3. اختار اسمك وذوقك من الشاشة العربية، واضغط **«احفظ وابدأ»**. المساعد ينزّل الأدوات جوه الفولدر ويتابع التجهيز وفحص النظام معاك.
+
+<p align="center"><a href="docs/images/onboarding-2.0-full.jpg"><img src="docs/images/onboarding-2.0-full.jpg" alt="شاشة أول تشغيل كاملة: اللوجو والخطوات وبياناتك والمنصات وأزرار المتابعة" width="100%"></a></p>
+
+<p align="center"><sub>شاشة أول تشغيل كاملة. اضغط على الصورة لعرضها بحجمها الأصلي.</sub></p>
 
 بعد التجهيز، حط الفيديو في فولدر `Raw`، وافتح جلسة جديدة في نفس فولدر الاستوديو، وقول:
 
@@ -76,7 +64,9 @@
 
 قول **«افتح إعداداتي»**. تقدر تثبّت كل اختيار، أو تسيبه تلقائي لو الاختيار التلقائي متاح.
 
-<p align="center"><img src="docs/images/settings-v2.png" alt="اختيارات الاستايلات الجديدة في شاشة إعدادات Reel Studio 2.0" width="100%"></p>
+<p align="center"><a href="docs/images/settings-2.0-full.jpg"><img src="docs/images/settings-2.0-full.jpg" alt="صفحة اختيار الاستايلات كاملة: العنوان وخطوات الأونبوردنج والاختيارات الإحدى عشرة والأزرار" width="100%"></a></p>
+
+<p align="center"><sub>صفحة الاختيار كاملة بالـ١١ ستايل. اضغط لقراءة التفاصيل بالحجم الأصلي.</sub></p>
 
 | الاختيار | اللي تظبطه |
 | --- | --- |
@@ -91,54 +81,95 @@
 
 <a id="styles"></a>
 
-## ١١ ستايل… اختار اللي يناسب الفكرة
+## شوف الـ١١ ستايل
 
-### الأربعة الجداد
-
-دي **لقطات توضيحية من المحرك** بمحتوى تجريبي. المشاهد والنصوص والتوقيت بيتظبطوا على فيديوك.
+كل اختيار له شكل مختلف. دي معاينات توضيحية؛ النصوص والصور والتوقيت بيتظبطوا على محتوى فيديوك. الأربعة الجداد لقطات ثابتة من المحرك، والسبعة السابقة معاينات متحركة. اضغط على أي صورة لعرضها.
 
 <table>
   <tr>
-    <td align="center" width="50%">
-      <img src="docs/images/style-liquid-glass.jpg" alt="زجاج مضيء: كروت شفافة ومقارنة بين قيمتين" width="190"><br>
-      <b>زجاج مضيء · Liquid Glass</b><br>
-      عدسة للتفاصيل، كروت شفافة، وعدّادات ومقارنات.
+    <td align="center" width="33%" valign="top">
+      <a href="docs/images/style-liquid-glass.jpg"><img src="docs/images/style-liquid-glass.jpg" alt="معاينة زجاج مضيء" width="180"></a><br>
+      <b>زجاج مضيء</b><br><sub>Liquid Glass</sub><br>
+      عدسة وكروت شفافة ومقارنات.<br><sub>جديد · لقطة ثابتة</sub>
     </td>
-    <td align="center" width="50%">
-      <img src="docs/images/style-campaign-tickets.jpg" alt="تذاكر وحملات: أسئلة وتعليقات على كروت" width="190"><br>
-      <b>تذاكر وحملات</b><br>
-      للعروض والدعوات والأسئلة والتعليقات.
+    <td align="center" width="33%" valign="top">
+      <a href="docs/images/style-campaign-tickets.jpg"><img src="docs/images/style-campaign-tickets.jpg" alt="معاينة تذاكر وحملات" width="180"></a><br>
+      <b>تذاكر وحملات</b><br><sub>Campaign Tickets</sub><br>
+      عروض ودعوات وأسئلة على كروت.<br><sub>جديد · لقطة ثابتة</sub>
+    </td>
+    <td align="center" width="33%" valign="top">
+      <a href="docs/images/style-magazine-interview.jpg"><img src="docs/images/style-magazine-interview.jpg" alt="معاينة حوار مجلة" width="180"></a><br>
+      <b>حوار مجلة</b><br><sub>Magazine Interview</sub><br>
+      فصول واقتباسات وتعريف المتحدث.<br><sub>جديد · لقطة ثابتة</sub>
     </td>
   </tr>
   <tr>
-    <td align="center" width="50%">
-      <img src="docs/images/style-magazine-interview.jpg" alt="حوار مجلة: فصل واقتباس وتعريف المتحدث" width="190"><br>
-      <b>حوار مجلة</b><br>
-      فصول واقتباسات واسم المتحدث بوضوح.
+    <td align="center" width="33%" valign="top">
+      <a href="docs/images/style-scrapbook-route.jpg"><img src="docs/images/style-scrapbook-route.jpg" alt="معاينة رحلة على ورق" width="180"></a><br>
+      <b>رحلة على ورق</b><br><sub>Scrapbook Route</sub><br>
+      خريطة ومحطات وصور.<br><sub>جديد · لقطة ثابتة</sub>
     </td>
-    <td align="center" width="50%">
-      <img src="docs/images/style-scrapbook-route.jpg" alt="رحلة على ورق: محطات متصلة وكروت وصورة" width="190"><br>
-      <b>رحلة على ورق</b><br>
-      خريطة ومحطات وصور تشرح الرحلة أو الخطوات.
+    <td align="center" width="33%" valign="top">
+      <a href="https://store.pyraai.cloud/wp-content/uploads/2026/09/reel-studio-v1-style-split-canvas.mp4"><img src="docs/media/style-split-canvas.gif" alt="معاينة شرح بصري" width="180"></a><br>
+      <b>شرح بصري</b><br><sub>Split Canvas</sub><br>
+      كروت فوقك، وأنت ظاهر تحتها.<br><sub>معاينة متحركة</sub>
+    </td>
+    <td align="center" width="33%" valign="top">
+      <a href="https://store.pyraai.cloud/wp-content/uploads/2026/09/reel-studio-v1-style-section-deck.mp4"><img src="docs/media/style-section-deck.gif" alt="معاينة خطوات منظمة" width="180"></a><br>
+      <b>خطوات منظمة</b><br><sub>Section Deck</sub><br>
+      عناوين وأفكار متقسمة.<br><sub>معاينة متحركة</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="33%" valign="top">
+      <a href="https://store.pyraai.cloud/wp-content/uploads/2026/09/reel-studio-v1-style-kinetic-paper.mp4"><img src="docs/media/style-kinetic-paper.gif" alt="معاينة ورق متحرك" width="180"></a><br>
+      <b>ورق متحرك</b><br><sub>Kinetic Paper</sub><br>
+      عنوان قوي وكشف الفكرة بالحركة.<br><sub>معاينة متحركة</sub>
+    </td>
+    <td align="center" width="33%" valign="top">
+      <a href="https://store.pyraai.cloud/wp-content/uploads/2026/09/reel-studio-v1-style-calligraphic-receipts.mp4"><img src="docs/media/style-calligraphic-receipts.gif" alt="معاينة أدلة وأرقام" width="180"></a><br>
+      <b>أدلة وأرقام</b><br><sub>Calligraphic Receipts</sub><br>
+      كتابة عربية وأدلة وتفاصيل.<br><sub>معاينة متحركة</sub>
+    </td>
+    <td align="center" width="33%" valign="top">
+      <a href="https://store.pyraai.cloud/wp-content/uploads/2026/09/reel-studio-v1-style-paper-collage.mp4"><img src="docs/media/style-paper-collage.gif" alt="معاينة كولاج" width="180"></a><br>
+      <b>كولاج</b><br><sub>Paper Collage</sub><br>
+      ورق وصور تخدم الحكاية.<br><sub>معاينة متحركة</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="33%" valign="top">
+      <a href="https://store.pyraai.cloud/wp-content/uploads/2026/09/reel-studio-v1-style-judgment-board.mp4"><img src="docs/media/style-judgment-board.gif" alt="معاينة مقارنة ورأي" width="180"></a><br>
+      <b>مقارنة ورأي</b><br><sub>Judgment Board</sub><br>
+      اختيارات وفروق على لوحة.<br><sub>معاينة متحركة</sub>
+    </td>
+    <td align="center" width="33%" valign="top">
+      <a href="https://store.pyraai.cloud/wp-content/uploads/2026/09/reel-studio-v1-style-stepped-editorial.mp4"><img src="docs/media/style-stepped-editorial.gif" alt="معاينة تحريري" width="180"></a><br>
+      <b>تحريري</b><br><sub>Stepped Editorial</sub><br>
+      تكوين مرتب بإحساس مجلة.<br><sub>معاينة متحركة</sub>
     </td>
   </tr>
 </table>
 
+**نفس الأسماء اللي هتلاقيها في شاشة الاختيار.** شرح بصري وخطوات منظمة بياخدوا ألوان البراند بتاعك؛ التسعة التانيين بيحتفظوا بألوانهم. الترشيح التلقائي يبدأ بالستايلين الأساسيين، ويضيف واحدًا من الأربعة الجداد لما المشاهد المكتوبة تناسبه.
+
 في **حوار مجلة** فيه اختيار إضافي للعنوان خلف صورة المتحدث: يحتاج قصاصة **PNG شفافة جاهزة منك**، وبيفضل مقفول لحد ما تختاره. الاستوديو ما بيعملش فصل خلفية تلقائي للاختيار ده.
 
-### السبعة اللي تعرفهم
+<a id="whats-new"></a>
+<a id="motion-explainers"></a>
 
-| الستايل | مناسب لإيه؟ | شوف الحركة |
-| --- | --- | --- |
-| **تقسيم الشاشة · Split Canvas** | فكرة فوق، وأنت ظاهر تحتها. | [معاينة](https://store.pyraai.cloud/wp-content/uploads/2026/09/reel-studio-v1-style-split-canvas.mp4) |
-| **كروت الشرح · Section Deck** | موضوع متقسّم لخطوات وأقسام. | [معاينة](https://store.pyraai.cloud/wp-content/uploads/2026/09/reel-studio-v1-style-section-deck.mp4) |
-| **ورقي متحرك · Kinetic Paper** | عناوين قوية وكشف الفكرة بالحركة. | [معاينة](https://store.pyraai.cloud/wp-content/uploads/2026/09/reel-studio-v1-style-kinetic-paper.mp4) |
-| **خط عربي ومستندات · Calligraphic Receipts** | أدلة وأرقام ودراسات حالة. | [معاينة](https://store.pyraai.cloud/wp-content/uploads/2026/09/reel-studio-v1-style-calligraphic-receipts.mp4) |
-| **كولاج ورقي · Paper Collage** | حكايات وصور ومقارنات. | [معاينة](https://store.pyraai.cloud/wp-content/uploads/2026/09/reel-studio-v1-style-paper-collage.mp4) |
-| **لوحة المقارنة · Judgment Board** | رأي أو اختيار بين بديلين. | [معاينة](https://store.pyraai.cloud/wp-content/uploads/2026/09/reel-studio-v1-style-judgment-board.mp4) |
-| **تحريري بطبقات · Stepped Editorial** | تحليل وحكاية بإحساس مجلة. | [معاينة](https://store.pyraai.cloud/wp-content/uploads/2026/09/reel-studio-v1-style-stepped-editorial.mp4) |
+## إيه الجديد في 2.0؟
 
-**تقسيم الشاشة وكروت الشرح بياخدوا ألوان البراند بتاعك؛ التسعة التانيين بيحتفظوا بألوانهم.** الترشيح التلقائي يبدأ بالستايلين الأساسيين، ويضيف واحدًا من الأربعة الجداد لما المشاهد المكتوبة تناسبه. تقدر تختار أي ستايل بنفسك وتراجع المعاينة قبل اعتماده.
+| الجديد | فايدته في شغلك |
+| --- | --- |
+| **٤ ستايلات جديدة** | زجاج مضيء للشرح، تذاكر وحملات للعروض، حوار مجلة للمقابلات، ورحلة على ورق للمحطات والمؤتمرات. |
+| **٦ مشاهد تشرح المعنى** | عدسة، مقارنة بمقياس واحد، تذكرة، أسئلة وتعليقات، فصل واقتباس، وخريطة بمحطات وصور. |
+| **استكمال الرندر** | لو التصدير وقف، كرّر نفس الطلب؛ الأجزاء السليمة تتستخدم تاني لما الملفات والإعدادات ما تتغيّرش. |
+| **تعديل الصوت لوحده** | بدّل التسجيل أو ظبّط المزيكا والمؤثرات في نسخة جديدة تحافظ على الصورة؛ مدة الصوت وتوقيته لازم يتوافقوا مع الفيديو. |
+| **تعديل جزء من الصورة** | المساعد يعيد رندر الفريمات المتغيّرة، ويجهّز النسخة الكاملة مع الاحتفاظ بصوت الأصل. |
+| **دفعات بودكاست منظمة** | مقترحات تراجعها، مقاطع تختارها، وتجهيز وتصدير بالترتيب مع استكمال الدفعة بعد التوقف. |
+
+الستايلات السابقة وإعداداتك موجودة. [تفاصيل إصدار 2.0.0](https://github.com/mohamedabdou-ai/reel-studio/releases/tag/v2.0.0) · [سجل التغييرات](CHANGELOG.md).
 
 <a id="podcast-clipping"></a>
 

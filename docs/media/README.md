@@ -25,4 +25,4 @@ The original product-page examples are available at https://store.pyraai.cloud/p
 | Arabic typography | [Video](https://store.pyraai.cloud/wp-content/uploads/2026/09/reel-studio-v1-loop-calligraphy.mp4) |
 | Data story | [Video](https://store.pyraai.cloud/wp-content/uploads/2026/09/reel-studio-v1-loop-data-story.mp4) |
 
-The banner and start button are original artwork. The current settings screenshot shows the application's Arabic style selection screen with an illustrative profile. Source media, personal profiles and editing projects are not included in this gallery.
+The banner and start button are original artwork. `onboarding-2.0-full.jpg` shows the complete first-run screen, including navigation and controls. `settings-2.0-full.jpg` shows the complete Arabic style selection screen with all eleven choices and an illustrative brand name. Both screenshots show the real interface, are linked to their full-size originals, and contain no personal profile values. Source media, personal profiles and editing projects are not included in this gallery.
