@@ -8,6 +8,8 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          # Audit authored release history, not GitHub's temporary PR merge author.
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
           persist-credentials: false
       - run: node scripts/publication-check.mjs
