@@ -1,7 +1,7 @@
 import './project-tmp.mjs';
 import path from 'node:path';
 import {promises as fs} from 'node:fs';
-import {EDITION_STYLE_IDS as STYLE_IDS, EDITION_DEFAULT_STYLE_IDS as DEFAULT_STYLE_IDS, getStyleProfile} from '../../engine/src/creative-kit/styles.ts';
+import {EDITION_STYLE_IDS as STYLE_IDS, getStyleProfile} from '../../engine/src/creative-kit/styles.ts';
 import {introSchema, proofSchema, processSchema, comparisonSchema, commentSchema, followSchema} from '../../engine/src/creative-kit/schema.ts';
 import {kineticSceneVariants} from '../../engine/src/creative-kit/kinetic/schema.ts';
 import {librarySceneVariants} from '../../engine/src/motion-library/schema.ts';
@@ -54,6 +54,7 @@ const TONE_FIT = {
 };
 const SOUND_FOR_FAMILY = {intro:'soft-transition',proof:'counter-accent',process:'paper-reveal',comparison:'paper-reveal',comment:'ui-confirmation',follow:'soft-transition',
   'token-lens':'highlight-swipe','meter-receipt':'counter-accent','ticket-offer':'restrained-reveal','comment-stack':'ui-confirmation','chapter-quote':'chapter-shift','route-stops':'paper-reveal',
+  'kinetic-text':'restrained-reveal','evidence-wipe':'paper-reveal','motion-concept':'restrained-reveal','message-board':'paper-reveal',
   'kinetic-hook':'restrained-reveal','image-compare':'paper-reveal',checklist:'highlight-swipe',count:'counter-accent',screens:'soft-transition',
   statement:'soft-transition',outcome:'ui-confirmation','creator-cta':'ui-confirmation','screen-focus':'soft-transition','screen-recording':'soft-transition','data-story':'counter-accent'};
 const text = (value,label,max=200) => {
@@ -87,7 +88,7 @@ export function listEditorStyles() {
 }
 
 export function validateEditorBrief(raw) {
-  object(raw,['version','id','source','sourceKind','transcript','creator','brand','purpose','tone','style','preferences','fontFamily','captionsGrouping','captionsPresentation','writingStyle','recentStyles','captionsReviewedBy','captionsMode','signoffFromSec','endAtSec','beats','footage','transitions','sound','segments'],'editor brief');
+  object(raw,['version','id','source','sourceKind','transcript','creator','brand','purpose','tone','style','preferences','fontFamily','captionsGrouping','captionsPresentation','captionsVisible','writingStyle','recentStyles','captionsReviewedBy','captionsMode','signoffFromSec','endAtSec','beats','footage','transitions','sound','segments'],'editor brief');
   if(raw.version!==1) throw new Error('Editor brief version must be 1.');
   slug(raw.id); const creator=normalizeCreatorProfile(raw.creator);
   validateEditorSource({source:raw.source,transcript:raw.transcript}); relativePath(raw.source); relativePath(raw.transcript);
@@ -98,6 +99,7 @@ export function validateEditorBrief(raw) {
   if(raw.writingStyle!==undefined) editManifestSchema.shape.writingStyle.parse(raw.writingStyle);
   if(raw.captionsGrouping!==undefined) editManifestSchema.shape.captions.shape.grouping.parse(raw.captionsGrouping);
   if(raw.captionsPresentation!==undefined) editManifestSchema.shape.captions.shape.presentation.parse(raw.captionsPresentation);
+  if(raw.captionsVisible!==undefined) editManifestSchema.shape.captions.shape.visible.parse(raw.captionsVisible);
   if(raw.recentStyles!==undefined) {
     if(!Array.isArray(raw.recentStyles) || raw.recentStyles.length>50) throw new Error('recentStyles must be an array, newest first (maximum 50).');
     raw.recentStyles.forEach(style);
@@ -132,7 +134,8 @@ export function validateEditorBrief(raw) {
     if(beat.toSec<=beat.fromSec) throw new Error('Beat intervals must have a toSec greater than fromSec.');
     if(beat.fromSec<last) throw new Error('Beats must be ordered without overlaps.');last=beat.toSec;
     choice(beat.intent,Object.keys(BEAT_FAMILIES),'beat intent');
-    const family=BEAT_FAMILIES[beat.intent],data=DATA_SCHEMAS[family].strict().parse(beat.data);
+    const family=BEAT_FAMILIES[beat.intent],schema=DATA_SCHEMAS[family];
+    const data=(typeof schema.strict==='function'?schema.strict():schema).parse(beat.data);
     editSceneSchema.parse({id:beat.id,family,fromFrame:0,durationInFrames:4320000,
       layout:beat.layout??defaultLayout(family),motion:beat.motion??'land',data});
     return {...beat,data};
@@ -145,11 +148,12 @@ export function validateEditorBrief(raw) {
 
 export function recommendEditorStyle(raw) {
   const brief=validateEditorBrief(raw);
-  // New styles enter the automatic pool only when authored semantic beats warrant them.
-  // Legacy briefs retain the original automatic pool and explicit choices always win.
-  const eligibility={'liquid-glass':['token-lens','meter-receipt'],'campaign-tickets':['ticket-offer','comment-stack'],'magazine-interview':['chapter-quote'],'scrapbook-route':['route-stops']};
+  // Every public style competes. Authored semantic beats reward compatible visual grammars.
+  // Explicit and saved fixed choices always win; existing manifests are never regenerated here.
+  const eligibility={'liquid-glass':['token-lens','meter-receipt'],'campaign-tickets':['ticket-offer','comment-stack'],'magazine-interview':['chapter-quote'],'scrapbook-route':['route-stops'],
+    'kinetic-paper':['kinetic-text'],'paper-collage':['evidence-wipe','message-board']};
   const eligible=Object.entries(eligibility).filter(([,families])=>brief.beats.some(beat=>families.includes(BEAT_FAMILIES[beat.intent]))).map(([id])=>id);
-  const candidates=[...DEFAULT_STYLE_IDS,...eligible].map((id,index)=>{
+  const candidates=STYLE_IDS.map((id,index)=>{
     const contentScore=PURPOSE_FIT[brief.purpose][id]??4;
     const toneScore=TONE_FIT[brief.tone][id]??0;
     const semanticScore=eligible.includes(id)?24:0;
@@ -218,6 +222,7 @@ export function buildEditorPlan(raw,source,captions,{delivery=false,emphasis}={}
     ...(preferences.fontFamily===undefined?{}:{fontFamily:preferences.fontFamily}),
     ...(preferences.writingStyle===undefined?{}:{writingStyle:preferences.writingStyle}),
     segments,captions:{status:brief.captionsReviewedBy?'reviewed':'draft',
+      ...(brief.captionsVisible===undefined?{}:{visible:brief.captionsVisible}),
       ...(preferences.captionsGrouping===undefined?{}:{grouping:preferences.captionsGrouping}),
       ...(preferences.captionsPresentation===undefined?{}:{presentation:preferences.captionsPresentation}),
       ...(brief.captionsMode===undefined?{}:{mode:brief.captionsMode}),
@@ -246,7 +251,7 @@ export function assertDeliveryReady(manifest) {
   if(manifest?.purpose!=='delivery') throw new Error('Delivery requires manifest purpose: delivery. Author it explicitly with plan --deliver after review.');
   if(manifest.captions?.status!=='reviewed') throw new Error('Delivery requires reviewed captions.');
   text(manifest.captions.reviewer,'captions reviewer');
-  if(!manifest.captions.words?.length) throw new Error('Delivery requires nonempty reviewed caption words.');
+  if(manifest.contentMode!=='graphics' && !manifest.captions.words?.length) throw new Error('Delivery requires nonempty reviewed caption words.');
   if(!manifest.scenes?.length) throw new Error('Delivery requires authored scenes.');
   const m=editManifestSchema.parse(manifest),compiled=compileEdit(m),signoff=m.signoffFromFrame;
   if(compiled.issues.length) throw new Error('Delivery caption cuts need review before rendering.');
@@ -360,6 +365,10 @@ const decisionMarkdown=record=>[
 export async function planEditorBrief(briefPath,{out,delivery=false,replace=false}={}) {
   const brief=validateEditorBrief(await readJson(briefPath));
   const manifestPath=out??`Projects/${brief.id}/edit.json`;
+  if(replace && brief.captionsVisible===undefined){
+    const existing=await readJson(manifestPath,{optional:true});
+    if(typeof existing?.captions?.visible==='boolean')brief.captionsVisible=existing.captions.visible;
+  }
   const inputs=[briefPath,brief.source,brief.transcript,...(brief.emphasisFile===undefined?[]:[brief.emphasisFile])];
   assertOutput(manifestPath,brief.id,inputs);
   if(path.extname(manifestPath).toLowerCase()!=='.json') throw new Error('Edit manifest output must end in .json.');
@@ -397,6 +406,7 @@ export async function planEditorBrief(briefPath,{out,delivery=false,replace=fals
     await importEditCaptions(staging,brief.transcript);
     const imported=await readJson(staging);
     const manifest=editManifestSchema.parse({...plan.manifest,captions:{...imported.captions,
+      ...(plan.manifest.captions.visible===undefined?{}:{visible:plan.manifest.captions.visible}),
       ...(plan.manifest.captions.grouping===undefined?{}:{grouping:plan.manifest.captions.grouping}),
       ...(plan.manifest.captions.presentation===undefined?{}:{presentation:plan.manifest.captions.presentation}),
       ...(brief.captionsMode===undefined?{}:{mode:brief.captionsMode}),
@@ -426,6 +436,7 @@ export function editorRenderCommand(manifest,prepared,{delivery=false,review=fal
   if(delivery) assertDeliveryReady(manifest);
   if(motionPlan!==undefined && motionCrop!==undefined) throw new Error('Choose one motion mode: motionPlan or motionCrop.');
   const screenOnly=manifest.presenter===false;
+  if(manifest.contentMode==='graphics' && voice!=='off') throw new Error('Graphics projects have no spoken source; voice cleanup is only available for recordings.');
   if(screenOnly && (motionPlan!==undefined || motionCrop!==undefined)) throw new Error('A screen-only source has no presenter to measure; deliver it without --motion-plan or --motion-crop.');
   if(delivery && !screenOnly && !motionPlan && !motionCrop) throw new Error('Delivery needs a measured --motion-plan or --motion-crop for the presenter.');
   if(delivery && frames!==undefined) throw new Error('Delivery requires the entire timeline; frames are only for previews/reviews.');
@@ -438,6 +449,7 @@ export function editorRenderCommand(manifest,prepared,{delivery=false,review=fal
   assertOutput(`${output}.qc.json`,manifest.id,inputs);assertOutput(`${output}.checks`,manifest.id,inputs);
   if(path.extname(output).toLowerCase()!=='.mp4') throw new Error('Editor render output must end in .mp4.');
   const args=['PreparedEdit','--out',output,'--props-file',prepared.propsFile,'--sfx',prepared.sfxFile,'--channel','organic','--concurrency',String(concurrency),'--media-engine',mediaEngine,...(choice(voice,['off','clean','denoise'],'voice')==='off'?[]:['--voice',voice])];
+  if(manifest.contentMode==='graphics') args.push('--graphics-audio');
   if(chunkFrames!==undefined){
     if(!Number.isSafeInteger(chunkFrames)||chunkFrames<1)throw new Error('chunkFrames must be a positive integer.');
     args.push('--chunk-frames',String(chunkFrames));

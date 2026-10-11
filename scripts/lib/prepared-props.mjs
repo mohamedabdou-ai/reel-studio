@@ -8,6 +8,20 @@ import {captureWarnings} from '../../engine/src/motion-library/capture.ts';
 import {readJson,fileSnapshot,digest,checkedPath} from './job-paths.mjs';
 import {ffprobeJson,run} from './media.mjs';
 import {verifyPreparedHeadGuide} from './head-guide.mjs';
+import {readFile} from 'node:fs/promises';
+
+// SVG is rendered by the browser; FFprobe builds without librsvg cannot probe it.
+// Read the intrinsic vector viewport while retaining the same file hash contract.
+async function svgVideo(file){
+  const text=await readFile(file,'utf8'),root=/<svg\b([^>]*)>/i.exec(text);
+  if(!root || !/<\/svg\s*>/i.test(text))throw new Error('SVG asset must contain a complete SVG document.');
+  const attr=name=>new RegExp(`\\b${name}\\s*=\\s*["']([^"']+)["']`,'i').exec(root[1])?.[1];
+  const view=attr('viewBox')?.trim().split(/[\s,]+/).map(Number);
+  const size=(name,index)=>{const value=attr(name);return value&&/^\d+(?:\.\d+)?(?:px)?$/.test(value)?Number.parseFloat(value):view?.length===4?view[index]:NaN;};
+  const width=size('width',2),height=size('height',3);
+  if(!Number.isFinite(width)||!Number.isFinite(height)||width<1||height<1||width>16384||height>16384)throw new Error('SVG asset needs a bounded width/height or viewBox.');
+  return {codec_type:'video',codec_name:'svg',width,height};
+}
 
 let alphaFormats;
 export async function hasForegroundAlpha(video){
@@ -27,13 +41,17 @@ export async function verifyKineticAssets(edit){
     for(const src of sources){
       if(!assets.has(src)){
         const file=`engine/public/${src}`,absolute=await checkedPath(file,{mustExist:true});
-        const identity=await fileSnapshot(file),probe=await ffprobeJson(absolute);
-        const video=probe.streams?.find(s=>s.codec_type==='video');
+        const identity=await fileSnapshot(file);
+        const video=/\.svg$/i.test(src)?await svgVideo(absolute):(await ffprobeJson(absolute)).streams?.find(s=>s.codec_type==='video');
         if(!video?.width || !video.height)throw new Error(`Scene asset is not a decodable image/video: ${src}`);
         assets.set(src,{...identity,src,absolute,video});
       }
       const isMoving=(scene.family==='kinetic-hook' && scene.data.foreground?.src===src) || ((scene.family==='screens' || scene.family==='screen-focus') && scene.data.steps.some(step=>step.src===src&&step.kind==='video'));
       if(!isMoving && !['png','mjpeg','webp','gif','bmp','tiff','svg'].includes(assets.get(src).video.codec_name))throw new Error(`Static scene asset must contain an image: ${src}`);
+    }
+    if(scene.family==='evidence-wipe')for(const image of [scene.data.before,scene.data.after]){
+      const asset=assets.get(image.src);
+      if(asset.video.width!==image.width || asset.video.height!==image.height)throw new Error('Comparison image dimensions disagree with its provided image.');
     }
     if(scene.family==='chapter-quote' && scene.data.cover){
       const supplied=scene.data.cover.foreground,asset=assets.get(supplied.src);

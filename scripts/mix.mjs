@@ -14,6 +14,8 @@ try {
   --ceilPad 0.8                    Sample-peak headroom below the true-peak target.
   --tighten 1                      Existing optional gentle glue compressor; default off.
   --voice off|clean|denoise        Dialogue cleanup before ducking; default off (unchanged graph).
+  --graphics-audio                Explicit generated graphics: require a digitally silent source,
+                                   master supplied audible effects, or verify intentional silence.
                                    clean: highpass 75 Hz, gentle de-ess, -1.5 dB @300 Hz, +1.5 dB @3 kHz, light 2:1 compressor.
                                    denoise: clean + afftdn at the measured room floor, only above -55 dBFS (else skipped, reported).
   --report Projects/example/mix.json  Optional structured report file.

@@ -8,7 +8,7 @@ import { promisify } from 'node:util';
 import { createHash } from 'node:crypto';
 import { ROOT } from './project-paths.mjs';
 import { CACHE_DIR, fileKey } from './media.mjs';
-import { normalizeMixOptions, mixOutputPath, chooseMixSfxGain, parseMixStemStats, parseMixLoudness, assessMixDelivery, VOICE_SILENCE, buildVoiceChain, buildVoiceMeasureFilter, buildMixFilterGraph, parseSilenceSpans, silenceSpansFromAudioCache, selectFloorWindows, parseRmsLevelDb, estimateNoiseFloorDb, decideDenoise } from './mix-contract.mjs';
+import { normalizeMixOptions, mixOutputPath, chooseMixSfxGain, chooseGraphicsSfx, parseMixStemStats, parseMixLoudness, assessMixDelivery, assessGraphicsSilence, VOICE_SILENCE, buildVoiceChain, buildVoiceMeasureFilter, buildMixFilterGraph, buildGraphicsMixFilterGraph, parseSilenceSpans, silenceSpansFromAudioCache, selectFloorWindows, parseRmsLevelDb, estimateNoiseFloorDb, decideDenoise } from './mix-contract.mjs';
 
 const execute = promisify(execFile);
 const ffmpeg = path.join(ROOT, 'Tools/bin/ffmpeg.exe'), ffprobe = path.join(ROOT, 'Tools/bin/ffprobe.exe');
@@ -48,7 +48,7 @@ async function runFfmpeg(args, logFile) {
 
 export async function mixDelivery(args, { onProgress = message => process.stderr.write(message + '\n') } = {}) {
   const options = normalizeMixOptions(args);
-  const result = { schema: 1, ok: false, status: 'failed', out: options.out, published: false, style: options.style, styleProfile: options.styleProfile, targets: { LUFS: options.lufs, truePeakDb: options.tp, loudnessToleranceLU: 1, peakToleranceDb: 0.3, lraBand: options.lraBand }, voice: { mode: options.voice, chain: '', denoise: null, intermediateCodec: options.voice === 'off' ? 'pcm_s24le' : 'pcm_f32le', stemMeasuredAfterChain: options.voice !== 'off' }, errors: [], warnings: [] };
+  const result = { schema: 1, ok: false, status: 'failed', out: options.out, published: false, style: options.style, styleProfile: options.styleProfile, audio: {mode: options.graphicsAudio ? 'graphics' : 'dialogue', expectedSilence: false, verifiedSilence: false}, targets: { LUFS: options.lufs, truePeakDb: options.tp, loudnessToleranceLU: 1, peakToleranceDb: 0.3, lraBand: options.lraBand }, voice: { applicable: !options.graphicsAudio, mode: options.voice, chain: '', denoise: null, intermediateCodec: options.voice === 'off' ? 'pcm_s24le' : 'pcm_f32le', stemMeasuredAfterChain: options.voice !== 'off' }, errors: [], warnings: [] };
   let stage = 'preflight';
   try {
     const inputs = [await assertInput(options.video)];
@@ -60,8 +60,8 @@ export async function mixDelivery(args, { onProgress = message => process.stderr
     const primaryAudio = sourceProbe.streams?.find(stream => stream.codec_type === 'audio');
     if (!primaryVideo) throw new Error('Primary source has no video stream.');
     if (!primaryAudio) throw new Error('Primary source has no audio stream; a dialogue mix cannot invent one.');
-    const durationSec = Number(primaryAudio.duration ?? sourceProbe.format?.duration);
-    if (!Number.isFinite(durationSec) || durationSec <= 0) throw new Error('Primary audio duration is unavailable.');
+    const durationSec = Number(options.graphicsAudio ? primaryVideo.duration : primaryAudio.duration ?? sourceProbe.format?.duration);
+    if (!Number.isFinite(durationSec) || durationSec <= 0) throw new Error(options.graphicsAudio ? 'Graphics video-stream duration is unavailable; container duration is insufficient.' : 'Primary audio duration is unavailable.');
     if (options.sfx && !(await probe(options.sfx)).streams?.some(stream => stream.codec_type === 'audio')) throw new Error('Explicit SFX input has no audio stream.');
     const scratch = await fsp.mkdtemp(mixOutputPath(path.join(PROJECT_TMP, 'mix-')));
     result.diagnostics = scratch;
@@ -89,14 +89,29 @@ export async function mixDelivery(args, { onProgress = message => process.stderr
     result.voice.chain = voiceChain;
     const voice = await detect(options.video, 'voice', buildVoiceMeasureFilter(voiceChain));
     const effects = options.sfx ? await detect(options.sfx, 'effects') : null;
-    const sfx = chooseMixSfxGain(voice, effects, options.under);
-    result.stems = { voice, effects, sfx };
+    const sfx = options.graphicsAudio ? chooseGraphicsSfx(voice, effects) : chooseMixSfxGain(voice, effects, options.under);
+    result.stems = { voice: options.graphicsAudio ? null : voice, ...(options.graphicsAudio ? {base: voice} : {}), effects, sfx };
+    result.audio.expectedSilence = options.graphicsAudio && sfx.expectedSilence;
     result.sfxGainDb = sfx.gainDb;
-    onProgress(`voice max ${voice.max} dB / mean ${voice.mean} dB; SFX ${sfx.status}${sfx.gainDb === null ? '' : `, gain ${sfx.gainDb} dB`}`);
+    onProgress(options.graphicsAudio ? `graphics base: verified digital silence; SFX ${sfx.status}` : `voice max ${voice.max} dB / mean ${voice.mean} dB; SFX ${sfx.status}${sfx.gainDb === null ? '' : `, gain ${sfx.gainDb} dB`}`);
+    if (result.audio.expectedSilence) {
+      stage = 'intentional_silence_encode';
+      // Remove the rendered base's AAC tail padding before a second encoding.
+      // A sample-rate movie timescale keeps the MP4 edit list from rounding to milliseconds.
+      const silenceFilter = `aformat=sample_fmts=fltp:sample_rates=48000:channel_layouts=stereo,atrim=duration=${durationSec},asetpts=PTS-STARTPTS`;
+      await runFfmpeg(['-hide_banner', '-loglevel', 'error', '-y', '-i', options.video, '-map', '0:v:0', '-map', '0:a:0', '-af', silenceFilter, '-c:v', 'copy', '-c:a', 'aac', '-b:a', '320k', '-ar', '48000', '-ac', '2', '-movie_timescale', '48000', '-movflags', '+faststart+negative_cts_offsets', candidate], path.join(scratch, 'silent-encode.log'));
+      stage = 'intentional_silence_verification';
+      const deliveredProbe = await probe(candidate), deliveredAudio = deliveredProbe.streams.find(stream => stream.codec_type === 'audio');
+      if (!deliveredAudio) throw new Error('The intentionally silent output has no audio stream.');
+      const deliveredDuration = Number(deliveredAudio.duration ?? deliveredProbe.format.duration), deliveredStats = await detect(candidate, 'verify-silence');
+      Object.assign(result, assessGraphicsSilence(deliveredStats, deliveredDuration, durationSec), {durationSec: deliveredDuration});
+      result.audio.verifiedSilence = deliveredStats.silent === true;
+      result.mastering = {chain: 'none: verified intentional digital silence', measuredLUFS: null, measuredTruePeakDb: null, correctionDb: null, trimmedToVideoSec: durationSec, movieTimescale: 48000};
+    } else {
     stage = 'stem_mix';
 
 
-    const mixGraph = buildMixFilterGraph({ sfxMixed: sfx.status === 'mixed', sfxGain: sfx.gain, tighten: options.tighten, voiceChain });
+    const mixGraph = options.graphicsAudio ? buildGraphicsMixFilterGraph({durationSec, tighten: options.tighten}) : buildMixFilterGraph({ sfxMixed: sfx.status === 'mixed', sfxGain: sfx.gain, tighten: options.tighten, voiceChain });
     await runFfmpeg(['-hide_banner', '-loglevel', 'error', '-y', '-i', options.video, ...(sfx.status === 'mixed' ? ['-i', options.sfx] : []), '-filter_complex', mixGraph, '-map', '[mix]', '-c:a', result.voice.intermediateCodec, tmp], path.join(scratch, 'mix.log'));
     stage = 'master_measurement';
     const pass1 = await runFfmpeg(['-hide_banner', '-i', tmp, '-af', `loudnorm=I=${options.lufs}:TP=${options.tp}:LRA=11:print_format=json`, '-f', 'null', '-'], path.join(scratch, 'measure-mix.log'));
@@ -116,6 +131,7 @@ export async function mixDelivery(args, { onProgress = message => process.stderr
     const deliveredDuration = Number(deliveredAudio.duration ?? deliveredProbe.format.duration);
     const delivered = parseMixLoudness(await runFfmpeg(['-hide_banner', '-i', candidate, '-map', '0:a:0', '-vn', '-af', 'ebur128=peak=true', '-f', 'null', '-'], path.join(scratch, 'verify.log')));
     Object.assign(result, assessMixDelivery(delivered, deliveredDuration, options), { delivered, durationSec: deliveredDuration });
+    }
     if (sfx.status === 'silent_bypassed') result.warnings.push({ code: 'silent_sfx_bypassed', message: 'The supplied SFX stem contains digital silence; it was bypassed without amplification.' });
     if (denoiseSkipped) result.warnings.push(denoiseSkipped);
     if (result.ok && result.warnings.length) result.status = 'passed_with_advisories';

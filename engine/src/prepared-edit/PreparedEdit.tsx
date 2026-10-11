@@ -24,7 +24,7 @@ import proxyRegistry from "../../proxies.json";
 import {resolvePreviewSource,type ProxyRegistry} from "../core/preview-source";
 import {KineticSceneRenderer} from "../creative-kit/kinetic/scenes";
 import {kineticSceneSchema} from "../creative-kit/kinetic/schema.ts";
-import {footageVisibility} from "./visibility.ts";
+import {footageVisibility,captionOverlayVisible} from "./visibility.ts";
 import {headGuideSchema,headGuideIssues,headBoxForScene,type HeadGuide} from "./head-guide.ts";
 import {PRESENTER_CAPTION_CENTER,type HeadBoxPx} from "../creative-kit/head-clear.ts";
 import {librarySceneSchema} from '../motion-library/schema.ts';
@@ -62,9 +62,9 @@ export const calculatePreparedMetadata:CalculateMetadataFunction<PreparedEditPro
     props:{...props,edit,plates:preparedPlateList(edit,props.plate.src),__editorMediaSelection:mediaSelection}};
 };
 
-export const SceneLayer:React.FC<{scene:EditScene;style:EditManifest["style"];geometry:WindowGeo;aspect:number;seam:number;headBox?:HeadBoxPx|null}> = ({scene,style,geometry,aspect,seam,headBox=null})=>{
+export const SceneLayer:React.FC<{scene:EditScene;style:EditManifest["style"];geometry:WindowGeo;aspect:number;seam:number;headBox?:HeadBoxPx|null;words?:ReturnType<typeof compileEdit>['words']}> = ({scene,style,geometry,aspect,seam,headBox=null,words=[]})=>{
   const semantic=semanticSceneSchema.safeParse(scene);
-  if(semantic.success)return <SemanticSceneRenderer scene={semantic.data} style={style}/>;
+  if(semantic.success)return <SemanticSceneRenderer scene={semantic.data} style={style} words={words}/>;
   const screen=screenRecordingSceneSchema.safeParse(scene);
   if(screen.success)return <ScreenRecordingScene scene={screen.data} style={style}/>;
   const library=librarySceneSchema.safeParse(scene);
@@ -87,6 +87,7 @@ export const CaptionTrack:React.FC<{edit:EditManifest;compiled:ReturnType<typeof
   const probe=useProbe();
   const theme=useSceneTheme(edit.style);
   const emphasis=React.useMemo(()=>emphasisBySource(edit.captions.emphasis),[edit.captions.emphasis]);
+  if(!captionOverlayVisible(edit))return null;
   let cue=compiled.captionGroups.find(c=>frame>=c.fromFrame && frame<c.toFrame);
   if(!cue) return null;
   const scene=edit.scenes.find(s=>frame>=s.fromFrame && frame<s.fromFrame+s.durationInFrames);
@@ -135,11 +136,11 @@ export const CaptionTrack:React.FC<{edit:EditManifest;compiled:ReturnType<typeof
 
 
 const ScenePresentation:React.FC<{edit:EditManifest;index:number;geometry:WindowGeo;aspect:number;seam:number;
-  transition:LayoutTransition|null;clipTop:number|null;contentShift:number;headBox:HeadBoxPx|null}> = ({edit,index,geometry,aspect,seam,transition,clipTop,contentShift,headBox})=>{
+  transition:LayoutTransition|null;clipTop:number|null;contentShift:number;headBox:HeadBoxPx|null;words:ReturnType<typeof compileEdit>['words']}> = ({edit,index,geometry,aspect,seam,transition,clipTop,contentShift,headBox,words})=>{
   const scene=edit.scenes[index];
   const entrance=sceneEntrance(edit.transitions,scene);
   const hue=hueCrossfadeFor(edit.transitions,edit.scenes,index);
-  let layer:React.ReactNode=<SceneLayer scene={scene} style={edit.style} geometry={geometry} aspect={aspect} seam={seam} headBox={headBox}/>;
+  let layer:React.ReactNode=<SceneLayer scene={scene} style={edit.style} geometry={geometry} aspect={aspect} seam={seam} headBox={headBox} words={words}/>;
   if(entrance){
     const box=entranceBox(scene.layout,seam),dir=entrance.dir??'rtl';
     if(entrance.kind==='whip-pan')layer=<WhipPan dir={dir} at={0} durF={entrance.durationInFrames} mode="in" box={box}>{layer}</WhipPan>;
@@ -181,7 +182,7 @@ export const PreparedEdit:React.FC<PreparedEditProps> = (props)=>{
     {                                                                                  }
     <ContinuousWindowPlate src={plate.src} geo={state.geo} sourceAspect={aspect} visible={footageVisibility(edit,frame,props.__editorSkipHiddenVideo!==false)}/>
     {edit.scenes.map((scene,index)=><Sequence key={scene.id} from={scene.fromFrame} durationInFrames={scene.durationInFrames}>
-      <ScenePresentation edit={edit} index={index} geometry={state.geo} aspect={aspect} seam={seam} transition={state.transition}
+      <ScenePresentation edit={edit} index={index} geometry={state.geo} aspect={aspect} seam={seam} transition={state.transition} words={compiled.words}
         clipTop={state.clipTop} contentShift={state.contentShift} headBox={headBoxForScene(props.headGuide,scene.id)}/>
     </Sequence>)}
     {

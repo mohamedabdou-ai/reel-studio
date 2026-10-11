@@ -254,3 +254,9 @@ export function setCaptionReview(m: EditManifest, review: { status: "draft" | "r
   if (captions.status === m.captions.status && captions.reviewer === m.captions.reviewer) return unchanged(m);
   return finalize(m, { ...m, captions });
 }
+
+export function setCaptionVisibility(m:EditManifest,visible:boolean):OpResult{
+  if(typeof visible!=='boolean')return refuse('اختيار ظهور الكابشن لازم يكون مفعّل أو مقفول.');
+  if((m.captions.visible!==false)===visible)return unchanged(m);
+  return finalize(m,{...m,captions:{...m.captions,visible}});
+}

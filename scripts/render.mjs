@@ -12,7 +12,7 @@ import { getServeUrl, requireFromEngine, ENGINE } from './lib/bundle.mjs';
 import { SPEC, levelFor, gopFrames, VUI_BSF, igCheck } from './lib/ig.mjs';
 import { readRenderProps } from './lib/render-props.mjs';
 import { renderBudget, freeBytes } from './lib/disk-report.mjs';
-import { VOICE_MODES } from './lib/mix-contract.mjs';
+import { VOICE_MODES, resolveRenderAudioMode } from './lib/mix-contract.mjs';
 import { plateGate, validateHeadFlags, headGatePlan, headCheckArgv, headGateResult, envelopeProblems, headBanner, installHeadEnvelope, readEnvelopeBack, headMethodConflict } from './lib/delivery-gates.mjs';
 import {renderIdentity,createRenderInputGuard,chunkProfile,chunkBudget,renderChunks,validateChunk,assembleChunks,CHUNK_POLICY,mediaContract} from './lib/render-chunks.mjs';
 
@@ -49,6 +49,7 @@ if (args['media-engine'] && !['webcodecs', 'offthread'].includes(args['media-eng
 
 const voiceMode = args.voice === undefined ? 'off' : args.voice;
 if (!VOICE_MODES.includes(voiceMode)) throw new Error(`--voice must be one of ${VOICE_MODES.join('|')}`);
+const audioMode = resolveRenderAudioMode({composition: comp, edit: inputProps.edit, graphicsAudio: args['graphics-audio'], voice: voiceMode});
 if (voiceMode !== 'off' && !args.sfx) throw new Error('--voice runs inside the scripts/mix.mjs master, which render.mjs uses only with --sfx <stem.wav>; add the sound-design stem (every delivery carries one) or run scripts/mix.mjs --voice on the rendered file');
 
 const VALID_CHANNELS = ['organic', 'ads', 'api'];
@@ -281,9 +282,9 @@ const finalizeStart = Date.now();
 
 const MOV = '+faststart+negative_cts_offsets';
 const fail = (what, r) => { throw new Error(`${what} (ffmpeg exit ${r.code}):\n` + r.buf.slice(-1500)); };
-let masterMode = args.master && !args.sfx ? 'loudnorm' : 'copy';
+let masterMode = args.master && !args.sfx && audioMode !== 'graphics' ? 'loudnorm' : 'copy';
 let meas = null;
-if (args.master && !args.sfx) {
+if (args.master && !args.sfx && audioMode !== 'graphics') {
   const COMP = args.compress ? 'acompressor=threshold=-24dB:ratio=2:attack=10:release=220,' : '';
   const TARGET = { I: SPEC.video.loudness.integratedLUFS, TP: SPEC.video.loudness.truePeakDBTP, LRA: 7 };
   const probe = await ffmpeg(['-hide_banner', '-nostats', '-i', raw, '-af', `${COMP}loudnorm=I=${TARGET.I}:TP=${TARGET.TP}:LRA=${TARGET.LRA}:print_format=json`, '-f', 'null', '-']);
@@ -322,13 +323,16 @@ const sfxStem = args.sfx ? path.resolve(String(args.sfx)) : null;
 if (sfxStem && !(await fs.stat(sfxStem).catch(() => null))) throw new Error(`--sfx stem not found: ${sfxStem}`);
 if (sfxStem && args.master) log('NOTE: --sfx implies the mix.mjs master; --master (loudnorm) is skipped');
 let mix = null;
-if (masterMode === 'copy' || sfxStem) {
-  const target = sfxStem ? path.join(outParts.dir, `${outParts.name}.vo${outParts.ext || '.mp4'}`) : out;
+const needsMix = Boolean(sfxStem) || audioMode === 'graphics';
+if (masterMode === 'copy' || needsMix) {
+  const target = needsMix ? path.join(outParts.dir, `${outParts.name}.vo${outParts.ext || '.mp4'}`) : out;
   const applied = await ffmpeg(['-hide_banner', '-nostats', '-y', '-i', raw, '-map', '0', '-c', 'copy', '-bsf:v', VUI_BSF, '-movflags', MOV, target]);
   if (applied.code !== 0 || !(await fs.stat(target).catch(() => null))) fail('finalize', applied);
-  if (sfxStem) {
+  if (needsMix) {
     const mixOut = await new Promise((resolve) => {
-      const mixArgs = [path.join(ROOT, 'scripts', 'mix.mjs'), '--video', target, '--sfx', sfxStem, '--out', out];
+      const mixArgs = [path.join(ROOT, 'scripts', 'mix.mjs'), '--video', target, '--out', out];
+      if (sfxStem) mixArgs.push('--sfx', sfxStem);
+      if (audioMode === 'graphics') mixArgs.push('--graphics-audio');
       if(comp==='PreparedEdit' && inputProps.edit?.style) mixArgs.push('--style',inputProps.edit.style);
       if (args.tighten) mixArgs.push('--tighten', '1');
       if (args['sfx-under'] !== undefined) mixArgs.push('--under', String(args['sfx-under']));
@@ -378,7 +382,7 @@ if (mode === 'deliver' && (args['motion-crop'] || args['motion-plan'])) {
 } else if (mode === 'deliver') motion = { exempt: 'static-graphics', presenterChecked: false };
 const digest = createHash('sha256');
 for await (const chunk of createReadStream(out)) digest.update(chunk);
-const report = { ok: true, comp, mode, out: finalOut, bytes: stat.size, outputSha256: digest.digest('hex'), bundle: { hash, cached }, chunks, frames: frameRange ?? [0, composition.durationInFrames - 1], timing: { renderSec, finalizeSec, totalSec: +sec() }, master, sfx: sfxStem ? { stem: sfxStem, mix } : null, igCheck: check, safe, motion, plates: plateDecision, head, warnings, inputProps, mediaSelection:composition.props.__editorMediaSelection??null };
+const report = { ok: true, comp, mode, out: finalOut, bytes: stat.size, outputSha256: digest.digest('hex'), bundle: { hash, cached }, chunks, frames: frameRange ?? [0, composition.durationInFrames - 1], timing: { renderSec, finalizeSec, totalSec: +sec() }, master, audio: mix?.audio ?? {mode: audioMode, expectedSilence: false}, sfx: sfxStem ? { stem: sfxStem, mix } : null, igCheck: check, safe, motion, plates: plateDecision, head, warnings, inputProps, mediaSelection:composition.props.__editorMediaSelection??null };
 await writeJson(`${out}.qc.json`, report);
 return report;
 }, { sidecars: ['.qc.json', ...(mode === 'deliver' ? ['.checks'] : [])] });

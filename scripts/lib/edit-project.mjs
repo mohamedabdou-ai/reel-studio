@@ -73,7 +73,7 @@ export async function importEditCaptions(manifestPath,captionsPath){
   const imported=await readJson(captionsPath);
   const words=Array.isArray(imported)?imported:imported.captions??imported.words;
   if(!Array.isArray(words)) throw new Error('Expected word captions with text/startMs/endMs.');
-  const next=editManifestSchema.parse({...manifest,captions:{status:'draft',words:words.map(w=>({
+  const next=editManifestSchema.parse({...manifest,captions:{...(manifest.captions.visible===undefined?{}:{visible:manifest.captions.visible}),status:'draft',words:words.map(w=>({
     text:w.text,startMs:w.startMs,endMs:w.endMs,confidence:w.confidence??null,
   }))}});
   return withFileLock(`Projects/${manifest.id}/edit.lock`,{project:manifest.id},async()=>{

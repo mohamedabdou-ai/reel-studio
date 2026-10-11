@@ -2,6 +2,9 @@ import type { EditManifest } from "../../prepared-edit/schema.ts";
 import { editSceneSchema } from "../../prepared-edit/schema.ts";
 import { creativeGalleryDefaults, sceneFamilies } from "../../creative-kit/schema.ts";
 import {semanticFamilies} from '../../creative-kit/semantic/schema.ts';
+import {compileEdit} from '../../prepared-edit/timeline.ts';
+import {minFramesAtFps} from '../../motion-concepts/timeline.ts';
+import {getCatalogEntry} from '../../motion-concepts/catalog.ts';
 import { totalFrames } from "../time.ts";
 import { carryEntrances, dropForegrounds, repairForegrounds } from "./anchors.ts";
 import { deepEqual, removeIn, setIn, type Path } from "./paths.ts";
@@ -219,7 +222,9 @@ export function setMotion(m: EditManifest, id: string, motion: SceneMotion): OpR
 export function addSceneFromTemplate(m: EditManifest, family: string, options: { atFrame?: number; durationInFrames?: number } = {}): OpResult<{ id: string; index: number }> {
   const data = TEMPLATE_DATA[family];
   if (!data) return refuse(`مفيش قالب آمن للـ family «${family}». انسخ مشهد موجود منها (نسخ) وعدّل عليه.`);
-  const wanted = Math.round(options.durationInFrames ?? DEFAULT_SCENE_FRAMES);
+  const defaultFrames=family==='message-board'?minFramesAtFps(180,m.source.fps):family==='motion-concept'
+    ?minFramesAtFps(Math.max(DEFAULT_SCENE_FRAMES,getCatalogEntry((data as {concept:string}).concept).minFrames),m.source.fps):DEFAULT_SCENE_FRAMES;
+  const wanted = Math.round(options.durationInFrames ?? defaultFrames);
   if (!(wanted >= 1)) return refuse("مدة المشهد لازم تبقى فريم واحد على الأقل.");
   const slot = freeRoomAt(m, options.atFrame ?? 0, limitFrame(m), Math.min(MIN_SCENE_FRAMES, wanted));
   if (!slot) return refuse("مفيش مساحة فاضية كفاية لمشهد جديد. قصّر مشهد أو حرّك الـ playhead لمكان فاضي.");
@@ -233,6 +238,19 @@ export function addSceneFromTemplate(m: EditManifest, family: string, options: {
     motion: creativeGalleryDefaults.motion,
     data: structuredClone(data),
   } as Scene;
+  if(scene.family==='message-board'){
+    for(const key of ['gatherFrame','gatherDurationFrames','focusFrame','focusDurationFrames'] as const)scene.data[key]=Math.round(scene.data[key]*m.source.fps/30);
+    if(scene.data.closingFrame!==undefined)scene.data.closingFrame=Math.round(scene.data.closingFrame*m.source.fps/30);
+  }
+  if(scene.family==='kinetic-text'){
+    let compiled:ReturnType<typeof compileEdit>;
+    try{compiled=compileEdit(m);}
+    catch{return refuse('توقيت الكلمات مش كافي لعرضها على فريمات الفيديو. راجع التوقيت أو تجميع الكابشن قبل إضافة كلمات متحركة.');}
+    const selected=compiled.words.filter(word=>word.fromFrame>=scene.fromFrame && word.toFrame<=sceneEnd(scene));
+    if(!selected.length)return refuse('المشهد ده محتاج كلمات مسجلة في الفترة اللي اخترتها. اختار جزء فيه كلام من الترانسكريبت.');
+    scene.data.sourceIndices=[...new Set(selected.map(word=>word.sourceIndex))].sort((a,b)=>a-b).slice(0,32);
+    scene.data.lang=selected.some(word=>/[\u0600-\u06ff]/.test(word.text))?'ar':'en';
+  }
   const [scenes, index] = insertSorted(m.scenes, scene, (x) => x.fromFrame);
   return finalize(m, { ...m, scenes }, { id, index }, ["ده نص تجريبي من الـ kit. لازم تبدّله بكلامك قبل التصدير."]);
 }

@@ -1,6 +1,6 @@
 {
   "name": "@reel-studio/engine-runtime",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Curated Reel Studio Remotion runtime",
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
     "@remotion/transitions": "4.0.521",
     "@remotion/zod-types": "4.0.521",
     "lottie-web": "^5.13.0",
+    "lucide-react": "1.48.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "remotion": "4.0.521",

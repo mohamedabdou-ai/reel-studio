@@ -2,7 +2,7 @@
 
 Read `instructions/RULES.md` first. Run every command from the studio root. `<slug>` is a lowercase project id such as `ai-tools-01`; every output of one video lives in `Projects/<slug>/`. Work only on the files the creator names; never scan or change `Raw/`.
 
-Several clips from one long recording use `instructions/PODCAST.md` before this per-clip workflow. Audio-only and picture-range revisions use `instructions/PRODUCTION.md`. Eleven styles and the six semantic scene families are available through `instructions/STYLES.md`. Keep existing explicit preferences and approved manifests; a new recommendation does not rewrite an old project.
+This guide is for named recordings. For an animation with no recording, use `instructions/GRAPHICS.md` instead; do not invent a transcript. Read `instructions/EDITORIAL.md` and write the short scene plan before choosing effects. Several clips use `instructions/PODCAST.md`; audio/picture revisions use `instructions/PRODUCTION.md`. `instructions/MOTION-CHOICES.md` and the actual schemas describe supported families and layouts. Keep explicit preferences, approved scope and manual manifests.
 
 ## Live editor throughout the session
 
@@ -36,9 +36,11 @@ node scripts/audio.mjs <source>
 node scripts/auto-cut.mjs --captions Projects/<slug>/transcript/captions.json --wav <wav16k path printed by audio.mjs> --fps <deliveryFps> --out Projects/<slug>/rough-cut/auto-cut.json
 ```
 
-The transcript is a draft: show it to the creator as numbered lines and fix it with them against the recording before it drives captions. The cut proposal only suggests silence, retake and filler cuts; show its table and cut nothing until they approve. It never cuts at or after the recorded sign-off in `PROFILE.json`; a `signoff-not-found` warning means that sign-off is not in these words, so it will be off for this video. At this gate also ask: "What is the comment keyword for this video?" (default: the profile's `ctaDefault`; "none" turns the CTA off for this video).
+The transcript is a draft: correct clear ASR errors against the recording, show numbered lines and resolve uncertain wording before using it as reviewed subtitles. Preserve an already reviewed transcript; do not make the creator approve it again. The cut proposal only suggests silence, retake and filler cuts; show its table and apply only approved changes. Keep existing approved source selections. It never cuts at or after the recorded sign-off in `PROFILE.json`; a `signoff-not-found` warning means that sign-off is not in these words, so it will be off for this video. Resolve this video's CTA only when it applies and has not been settled (default: the profile's `ctaDefault`; "none" turns it off). Do not add a comment keyword or stock sign-off to a source that does not establish one.
 
 ## 4. Brief
+
+If the named recording already has burned-in subtitles, set `captionsVisible: false` in this video's brief before planning the first draft. It maps to `captions.visible: false` in the manifest and hides only the generated subtitle overlay; retain the complete reviewed transcript and its word timing for cuts and `kinetic-text`. Do not empty the transcript or change `PROFILE.json`. The live captions panel has the same visibility choice. Review the actual crop/output to confirm the original burned text stays readable and no second subtitle stream is drawn.
 
 ```
 node scripts/profile.mjs brief --cta <keyword>
@@ -47,15 +49,17 @@ node scripts/profile.mjs brief --no-cta
 
 `--no-cta` disables only the comment keyword for this video. The follow card is independent and keeps its saved setting unless the creator also turns it off for this video.
 
-Paste **all** printed fields (`creator`, `preferences`, and `brand` when present) into `Projects/<slug>/brief.json` (version 1) with `id`, `source` (the intake `edit` or redacted path), `transcript`, `purpose`, `tone`, `sourceKind` (`"screen"` for a screen recording), `captionsReviewedBy`, `endAtSec`, the approved `segments` copied unchanged from `auto-cut.json`, and authored `beats`. Omit `style` unless the creator requests a one-video override; saved fixed style or the automatic recommendation chooses it. Explicit `style`, `fontFamily`, `captionsGrouping`, `captionsPresentation`, `writingStyle` override this video without changing PROFILE.json. `captionsMode` still means transcript input (`words`/`phrases`), not grouping. Open `node scripts/studio.mjs settings` when the creator wants to change defaults. Beat times and `signoffFromSec` stay in source seconds; the director maps them onto the cut. Ending beats come last: `comment` with the keyword, then `follow` with the complete handle, each only when on. Beat copy must come from what the creator actually says.
+Paste **all** printed fields (`creator`, `preferences`, and `brand` when present) into `Projects/<slug>/brief.json` (version 1) with `id`, `source` (the intake `edit` or redacted path), `transcript`, `purpose`, `tone`, `sourceKind` (`"screen"` for a screen recording), `captionsReviewedBy`, `endAtSec`, the approved `segments` copied unchanged from `auto-cut.json`, and authored `beats`. Omit `style` unless the creator requests a one-video override; saved fixed style or the automatic recommendation chooses it. Explicit `style`, `fontFamily`, `captionsGrouping`, `captionsPresentation`, `writingStyle` override this video without changing PROFILE.json. `captionsMode` still means transcript input (`words`/`phrases`), not grouping. Open `node scripts/studio.mjs settings` when the creator wants to change defaults. Beat times and `signoffFromSec` stay in source seconds; the director maps them onto the cut. Ending beats come last: `comment` with the keyword, then `follow` with the complete handle, each only when on. Literal subtitles and `kinetic-text` retain reviewed spoken words. Other beat labels may faithfully summarize/explain them or use reviewed cited evidence; identify illustrative examples. Author the visual action and cue/hold using `EDITORIAL_PLAN.md`, not a sequence of interchangeable cards.
 
-## 5. Plan and preview (gate 2)
+## 5. Plan and preview (creative review)
 
 ```
 node scripts/editor.mjs recommend Projects/<slug>/brief.json
 node scripts/editor.mjs plan Projects/<slug>/brief.json --replace
 node scripts/editor.mjs render Projects/<slug>/edit.json
 ```
+
+Keep the agreed scope: a request to finish after plan/preview approval authorizes the remaining production work without repeating the same gate. Use `instructions/VISUAL-REVIEW.md` to review the difficult passage and complete arc; technical success is separate from creative acceptance.
 
 `plan` prints `notices`: a sign-off that is not in this recording is turned off for this video, and brand colours that had to be adjusted are named. Tell the creator each notice in one line. The plain `render` is the fast preview. Review stills with `node scripts/stills.mjs --comps PreparedEdit --props-file Projects/<slug>/prepared/props.json --at <word start seconds> --out Projects/<slug>/stills`.
 

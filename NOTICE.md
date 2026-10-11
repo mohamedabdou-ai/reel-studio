@@ -23,6 +23,7 @@ Downloaded from Google Fonts under the SIL Open Font License 1.1: Cairo, IBM Ple
 |---|---|---|
 | Remotion (installed into engine/node_modules by npm ci) | Remotion License: free for individuals, non-profits and companies with up to 3 employees; larger companies need a Remotion company license | https://www.remotion.dev/license |
 | MediaPipe Tasks Vision (@mediapipe/tasks-vision) | Apache-2.0 | https://github.com/google-ai-edge/mediapipe |
+| Lucide React icons (lucide-react 1.48.0) | ISC; Feather-derived icons retain their MIT attribution. Full text: [Lucide license](third-party/lucide/LICENSE) | https://lucide.dev/license |
 | whisper.cpp (downloaded on first transcription) | MIT | https://github.com/ggml-org/whisper.cpp |
 | OpenAI Whisper model weights (downloaded on first transcription) | MIT | https://github.com/openai/whisper |
 | Other npm packages in engine/node_modules | Each package's own license file | https://www.npmjs.com |

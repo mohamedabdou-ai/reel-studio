@@ -26,9 +26,10 @@ function git(root, ...args) {
   return result.stdout.trim();
 }
 
-test('2.1 release retains the existing profile and manifest formats', async () => {
+test('the current release retains existing profile and manifest formats and a matching runtime version', async () => {
   const lock = JSON.parse(await readFile(new URL('../versions.lock.json', import.meta.url), 'utf8'));
-  assert.equal(lock.edition, '2.1.0');
+  const runtime = JSON.parse(await readFile(new URL('../engine/package.json', import.meta.url), 'utf8'));
+  assert.equal(lock.engine, runtime.version);
   assert.equal(compileEdit(oldManifest).durationInFrames, 120);
   const profile = JSON.parse(await readFile(new URL('../PROFILE.example.json', import.meta.url), 'utf8'));
   profile.schemaVersion = 2;

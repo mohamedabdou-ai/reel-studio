@@ -1,6 +1,10 @@
 # Techniques
 
-What the runtime can do, where it lives, and its limits. `technique-catalog.json` is the same list as data.
+Use `EDITORIAL.md` to design the explanation, `MOTION-CHOICES.md` to select a supported mechanism, and `VISUAL-REVIEW.md` to review the result. This guide describes runtime capabilities; `technique-catalog.json` is the technical inventory.
+
+- **Authored graphics** (`scripts/editor.mjs graphics`): a validated source-free specification creates a generated silent base and a normal editable manifest. No fabricated transcript; see `GRAPHICS.md`.
+- **Motion concepts** (`engine/src/motion-concepts/`): all fifteen are normal takeover `motion-concept` scenes with their existing typed config and duration floors.
+- **Recorded kinetic text and evidence comparison** (`engine/src/creative-kit/semantic/`): literal recorded word indices for emphasis; supplied image assets for before/after wipes.
 
 - **Semantic scenes** (`engine/src/creative-kit/semantic/`): token lens, shared-scale meter, ticket offer, comment stack, chapter quote and route stops with local images. Authored reveals follow reviewed speech. Optional magazine covers use a supplied verified transparent PNG; no automatic masking.
 - **Resumable render** (`scripts/lib/render-chunks.mjs`): bounded chunks, exact input/preset cache identity, decode/black checks and verified resume. Full renders choose this automatically when long or resource constrained.

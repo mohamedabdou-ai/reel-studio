@@ -4,7 +4,8 @@ import { px, useClock } from "../core/motion";
 import type { DigitSet } from "../core/numbers";
 import { CanvasFill, FRAME, contentBox, useProbe, zone, type ProfileId } from "../core/safe";
 import { isArabic } from "../core/type";
-import { CreativeFonts, FitText, SceneCaption, getSceneTheme, type SceneTheme } from "../creative-kit/primitives";
+import { CreativeFonts, FitText, SceneCaption, type SceneTheme } from "../creative-kit/primitives";
+import {useSceneTheme} from '../creative-kit/chapter-theme';
 import type { StyleFamily } from "../creative-kit/schema";
 import { uiColors } from "../creative-kit/ui-chat";
 import { mixColor, withAlpha } from "./color.ts";
@@ -84,7 +85,7 @@ export const ConceptStage: React.FC<ConceptStageProps> = ({
     const problems = captionIssues(caption);
     if (problems.length > 0) throw new Error(`motion-concepts: ${problems.join("; ")}: ${JSON.stringify(caption)}`);
   }
-  const theme = React.useMemo(() => getSceneTheme(style), [style]);
+  const theme = useSceneTheme(style);
   const value = React.useMemo<ConceptContext>(() => ({ style, theme, box: CONCEPT_BOX, mode, backdrop }), [style, theme, mode, backdrop]);
   return (
     <Ctx.Provider value={value}>

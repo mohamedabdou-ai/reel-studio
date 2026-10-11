@@ -1,9 +1,11 @@
 import {spawn, spawnSync} from 'node:child_process';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
+import {pathToFileURL} from 'node:url';
 import {isStoreEdition} from './studio-git.mjs';
 import {browserHomeProblem} from './studio-setup.mjs';
 import {readSetupState} from './studio-state.mjs';
+import {checkEngineDependencies} from './engine-dependencies.mjs';
 
 export const CHECK_LABELS = Object.freeze({
   platform: 'نوع الجهاز (لازم ويندوز 64-bit)',
@@ -11,6 +13,7 @@ export const CHECK_LABELS = Object.freeze({
   location: 'مكان فولدر الاستوديو (فيه package.json في فولدر فوقه)',
   setup: 'التجهيز',
   packages: 'مكتبات المونتاج',
+  editor: 'واجهة المونتاج',
   browser: 'متصفح الرندر',
   ffmpeg: 'FFmpeg',
   fonts: 'الخطوط',
@@ -32,7 +35,18 @@ export function doctorProps(profile) {
   };
 }
 
-export async function quickChecks(root, {lock, gitExe, readProfile, runsTool = toolRuns, locationProblem = browserHomeProblem}) {
+export async function checkEditor(root, {buildEditor = null} = {}) {
+  try {
+    const build = buildEditor ?? (await import(pathToFileURL(path.join(root, 'scripts', 'lib', 'review-editor-build.mjs')).href)).buildReviewApp;
+    const result = await build();
+    if (!result.files?.has('/app.js') || !result.files.has('/app.css')) throw new Error('The editor build did not produce its JavaScript and CSS.');
+    return {ok: true, ms: result.ms, bytes: result.bytes, panels: result.panels, warnings: result.warnings};
+  } catch (error) {
+    return {ok: false, error: error.message};
+  }
+}
+
+export async function quickChecks(root, {lock, gitExe, readProfile, runsTool = toolRuns, locationProblem = browserHomeProblem, buildEditor = null}) {
   const at = (relative) => path.join(root, ...relative.split('/'));
   const [major, minor] = process.versions.node.split('.').map(Number);
   const state = await readSetupState(root);
@@ -43,7 +57,7 @@ export async function quickChecks(root, {lock, gitExe, readProfile, runsTool = t
     node: {ok: major > 22 || (major === 22 && minor >= 20), actual: process.versions.node},
     location: {ok: misplaced === null, error: misplaced},
     setup: {ok: state.status === 'done', actual: state.status},
-    packages: {ok: await exists(at('engine/node_modules/remotion/package.json'))},
+    packages: await checkEngineDependencies(root),
     browser: {ok: (await exists(at(`engine/node_modules/.remotion/${lock.browser.exe}`))) && (await exists(at(`.remotion/${lock.browser.exe}`)))},
     ffmpeg: {ok: runsTool(at('Tools/bin/ffmpeg.exe')) && runsTool(at('Tools/bin/ffprobe.exe'))},
     fonts: {ok: false, missing: []},
@@ -52,6 +66,7 @@ export async function quickChecks(root, {lock, gitExe, readProfile, runsTool = t
     git: {ok: store || !!gitExe, warnOnly: true},
     clean: {ok: true, warnOnly: true, dirty: []},
   };
+  checks.editor = checks.packages.ok ? await checkEditor(root, {buildEditor}) : {ok: false, skipped: true, error: 'Engine packages are incomplete.'};
   for (const font of lock.fonts) if (!(await exists(at(`engine/public/fonts/${font.file}`)))) checks.fonts.missing.push(font.file);
   checks.fonts.ok = checks.fonts.missing.length === 0 && (await exists(at('engine/public/fonts/manifest.json')));
   for (const model of lock.models) if (!(await exists(at(model.path)))) checks.models.missing.push(model.path);
@@ -67,8 +82,8 @@ export async function quickChecks(root, {lock, gitExe, readProfile, runsTool = t
     checks.clean.dirty = (status.stdout ?? '').split('\n').map((line) => line.trim()).filter(Boolean);
     checks.clean.ok = status.status === 0 && checks.clean.dirty.length === 0;
   }
-  const failed = Object.entries(checks).filter(([, check]) => !check.ok && !check.warnOnly).map(([id]) => id);
-  const warnings = Object.entries(checks).filter(([, check]) => !check.ok && check.warnOnly).map(([id]) => id);
+  const failed = Object.entries(checks).filter(([, check]) => !check.ok && !check.warnOnly && !check.skipped).map(([id]) => id);
+  const warnings = Object.entries(checks).filter(([, check]) => !check.ok && check.warnOnly && !check.skipped).map(([id]) => id);
   return {ok: failed.length === 0, failed, warnings, checks};
 }
 

@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "id": "idea-to-results",
+  "style": "paper-collage",
+  "fps": 30,
+  "durationInFrames": 600,
+  "reviewedBy": "Illustrative example review",
+  "scenes": [
+    {
+      "id": "gather-board-focus",
+      "family": "message-board",
+      "fromFrame": 0,
+      "durationInFrames": 600,
+      "layout": "takeover",
+      "motion": "land",
+      "data": {
+        "initialTitle": "رسائل كتير في كذا مكان.",
+        "boardTitle": "نجمعها في لوحة واحدة.",
+        "focusTitle": "ونطلع أهم نتيجة قدامنا.",
+        "closingTitle": "جرّبه على مثال صغير.",
+        "items": [
+          {
+            "id": "message-a",
+            "label": "سؤال",
+            "detail": "مثال توضيحي"
+          },
+          {
+            "id": "message-b",
+            "label": "ملاحظة",
+            "detail": "مثال توضيحي"
+          },
+          {
+            "id": "message-c",
+            "label": "خلاصة",
+            "detail": "مثال توضيحي"
+          }
+        ],
+        "focusIndex": 2,
+        "gatherFrame": 90,
+        "gatherDurationFrames": 90,
+        "focusFrame": 300,
+        "focusDurationFrames": 90,
+        "closingFrame": 480
+      }
+    }
+  ]
+}

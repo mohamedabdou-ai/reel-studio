@@ -259,6 +259,11 @@ export const CaptionsPanel: React.FC<PanelProps> = ({ manifest, apply, playhead,
       </div>
 
       <Section title="المراجعة والإزاحة">
+        <label className="cp-follow"><input type="checkbox" checked={manifest.captions.visible!==false}
+          onChange={(e)=>{const visible=e.target.checked;run("ظهور الكابشن المولّد",(m)=>ops.setCaptionVisibility(m,visible),{coalesce:false});}}/>
+          إظهار الكابشن المولّد على الفيديو
+        </label>
+        <p className="pk-muted">لو الكلام مكتوب أصلًا على المصدر، اقفل الاختيار ده. الكلمات وتوقيتاتها ومراجعتها هتفضل محفوظة.</p>
         <div className="cp-review">
           <Badge text={reviewed ? `reviewed · ${manifest.captions.reviewer ?? ""}` : "draft"} tone={reviewed ? undefined : "warn"} />
           <input dir="auto" placeholder="اسم الـ reviewer" value={reviewer} aria-label="اسم الـ reviewer" onChange={(e) => setReviewer(e.target.value)} />

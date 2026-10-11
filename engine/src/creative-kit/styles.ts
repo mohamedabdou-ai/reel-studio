@@ -3,7 +3,7 @@ export type StyleId=(typeof STYLE_IDS)[number];
 
 export const EDITION_STYLE_IDS:readonly StyleId[]=STYLE_IDS;
 
-export const EDITION_DEFAULT_STYLE_IDS:readonly StyleId[]=['split-canvas','section-deck'];
+export const EDITION_DEFAULT_STYLE_IDS:readonly StyleId[]=STYLE_IDS;
 export type StyleUseCase='explainer'|'case-study'|'tutorial'|'comparison'|'opinion'|'story';
 export type StyleGrammar={typography:'product-sans'|'heavy-poster'|'naskh-receipt'|'mixed-paper'|'serif-verdict'|'serif-editorial';card:'rounded-ui'|'ink-frame'|'receipt-sheet'|'taped-paper'|'verdict-board'|'offset-plate'|'glass-panel'|'perforated-ticket'|'magazine-rule'|'route-paper';annotation:'accent-rule'|'terminal-period'|'signal-strip'|'brush-rule'|'tape-tabs'|'verdict-divider'|'yellow-marker'|'lens-rim'|'ticket-stub'|'chapter-rule'|'route-marker';composition:'split-panel'|'section-stack'|'poster-lockup'|'claim-receipt'|'collage-stack'|'two-column-board'|'editorial-spread'|'aurora-lens'|'ticket-stack'|'magazine-column'|'route-map';caption:'pill'|'ink-strip'|'boxless'|'paper-label';motion:'land'|'stagger'|'quiet'};
 export type StyleProfile={id:StyleId;label:string;description:string;useCases:readonly StyleUseCase[];source:{document:string;confidence:'high'|'medium'|'low';references:readonly {file:string;timecodes:readonly string[];observed:string}[];limitations:readonly string[]};approval:{status:'approved-style'|'approved-edit'|'not-style-approved';scope:string;evidence:string};implementation:'implemented';grammar:StyleGrammar};

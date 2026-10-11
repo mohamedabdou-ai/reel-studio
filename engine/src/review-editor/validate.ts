@@ -29,6 +29,7 @@ export function describePath(manifest: unknown, path: (string | number)[]): stri
 
 
 const KNOWN: [RegExp, string][] = [
+  [/^Caption timing needs review/, "توقيت الكلمات مش كافي لعرضها على فريمات الفيديو. راجع التوقيت أو تجميع الكابشن."],
   [/^Source ranges must be ordered/, "القطع لازم تكون مترتبة ومش متداخلة وجوّه الفيديو الأصلي."],
   [/^Prepared edits support up to 10 minutes/, "الـ edit أطول من ١٠ دقايق (الحد الأقصى)."],
   [/^Scene IDs must be unique/, "في مشهدين ليهم نفس الـ id. كل مشهد لازم يكون اسمه لوحده."],
@@ -88,7 +89,7 @@ function delivery(m: EditManifest, compiledIssues: number): Issue[] {
   if (m.purpose !== "delivery") add("purpose", "الـ purpose لازم يكون delivery عشان التصدير النهائي.", ["purpose"], "Delivery requires manifest purpose: delivery.");
   if (m.captions.status !== "reviewed") add("captions-reviewed", "الكابشن لازم يتراجع وتتعلّم reviewed قبل التصدير النهائي.", ["captions", "status"], "Delivery requires reviewed captions.");
   else if (!m.captions.reviewer?.trim()) add("reviewer", "لازم اسم الـ reviewer للكابشن.", ["captions", "reviewer"], "captions reviewer must be nonblank text.");
-  if (!m.captions.words.length) add("captions-empty", "مفيش كلمات في الكابشن.", ["captions", "words"], "Delivery requires nonempty reviewed caption words.");
+  if (m.contentMode !== 'graphics' && !m.captions.words.length) add("captions-empty", "مفيش كلمات في الكابشن.", ["captions", "words"], "Delivery requires nonempty reviewed caption words.");
   if (!m.scenes.length) add("scenes", "مفيش مشاهد.", ["scenes"], "Delivery requires authored scenes.");
   if (m.source.fps < spec.video.fps.organicMin) add("fps", `الـ fps (${m.source.fps}) أقل من ${spec.video.fps.organicMin}: إنستجرام بيرفضه.`, ["source", "fps"], `PreparedEdit delivery needs at least ${spec.video.fps.organicMin} fps.`);
   if (compiledIssues) add("cut-review", "قص بيقطع كلمة من الكابشن. راجع حدود القص قبل التصدير.", ["segments"], "Delivery caption cuts need review before rendering.");

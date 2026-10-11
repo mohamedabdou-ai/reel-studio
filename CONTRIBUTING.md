@@ -56,6 +56,18 @@ node scripts/publication-check.mjs --history
 Enable the local pre-push checks before publishing: `git config --local core.hooksPath .githooks`. The publication check reports file, line and rule names without printing rejected content. It checks the reachable history as well as the selected files.
 
 For documentation changes, check that links, file paths and commands exist.
+The current public checkout is the maintained source for releases. Keep one
+canonical Reel Studio skill under `.agents/skills/reel-studio/` and run
+`node scripts/sync-assistant-guides.mjs --check` before publishing; generate the
+Claude copy with the same command without `--check`.
+
+Before publishing an install or runtime change, commit the candidate locally and
+run `node scripts/verify-clean-install.mjs --ref HEAD --cache-from . --doctor`.
+This creates a new independent checkout and installs its own packages; it does
+not borrow an owner's `node_modules` or completed setup state. Review the actual
+editor and delivered media as well as the test logs. Earlier curated packaging
+snapshots are not a substitute for the current public source and must never
+overwrite a newer checkout.
 Setup tests need a temporary directory with no `package.json` in its parent
 folders, just as a normal studio installation needs an independent folder.
 For settings changes, preserve existing profiles and reviewed defaults. For a

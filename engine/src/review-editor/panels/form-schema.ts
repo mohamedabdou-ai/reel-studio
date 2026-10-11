@@ -2,6 +2,8 @@ import { z } from "zod";
 import { introSchema, proofSchema, processSchema, comparisonSchema, commentSchema, followSchema } from "../../creative-kit/schema.ts";
 import { kineticSceneVariants } from "../../creative-kit/kinetic/schema.ts";
 import { librarySceneVariants } from "../../motion-library/schema.ts";
+import {semanticSceneVariants} from '../../creative-kit/semantic/schema.ts';
+import {screenRecordingVariants} from '../../screen-recording/schema.ts';
 import { getIn, type Path } from "../ops/paths.ts";
 
 
@@ -14,7 +16,7 @@ const FAMILY_DATA: Record<string, z.ZodType> = {
   comment: commentSchema,
   follow: followSchema,
 };
-for (const variant of [...kineticSceneVariants, ...librarySceneVariants]) {
+for (const variant of [...kineticSceneVariants, ...librarySceneVariants,...semanticSceneVariants,...screenRecordingVariants]) {
   const shape = (variant as any).shape;
   FAMILY_DATA[shape.family.value as string] = shape.data as z.ZodType;
 }
@@ -37,6 +39,10 @@ const LABELS: Record<string, string> = {
   focusFrame: "فريم التركيز", settleFrames: "فريمات الاستقرار", moveFrames: "فريمات الحركة", keys: "مفاتيح الكاميرا", cursor: "مسار الماوس", callouts: "الإشارات",
   x: "x", y: "y", width: "العرض", height: "الارتفاع", text: "النص", untilFrame: "لحد فريم", click: "ضغطة", rect: "المستطيل", sourceSha256: "بصمة المصدر (sha256)",
   sourceFromFrame: "أول فريم في المصدر", frames: "عدد الفريمات",
+  initialTitle: "عنوان البداية", boardTitle: "عنوان اللوحة", focusTitle: "عنوان النتيجة", closingTitle: "عنوان النهاية",
+  focusIndex: "العنصر المختار (0 هو الأول)", gatherFrame: "بداية التجميع", gatherDurationFrames: "مدة التجميع",
+  focusDurationFrames: "مدة إبراز النتيجة", closingFrame: "بداية النهاية", concept: "فكرة الحركة", config: "تفاصيل الحركة",
+  sourceIndices: "الكلمات المختارة من التفريغ", revealFrame: "بداية المقارنة", revealDurationFrames: "مدة المقارنة",
 };
 export const fieldLabel = (key: string): string => LABELS[key] ?? key;
 

@@ -6,6 +6,12 @@ import {FitText,SceneCanvas,SceneHeader,SceneCard,getSceneGeometry,type SceneGeo
 import {useSceneTheme} from '../chapter-theme';
 import type {StyleFamily} from '../schema';
 import {semanticSceneSchema,type SemanticScene} from './schema';
+import {CompareWipe} from '../compare';
+import {SpokenLine} from '../kinetic-words';
+import {Recoil} from '../../core/accents';
+import type {MappedWord} from '../../prepared-edit/timeline.ts';
+import {getConcept} from '../../motion-concepts/registry';
+import {MessageBoard} from './MessageBoard';
 
 type Data<F extends SemanticScene['family']>=Extract<SemanticScene,{family:F}>['data'];
 type Common={theme:SceneTheme;g:SceneGeometry;motion:SemanticScene['motion']};
@@ -143,12 +149,47 @@ const RouteStops:React.FC<Common&{data:Data<'route-stops'>}>=({data,theme,g,moti
   </>;
 };
 
-export const SemanticSceneRenderer:React.FC<{scene:SemanticScene;style:StyleFamily}>=({scene:input,style})=>{
+const EvidenceWipe:React.FC<Common&{data:Data<'evidence-wipe'>}>=({data,theme,g})=>{
+  const {frame}=useClock();
+  const progress=EASE.inOut(clamp01((frame-data.revealFrame+1)/data.revealDurationFrames));
+  return <>
+    <CompareWipe before={{...data.before,kind:'image'}} after={{...data.after,kind:'image'}}
+      box={{x:8,y:g.bodyTop+8,width:g.width-16,height:g.bodyHeight-82}} progress={progress} dir={data.dir}
+      labels={{before:data.before.label,after:data.after.label}} fit="contain" theme={theme}/>
+    <Footer text={data.footer} theme={theme} g={g}/>
+  </>;
+};
+
+const KineticText:React.FC<{scene:Extract<SemanticScene,{family:'kinetic-text'}>;theme:SceneTheme;g:SceneGeometry;words:readonly MappedWord[]}>=({scene,theme,g,words})=>{
+  const selected=words.filter(word=>scene.data.sourceIndices.includes(word.sourceIndex));
+  const hits=selected.filter(word=>scene.data.emphasis?.some(mark=>mark.sourceIndex===word.sourceIndex)).map(word=>word.fromFrame-scene.fromFrame);
+  return <>
+    <SceneCanvas theme={theme} geometry={g}>
+      <div style={{position:'absolute',left:0,top:34}}><FitText text={scene.data.kicker} theme={theme} role="label" width={g.width} height={34} size={24} min={18} lines={1} color={theme.accent}/></div>
+      <div style={{position:'absolute',left:0,top:87}}><FitText text={scene.data.title} theme={theme} width={g.width} height={76} size={34} min={20} lines={2} color={theme.dim}/></div>
+    </SceneCanvas>
+    <Recoil hits={hits} seed={scene.id} ampPx={3} rotateDeg={0} decayF={8}>
+      <SpokenLine words={selected} origin={scene.fromFrame} untilFrame={scene.durationInFrames} lang={scene.data.lang}
+        font={{fontFamily:theme.display,fontSize:scene.layout==='split'?74:100,fontWeight:800}}
+        box={{left:g.left+12,top:g.top+g.bodyTop+20,width:g.width-24}} color={theme.text} accent={theme.accent}
+        emphasis={scene.data.emphasis} enter={scene.data.enter} maxLines={scene.layout==='split'?2:4} minSize={28} align="start"/>
+    </Recoil>
+  </>;
+};
+
+export const SemanticSceneRenderer:React.FC<{scene:SemanticScene;style:StyleFamily;words?:readonly MappedWord[]}>=({scene:input,style,words=[]})=>{
   const scene=semanticSceneSchema.parse(input),theme=useSceneTheme(style),g=getSceneGeometry(style,scene.layout),motion=scene.motion;
+  if(scene.family==='message-board')return <MessageBoard id={scene.id} data={scene.data} theme={theme} geometry={g}/>;
+  if(scene.family==='motion-concept'){
+    const Component=getConcept(scene.data.concept).Component;
+    return <Component style={style} data={scene.data.config} mode="once" backdrop="canvas"/>;
+  }
+  if(scene.family==='kinetic-text')return <KineticText scene={scene} theme={theme} g={g} words={words}/>;
   const common={theme,g,motion};
   const heading=scene.family==='chapter-quote'?{kicker:`CHAPTER ${scene.data.chapter}`,title:scene.data.title}:scene.data;
   let body:React.ReactNode;
   switch(scene.family){
+    case 'evidence-wipe':body=<EvidenceWipe {...common} data={scene.data}/>;break;
     case 'token-lens':body=<TokenLens {...common} data={scene.data}/>;break;
     case 'meter-receipt':body=<MeterReceipt {...common} data={scene.data}/>;break;
     case 'ticket-offer':body=<TicketOffer {...common} data={scene.data}/>;break;

@@ -2,6 +2,10 @@ type Range={fromFrame:number;toFrame:number};
 type Scene={fromFrame:number;durationInFrames:number;layout:string};
 type VisibilityEdit={scenes:Scene[];segments:Range[]};
 
+export function captionOverlayVisible(edit:{contentMode?:string;captions:{visible?:boolean}}):boolean{
+  return edit.contentMode!=='graphics' && edit.captions.visible!==false;
+}
+
 
 export function defaultFootageGeometry({layout,canvasHeight,aspect,scale,focusX,focusY}:{layout:string;canvasHeight:number;aspect:number;scale:number;focusX:number;focusY:number}){
   const windowTop=layout==='presenter'?0:canvasHeight,windowHeight=1920-windowTop;

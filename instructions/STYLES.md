@@ -1,6 +1,6 @@
 # Styles
 
-This edition ships eleven styles, driven by `node scripts/editor.mjs` and rendered by `PreparedEdit`. Choose one per video with the creator. The recommendation preserves the original two defaults for ordinary briefs and includes a new style only when authored semantic beats qualify it. Explicit choices always win. A style is a direction: use the scene families that carry each sentence's meaning.
+This edition ships eleven styles, driven by `node scripts/editor.mjs` and rendered by `PreparedEdit`. Choose one per video with the creator. Recommendations consider all eleven directions and the authored scene mechanisms; explicit/profile-fixed choices always win. Use `EDITORIAL.md` to plan the idea and `MOTION-CHOICES.md` to check real family/layout contracts. A direction is not a fixed montage.
 
 Two styles are the proven pair, refined on real footage first: **split-canvas** and **section-deck**. Five are newer: **kinetic-paper**, **calligraphic-receipts**, **paper-collage**, **judgment-board** and **stepped-editorial**. A newer style keeps its own palette (the plan adds a notice that brand colours do not apply) and every edit still needs the creator's own creative approval. For a newer style always show the fast preview (gate 2) first. If it shows clipped text, a broken layout or an unreadable frame, say so in one line and offer a proven style instead. Never deliver a style whose preview failed.
 
@@ -79,10 +79,13 @@ Two styles are the proven pair, refined on real footage first: **split-canvas** 
 
 ## Semantic scenes
 
-All six new families support explicit `split` or `takeover`; their default is `takeover`. Reveal times are integer frames relative to the scene, authored from reviewed speech. They must be ordered and inside the scene. Read `engine/src/creative-kit/semantic/schema.ts` for the exact editable data contracts and add a beat using its family as `intent`. The live editor includes editable templates for every family.
+The original six semantic families support `split` or `takeover`; their default is `takeover`. `kinetic-text` and `evidence-wipe` also support both; `motion-concept` is takeover-only. See `MOTION-CHOICES.md` for data contracts and `GRAPHICS.md` for source-free authoring. Reveal times are integer frames relative to the scene, authored from reviewed speech. They must be ordered and inside the scene. Read `engine/src/creative-kit/semantic/schema.ts` for the exact editable data contracts and add a beat using its family as `intent`. The live editor includes editable templates for every family.
 
 | Family | Inputs |
 | --- | --- |
+| `motion-concept` | `{concept, config}` selects any of the fifteen concept schemas; takeover only and scaled minimum duration. |
+| `kinetic-text` | Literal recorded `sourceIndices`, language, entrance and optional emphasis; no synthetic transcript. |
+| `evidence-wipe` | Supplied before/after images with exact dimensions, labels, reveal frame/duration and direction. |
 | `token-lens` | Heading, 1–3 labelled groups of 1–6 pieces, a real selected group/piece and a footer. This is illustrative grouping unless actual tokenizer results are supplied. |
 | `meter-receipt` | Two values on the same positive maximum, unit and real source label. |
 | `ticket-offer` | Real invitation/offer label, value, detail, reveal frame and conditions. |

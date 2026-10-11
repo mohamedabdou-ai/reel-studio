@@ -137,7 +137,7 @@ const commands = {
     const result = rendered.report;
     const passed = rendered.code === 0 && result?.ok === true && result.igCheck?.ok === true && result.safe?.ok === true;
     if (!passed) return report(`فيديو التجربة ما عداش فحوصات التسليم — التفاصيل في ${DOCTOR_DIR}/render.log.`, {ok: false, code: rendered.code, log: `${DOCTOR_DIR}/render.log`, igCheck: result?.igCheck ?? null}, 3);
-    return report(`فحص النظام تمام ✓ — افتح ${DOCTOR_DIR}/doctor.mp4 وشوف فيديو التجربة باسمك وألوانك.`, {ok: true, video: `${DOCTOR_DIR}/doctor.mp4`, igCheck: result.igCheck.summary, safe: result.safe, warnings: quick.warnings});
+    return report(`فحص النظام تمام ✓ — افتح ${DOCTOR_DIR}/doctor.mp4 وشوف فيديو التجربة باسمك وألوانك.`, {ok: true, video: `${DOCTOR_DIR}/doctor.mp4`, editor: quick.checks.editor, igCheck: result.igCheck.summary, safe: result.safe, warnings: quick.warnings});
   },
 };
 

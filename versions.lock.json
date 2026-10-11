@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "edition": "2.1.0",
-  "engine": "1.0.0",
+  "edition": "2.2.0",
+  "engine": "1.1.0",
   "node": {
     "version": "22.20.0",
     "url": "https://nodejs.org/dist/v22.20.0/node-v22.20.0-win-x64.zip",
@@ -476,6 +476,11 @@
     }
   ],
   "notices": [
+    {
+      "name": "Lucide React icons (lucide-react 1.48.0)",
+      "license": "ISC; Feather-derived icons retain their MIT attribution",
+      "homepage": "https://lucide.dev/license"
+    },
     {
       "name": "Remotion (installed into engine/node_modules by npm ci)",
       "license": "Remotion License: free for individuals, non-profits and companies with up to 3 employees; larger companies need a Remotion company license",

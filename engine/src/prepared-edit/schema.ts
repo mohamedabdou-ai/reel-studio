@@ -11,6 +11,7 @@ import {pipAllowed,PIP_REACH} from '../core/pip.ts';
 import {TRANSITION_KINDS,TRANSITION_DIRS,graphicsTransitionIssues} from './graphics-transitions.ts';
 import {LAYOUT_TRANSITION_MIN_FRAMES,layoutTransitionIssues} from './footage.ts';
 import {CAPTION_EMPHASIS_KINDS,captionEmphasisIssues} from './caption-emphasis.ts';
+import {compileEdit} from './timeline.ts';
 
 const frame = z.number().int().min(0).max(4320000);
 const slug = z.string().regex(/^[a-z0-9][a-z0-9-]{0,63}$/);
@@ -81,6 +82,7 @@ const CAPTION_BAND_HALF=64;
 import {FONT_CHOICES, CAPTION_GROUPING, CAPTION_PRESENTATION, WRITING_STYLES} from '../core/preference-options.ts';
 export const editManifestSchema = z.object({
   version:z.literal(1), id:slug, purpose:z.enum(["test","delivery"]),
+  contentMode:z.literal('graphics').optional(),
   style:styleSchema,
   fontFamily:z.enum(FONT_CHOICES).optional(),
   writingStyle:z.enum(WRITING_STYLES).optional(),
@@ -93,6 +95,7 @@ export const editManifestSchema = z.object({
   }).strict(),
   segments:z.array(z.object({fromFrame:frame,toFrame:frame.min(1)}).strict()).min(1).max(300),
   captions:z.object({
+    visible:z.boolean().optional(),
     status:z.enum(["draft","reviewed"]), reviewer:z.string().min(1).max(200).optional(),
     mode:z.enum(["words","phrases"]).optional(),
     grouping:z.enum(CAPTION_GROUPING).optional(),
@@ -119,6 +122,18 @@ export const editManifestSchema = z.object({
     last=s.toFrame; total+=s.toFrame-s.fromFrame;
   }
   if(total/m.source.fps>600) issue("Prepared edits support up to 10 minutes.");
+  if(m.contentMode==='graphics'){
+    if(m.presenter!==false)issue('Graphics mode requires presenter:false');
+    if(m.captions.status!=='reviewed' || !m.captions.reviewer?.trim())issue('Graphics mode requires reviewed copy and its reviewer');
+    if(m.captions.words.length)issue('Graphics mode must not fabricate a caption transcript');
+    if(m.footage || m.camera.length || m.layoutTransitions?.length)issue('Graphics mode cannot carry presenter framing or camera tracks');
+    let cursor=0;
+    for(const scene of m.scenes){
+      if(scene.layout!=='takeover' || scene.fromFrame!==cursor)issue('Graphics takeover scenes must cover the complete timeline without gaps');
+      cursor=scene.fromFrame+scene.durationInFrames;
+    }
+    if(cursor!==total)issue('Graphics takeover scenes must cover the complete timeline without gaps');
+  }
   last=0; const ids=new Set<string>();
   for(const s of m.scenes){
     if(ids.has(s.id)) issue("Scene IDs must be unique."); ids.add(s.id);
@@ -126,7 +141,20 @@ export const editManifestSchema = z.object({
     last=s.fromFrame+s.durationInFrames;
     const semantic=semanticSceneSchema.safeParse(s);
     if(semantic.success){
-      for(const message of validateSemanticTiming(semantic.data))issue(message);
+      for(const message of validateSemanticTiming(semantic.data,m.source.fps))issue(message);
+      if(semantic.data.family==='kinetic-text'){
+        let compiled:ReturnType<typeof compileEdit>|undefined;
+        try{compiled=compileEdit(m as EditManifest);}
+        catch(error){ctx.addIssue({code:'custom',path:['captions','words'],message:`Caption timing needs review: ${error instanceof Error?error.message:'Could not map the word timestamps to video frames.'}`});}
+        if(compiled){
+          const mapped=compiled.words,indices=semantic.data.data.sourceIndices;
+          for(const index of indices){
+            const word=mapped.find(item=>item.sourceIndex===index);
+            if(!word || word.fromFrame<s.fromFrame || word.toFrame>s.fromFrame+s.durationInFrames)issue(`${s.id}: selected recorded words must survive the cuts and stay inside the scene`);
+          }
+          if(compiled.issues.some(problem=>indices.includes(problem.wordIndex)))issue(`${s.id}: selected recorded words cannot intersect a cut boundary`);
+        }
+      }
       if(semantic.data.family==='chapter-quote' && semantic.data.data.cover && m.style!=='magazine-interview')issue(`${s.id}: magazine cover is available only in magazine-interview`);
     }
     const library=librarySceneSchema.safeParse(s);

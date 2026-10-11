@@ -1,6 +1,6 @@
 import React from "react";
 import { SafeRoot, type SafeProps } from "../core/safe";
-import { getSceneTheme } from "../creative-kit/primitives";
+import {useSceneTheme} from '../creative-kit/chapter-theme';
 import type { StyleFamily } from "../creative-kit/schema";
 import { conceptMeta, type ConceptMeta } from "./catalog.ts";
 import { getConcept, type AnyConcept } from "./registry";
@@ -36,7 +36,7 @@ export const conceptLabDefaults = (concept: Pick<AnyConcept, "id">): { guides: f
 const NOTE_SIZE = 20;
 
 const SampleNote: React.FC<{ id: ConceptId; style: StyleFamily; mode: ConceptMode }> = ({ id, style, mode }) => {
-  const theme = getSceneTheme(style);
+  const theme = useSceneTheme(style);
   return (
     <Dressing>
       <div

@@ -12,3 +12,22 @@ jobs:
           persist-credentials: false
       - run: node scripts/publication-check.mjs
       - run: node scripts/publication-check.mjs --history
+  editor:
+    name: Editor after a clean installation
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22.20.0'
+          package-manager-cache: false
+      - name: Install independent engine packages and fonts
+        run: node scripts/studio.mjs setup --foreground --steps folders,packages,fonts
+      - name: Typecheck the installed engine
+        working-directory: engine
+        run: node node_modules/typescript/bin/tsc --noEmit
+      - name: Check editor readiness and live editing
+        run: node --test --test-concurrency=1 tests/engine-dependencies.test.mjs tests/clean-install.test.mjs tests/review-live-api.test.mjs tests/review-live-follow.test.mjs tests/review-live-save.test.mjs tests/editorial-scenes.test.mjs tests/motion-primitives.test.mjs tests/graphics-audio.test.mjs tests/editor-runtime-options.test.mjs

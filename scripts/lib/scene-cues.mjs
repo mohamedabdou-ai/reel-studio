@@ -37,6 +37,10 @@ export function sceneCues(scene) {
 
   add(0, 'transition');
   switch (scene.family) {
+    case 'message-board':
+      add(data.gatherFrame,'reveal');add(data.focusFrame,'swap');if(data.closingFrame!==undefined)add(data.closingFrame,'reveal');break;
+    case 'kinetic-text':add(0,'type');break;
+    case 'evidence-wipe':add(data.revealFrame,'swap');break;
     case 'token-lens':
       for(const group of list(data.groups))add(group?.atFrame,'reveal');
       add(data.lens?.atFrame,'swap');

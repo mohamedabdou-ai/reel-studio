@@ -20,7 +20,7 @@ export function mixOutputPath(value) {
 }
 
 export function normalizeMixOptions(args) {
-  const allowed = new Set(['_', 'video', 'sfx', 'out', 'under', 'lufs', 'tp', 'ceilPad', 'tighten', 'style', 'report', 'voice', 'help']);
+  const allowed = new Set(['_', 'video', 'sfx', 'out', 'under', 'lufs', 'tp', 'ceilPad', 'tighten', 'style', 'report', 'voice', 'graphics-audio', 'help']);
   for (const key of Object.keys(args)) if (!allowed.has(key)) throw new Error(`Unknown mix option --${key}.`);
   const input = (name, required = true) => {
     if (!required && args[name] === undefined) return null;
@@ -52,10 +52,48 @@ export function normalizeMixOptions(args) {
   }
   if (args.tighten !== undefined && ![true, false, '1', '0', 'on', 'off'].includes(args.tighten)) throw new Error('--tighten accepts 1/on or 0/off.');
   const voice = parseVoiceMode(args.voice);
+  const graphicsAudio = args['graphics-audio'] ?? false;
+  if (typeof graphicsAudio !== 'boolean') throw new Error('--graphics-audio is a boolean flag.');
+  if (graphicsAudio && voice !== 'off') throw new Error('Graphics audio cannot run speech cleanup; --voice must be off.');
 
 
   const styleProfile = profiles[style] ?? null;
-  return { video, sfx, out, reportFile, lufs, tp, under, ceilPad, tighten: args.tighten === true || args.tighten === '1' || args.tighten === 'on', style, styleProfile, lraBand: styleProfile ? [null, styleProfile.lraMax] : null, voice };
+  return { video, sfx, out, reportFile, lufs, tp, under, ceilPad, tighten: args.tighten === true || args.tighten === '1' || args.tighten === 'on', style, styleProfile, lraBand: styleProfile ? [null, styleProfile.lraMax] : null, voice, graphicsAudio };
+}
+
+export function resolveRenderAudioMode({composition, edit, graphicsAudio = false, voice = 'off'}) {
+  if (typeof graphicsAudio !== 'boolean') throw new Error('--graphics-audio is a boolean flag.');
+  const graphics = composition === 'PreparedEdit' && edit?.contentMode === 'graphics';
+  if (graphicsAudio && !graphics) throw new Error('--graphics-audio requires verified PreparedEdit graphics props.');
+  if (graphics && !graphicsAudio) throw new Error('Graphics edits require the explicit --graphics-audio render flag.');
+  if (graphicsAudio && voice !== 'off') throw new Error('Graphics audio cannot run voice cleanup.');
+  return graphicsAudio ? 'graphics' : 'dialogue';
+}
+
+export function chooseGraphicsSfx(base, effects) {
+  if (base?.silent !== true || base.peakDb !== null) throw new Error('An explicit graphics source must contain verified digital silence.');
+  if (!effects) return {status: 'not_provided', gainDb: null, gain: 0, expectedSilence: true};
+  if (effects.silent) return {status: 'silent_bypassed', gainDb: null, gain: 0, expectedSilence: true};
+  if (!Number.isFinite(effects.max) || !Number.isFinite(effects.mean)) throw new Error('Effects audio level could not be measured.');
+  return {status: 'mixed', gainDb: 0, gain: 1, expectedSilence: false};
+}
+
+export function assessGraphicsSilence(stats, durationSec, expectedDurationSec) {
+  const errors = [];
+  const sampleSec = 1 / specification.video.audio.sampleRateHz;
+  const aacPaddingSec = 1024 / specification.video.audio.sampleRateHz;
+  if (stats?.silent !== true || stats.peakDb !== null) errors.push({code: 'graphics_not_silent', message: 'The intentionally silent graphics output contains audio.'});
+  if (!Number.isFinite(durationSec) || durationSec <= 0 || !Number.isFinite(expectedDurationSec) || expectedDurationSec <= 0
+    || durationSec < expectedDurationSec - sampleSec || durationSec > expectedDurationSec + aacPaddingSec + sampleSec) errors.push({code: 'graphics_audio_duration', message: 'Graphics audio does not cover the expected video duration.'});
+  return {ok: errors.length === 0, status: errors.length ? 'failed' : 'passed_silent', errors, warnings: [], styleReviewRequired: false,
+    delivered: {LUFS: null, LRA: null, truePeakDb: null, digitalPeak: stats?.silent === true ? '-inf' : stats?.peakDb ?? null},
+    lra: {measured: null, stable: false, band: null, outsideBand: null, enforcement: 'not_applicable_to_digital_silence'}};
+}
+
+export function buildGraphicsMixFilterGraph({durationSec, tighten = false}) {
+  if (!Number.isFinite(durationSec) || durationSec <= 0) throw new Error('Graphics mixing needs the measured video duration.');
+  const effects = `[1:a:0]${STEREO_48K},apad,atrim=duration=${durationSec},asetpts=PTS-STARTPTS[mixed]`;
+  return effects + (tighten ? ';[mixed]acompressor=threshold=-18dB:ratio=2.6:attack=12:release=180:makeup=2:detection=rms[mix]' : ';[mixed]anull[mix]');
 }
 
 export function assessMixDelivery(delivered, durationSec, options) {

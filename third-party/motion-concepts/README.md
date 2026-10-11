@@ -4,9 +4,12 @@ Fifteen graphics scenes for 1080x1920 reels, each built around one idea: a butto
 becomes a product window, bars become a trend line, or a dashboard highlights
 one number. Source: [engine/src/motion-concepts](../../engine/src/motion-concepts).
 
-These are reusable components and sample previews. They are not automatically
-selected by the normal editing workflow or registered in the default Remotion
-Studio. An advanced composition can mount them explicitly.
+All fifteen are available in the normal editable workflow through the
+`motion-concept` takeover family: `data: {concept: "<id>", config: {...}}`.
+The selected config uses that concept's existing schema and duration floor.
+Use [motion choices](../../instructions/MOTION-CHOICES.md) for idea-to-mechanism
+planning and [graphics authoring](../../instructions/GRAPHICS.md) when there is no
+recording. The standalone previews below remain sample demonstrations.
 
 ## Choose and preview
 
@@ -75,9 +78,11 @@ The catalog is searchable in English or Arabic. Families: `morph`, `data`,
 `stack`, `reveal`, `flow` and `type`. Search matches all query terms across
 ids, titles, messages and tags, with normalization of common Arabic variants.
 
-## Mounting in a custom composition
+## Optional component mounting for authorized engine work
 
-Place the concept inside the composition's `SafeRoot` and a sequence whose
+Normal video edits use the editable family above and do not modify tracked
+engine files. When engine maintenance is explicitly requested, place the concept
+inside the composition's `SafeRoot` and a sequence whose
 length matches the spoken beat. The following fragment assumes the video's
 copy, timing, guides and footage are supplied by the caller:
 

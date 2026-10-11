@@ -4,6 +4,7 @@ import {promises as fs, statSync} from 'node:fs';
 import path from 'node:path';
 import {resolveNpmCommand} from './npm-command.mjs';
 import {downloadVerified, sha256File} from './studio-download.mjs';
+import {checkEngineDependencies, dependencyProblem, moduleDirectoryProblem} from './engine-dependencies.mjs';
 
 
 
@@ -74,6 +75,10 @@ export function setupSteps(root, lock) {
   const browserOk = async (home) => (await sha256File(at(`${BROWSER_HOMES[home]}/${lock.browser.exe}`))) === lock.browser.exeSha256;
   const browserDir = (home) => at(`${BROWSER_HOMES[home]}/chrome-headless-shell`);
   const writeOnce = (file, text) => fs.writeFile(file, text, {encoding: 'utf8', flag: 'wx'}).catch((error) => { if (error.code !== 'EEXIST') throw error; });
+  const assertPackagesLocal = async () => {
+    const problem = await moduleDirectoryProblem(root);
+    if (problem) throw new Error(problem.error);
+  };
   return [
     {
       id: 'folders',
@@ -90,12 +95,15 @@ export function setupSteps(root, lock) {
     },
     {
       id: 'packages',
-      key: async () => hashOf(await fs.readFile(at('engine/package-lock.json'))),
-      verify: async () => (await exists(at('engine/node_modules/remotion/package.json'))) && (await exists(at('engine/node_modules/.package-lock.json'))),
+      key: async () => { await assertPackagesLocal(); return hashOf(await fs.readFile(at('engine/package-lock.json'))); },
+      verify: async () => (await exists(at('engine/node_modules/.package-lock.json'))) && (await checkEngineDependencies(root)).ok,
       run: async (log) => {
+        await assertPackagesLocal();
         const npm = resolveNpmCommand(['ci', '--ignore-scripts', '--no-audit', '--no-fund']);
         log('npm ci --ignore-scripts (engine/)');
         await runProcess(npm.command, npm.args, {cwd: engine});
+        const checked = await checkEngineDependencies(root);
+        if (!checked.ok) throw new Error(dependencyProblem(checked));
       },
     },
     {
