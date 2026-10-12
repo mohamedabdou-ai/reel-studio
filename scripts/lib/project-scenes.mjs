@@ -37,6 +37,7 @@ export async function resolveProjectScenes(edit){
 export async function projectSceneBuild(edit){
   const metadata=await resolveProjectScenes(edit);if(!metadata)return null;
   const projectRoot=path.join(ROOT,'Projects',edit.id),packDir=path.posix.dirname(metadata.pack);
+  const sharedMetadata=new Set([path.join(ENGINE,'public','fonts','manifest.json'),path.join(ENGINE,'proxies.json'),path.join(ENGINE,'plates.json')]);
   const entryFiles=metadata.scenes.map(scene=>path.join(ROOT,packDir,scene.entry));
   const source=metadata.scenes.map((scene,index)=>`import Scene${index} from ${JSON.stringify(entryFiles[index].split(path.sep).join('/'))};`).join('\n')+`\nexport const PROJECT_SCENES = {${metadata.scenes.map((scene,index)=>`${JSON.stringify(scene.id)}:{Component:Scene${index},contract:${JSON.stringify(scene)}}`).join(',')}};\n`;
   const esbuild=engineRequire('esbuild');
@@ -47,7 +48,7 @@ export async function projectSceneBuild(edit){
         if(args.path.startsWith('http:')||args.path.startsWith('https:')||args.path.startsWith('node:'))return {errors:[{text:'Project scene imports must be local browser modules'}]};
         const resolved=await build.resolve(args.path,{kind:args.kind,resolveDir:args.resolveDir,pluginData:{checked:true}});
         if(resolved.errors.length)return resolved;
-        if(!within(projectRoot,resolved.path)&&!within(path.join(ENGINE,'src'),resolved.path)&&!within(path.join(ENGINE,'node_modules'),resolved.path))return {errors:[{text:'Project scene import is outside the allowed project and engine modules'}]};
+        if(!within(projectRoot,resolved.path)&&!within(path.join(ENGINE,'src'),resolved.path)&&!within(path.join(ENGINE,'node_modules'),resolved.path)&&!sharedMetadata.has(resolved.path))return {errors:[{text:'Project scene import is outside the allowed project and engine modules'}]};
         return {path:resolved.path,namespace:resolved.namespace,external:resolved.external};
       });
     }}]});
