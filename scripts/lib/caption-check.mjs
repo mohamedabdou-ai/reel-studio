@@ -1,5 +1,6 @@
 import {PLATFORM_LABELS} from './publish-pack.mjs';
-import {valuesSchema} from '../../engine/src/project-scenes/schema.ts';
+import {createRequire} from 'node:module';
+const sceneSchemaRequire=createRequire(import.meta.url);
 
 // The post description is a search card and a teaser: it may name what the video covers, never retell it.
 export const KEYWORD_WINDOW = Object.freeze({instagram: 125, tiktok: 100, youtube: 150});
@@ -57,6 +58,9 @@ export function authoredText(manifest) {
     if (scene.family === 'project-scene') {
       const contract = manifest.projectScenes?.scenes?.find(item => item.id === scene.data?.component);
       if (contract) {
+        // First-run profile/setup has no engine packages yet. Load the scene contract
+        // only when an authored custom scene actually needs its rendered defaults.
+        const {valuesSchema}=sceneSchemaRequire('../../engine/src/project-scenes/schema.ts');
         const values = valuesSchema(contract.fields).parse(scene.data?.values);
         for (const field of contract.fields) contracted(values[field.key], field);
       } else visual(scene.data?.values, '', 0, true);
