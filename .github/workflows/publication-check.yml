@@ -26,8 +26,8 @@ jobs:
         with:
           node-version: '22.20.0'
           package-manager-cache: false
-      - name: Install independent engine packages and fonts
-        run: node scripts/studio.mjs setup --foreground --steps folders,packages,fonts
+      - name: Install independent engine packages, media tools and fonts
+        run: node scripts/studio.mjs setup --foreground --steps folders,packages,ffmpeg,fonts
       - name: Typecheck the installed engine
         working-directory: engine
         run: node node_modules/typescript/bin/tsc --noEmit
