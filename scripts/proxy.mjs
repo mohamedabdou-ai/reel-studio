@@ -4,6 +4,7 @@ import { promises as fs, createReadStream } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { run, parseArgs, cacheDirFor, ffprobeJson, writeJson, ROOT } from './lib/media.mjs';
 import { assertProjectOutput } from './lib/project-paths.mjs';
+import { checkedPath } from './lib/job-paths.mjs';
 import { withOutputTransaction } from './lib/delivery.mjs';
 import { proxyGeometry } from './lib/proxy-geometry.mjs';
 
@@ -12,7 +13,14 @@ if (!args._[0]) throw new Error('Usage: node scripts/proxy.mjs <file> [--height 
 const file = path.resolve(args._[0]);
 const height = Number(args.height);
 if (!Number.isInteger(height) || height < 120 || height > 1080 || height % 2) throw new Error('--height must be an even integer from 120 to 1080');
-const out = assertProjectOutput(args.out ?? path.join(await cacheDirFor(file, 'proxy'), `proxy-${height}p.mp4`));
+// Bundle aliases may share verified cache bytes; only regeneration requires a writable output.
+const cacheOutputPath = async (value) => {
+  const target = path.resolve(value);
+  const relative = path.relative(ROOT, target).split(path.sep).join('/');
+  if (['raw', 'reference'].includes(relative.split('/')[0].toLowerCase())) throw new Error(`Source media is read-only: ${target}`);
+  return checkedPath(relative);
+};
+const out = await cacheOutputPath(args.out ?? path.join(await cacheDirFor(file, 'proxy'), `proxy-${height}p.mp4`));
 if (out.toLowerCase() === file.toLowerCase() || path.extname(out).toLowerCase() !== '.mp4') throw new Error('Proxy must be a separate .mp4 output');
 const sha256 = async (p) => { const hash = createHash('sha256'); for await (const chunk of createReadStream(p)) hash.update(chunk); return hash.digest('hex'); };
 const sourceHash = await sha256(file);
@@ -25,7 +33,7 @@ const fps = num / den;
 if (!(fps > 0 && fps <= 240)) throw new Error('Cannot determine source frame rate');
 const sourceDurationSec = Number(video.duration ?? sourceProbe.format.duration);
 if (!(sourceDurationSec > 0)) throw new Error('Cannot determine source duration');
-const metaPath = assertProjectOutput(`${out}.proxy.json`);
+const metaPath = await cacheOutputPath(`${out}.proxy.json`);
 const identity = async (p) => { const stat = await fs.stat(p); return { sizeInBytes: stat.size, lastModified: Math.floor(stat.mtimeMs) }; };
 const previous = await fs.readFile(metaPath, 'utf8').then(JSON.parse).catch(() => null);
 let cached = false;
@@ -54,9 +62,13 @@ if (cached) {
   const lock = await fs.open(lockPath, 'wx').catch(() => { throw new Error('Proxy output is busy; retry this command'); });
   const temporary = assertProjectOutput(`${metaPath}.${process.pid}.tmp`);
   try {
+    await cacheOutputPath(out);
+    await cacheOutputPath(metaPath);
     if (await sha256(out) !== metadata.outputHash || await sha256(file) !== sourceHash) throw new Error('Proxy or source changed during cache validation; retry');
     metadata = { ...metadata, sourceIdentity: await identity(file), proxyIdentity: await identity(out) };
     await writeJson(temporary, metadata);
+    // Replacing this name leaves any bundle hardlink to the previous companion intact.
+    await cacheOutputPath(metaPath);
     await fs.rename(temporary, metaPath);
   } finally {
     await fs.rm(temporary, { force: true });
