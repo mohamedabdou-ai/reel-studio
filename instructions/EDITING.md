@@ -6,6 +6,8 @@ This guide is for named recordings. For an animation with no recording, use `ins
 
 ## Live editor throughout the session
 
+When a beat needs an authored visual beyond shipped families, use [PROJECT-SCENES.md](PROJECT-SCENES.md) inside the same project. For reviewed word/audio emphasis, presenter PiP or optional post-review forced alignment, use [PERFORMANCE.md](PERFORMANCE.md). Keep source timing, actual face clearance, manual drafts and applicable delivery checks; a performance proposal is not creative approval.
+
 The creator watches the edit being built. After intake and any approved privacy blur, transcribe, create a simple uncut draft with the saved preferences (captions still `draft`), and prepare its footage. Start `node scripts/review-editor.mjs Projects/<slug>/edit.json` as a long-running command and open its printed URL in the user's browser/panel; use `--open` if the host has no panel-opening tool. Do this before applying proposed cuts and before the first full rendered preview. Keep the server and tab open while editing and waiting for decisions; restart and reopen if the connection ends.
 
 Update the same manifest in small, meaningful, approved batches. Write complete validated snapshots atomically; the editor follows their captions, scenes and timeline automatically. Cut changes need `node scripts/editor.mjs prepare Projects/<slug>/edit.json`; until that finishes the banner says the footage still has the previous cuts. Do not call that old preview current, or spend a complete render on each small edit. Retain the transcript, privacy, cut and delivery gates below. Ask the creator to finish/save manual edits before changing the same project; a pending update or stale save is a conflict to resolve, not permission to overwrite it.

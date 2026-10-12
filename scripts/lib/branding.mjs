@@ -5,7 +5,7 @@ import {PREFERENCE_VALUES, defaultPreferences} from '../../engine/src/core/prefe
 export const PROFILE_SCHEMA_VERSION = 3;
 export const PROFILE_FILE = 'PROFILE.json';
 export const HANDLE_PATTERN = /^@[A-Za-z0-9_.]{1,30}$/;
-export const PROFILE_PLATFORMS = Object.freeze(['instagram', 'tiktok']);
+export const PROFILE_PLATFORMS = Object.freeze(['instagram', 'tiktok', 'youtube']);
 const HEX = /^#[0-9A-Fa-f]{6}$/;
 
 
@@ -77,7 +77,7 @@ export function normalizeProfile(value) {
   const signOff = text(ending.signOff, 60, 'جملة الختام', 'ending.signOff', {nullable: true});
   const platforms = profile.platforms;
   if (!Array.isArray(platforms) || !platforms.length || new Set(platforms).size !== platforms.length || platforms.some((p) => !PROFILE_PLATFORMS.includes(p))) {
-    fail('المنصات لازم تكون instagram و/أو tiktok من غير تكرار.', 'platforms must be a non-empty list of "instagram" and/or "tiktok" without repeats.');
+    fail('اختار instagram أو tiktok أو youtube من غير تكرار.', 'platforms must be a non-empty list of "instagram", "tiktok" and/or "youtube" without repeats.');
   }
   return {schemaVersion: PROFILE_SCHEMA_VERSION, name, handle, language: 'ar-EG',
     ending: {followCard: ending.followCard, ctaDefault, signOff}, brand: normalizeBrand(profile.brand), platforms: [...platforms],

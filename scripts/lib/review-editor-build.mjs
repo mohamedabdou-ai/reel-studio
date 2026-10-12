@@ -3,6 +3,7 @@ import path from 'node:path';
 import { promises as fs } from 'node:fs';
 import { createRequire } from 'node:module';
 import { ROOT } from './project-paths.mjs';
+import {projectSceneBuild} from './project-scenes.mjs';
 
 export const ENGINE = path.join(ROOT, 'engine');
 export const APP_DIR = path.join(ENGINE, 'src', 'review-editor');
@@ -53,8 +54,13 @@ export const indexHtml = ({ title = 'Review Editor' } = {}) => `<!doctype html>
 
 
 
-export async function buildReviewApp({ dev = false } = {}) {
+export async function buildReviewApp({ dev = false, edit } = {}) {
   const esbuild = engineRequire('esbuild');
+  const sceneBuild=edit?await projectSceneBuild(edit):null;
+  const scenePlugin={name:'project-scene-registry',setup(build){
+    if(!sceneBuild)return;
+    build.onResolve({filter:/(?:^|\/)registry\.ts$/},args=>path.resolve(args.resolveDir,args.path)===sceneBuild.engineRegistry?{path:sceneBuild.registry}:undefined);
+  }};
   const t0 = performance.now();
   const outdir = path.join(ROOT, 'state', 'tmp', 'review-editor-virtual');
   const result = await esbuild.build({
@@ -68,8 +74,9 @@ export async function buildReviewApp({ dev = false } = {}) {
     jsx: 'automatic',
     tsconfig: path.join(ENGINE, 'tsconfig.json'),
     absWorkingDir: ENGINE,
-    alias: { '@remotion/studio': path.join(APP_DIR, 'shims', 'studio.ts') },
-    plugins: [panelsPlugin],
+    alias: { '@remotion/studio': path.join(APP_DIR, 'shims', 'studio.ts'), '@reel-studio':path.join(ENGINE,'src') },
+    nodePaths:[path.join(ENGINE,'node_modules')],
+    plugins: [panelsPlugin,scenePlugin],
     define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"' },
     sourcemap: dev ? 'inline' : false,
     minify: false,
@@ -87,6 +94,7 @@ export async function buildReviewApp({ dev = false } = {}) {
   if (!files.has('/app.js')) throw new Error('review-editor build produced no app.js');
   files.set('/index.html', { contents: Buffer.from(indexHtml()), type: 'text/html; charset=utf-8' });
   return {
+    projectSceneHash:sceneBuild?.hash??null,
     files,
     ms: Math.round(performance.now() - t0),
     bytes,

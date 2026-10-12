@@ -9,6 +9,7 @@ import { assertProjectOutput } from './project-paths.mjs';
 import { checkedPath } from './job-paths.mjs';
 import { footageFrameState } from '../../engine/src/prepared-edit/footage.ts';
 import { footageVisibility, foregroundSourceFrame } from '../../engine/src/prepared-edit/visibility.ts';
+import {headInside} from '../../engine/src/core/pip.ts';
 
 export const HEAD_ENVELOPE_VERSION = 1;
 export const HEAD_CACHE_DIR = path.join(ROOT, 'state', 'cache', 'head');
@@ -175,8 +176,8 @@ export function mapHeadRect(box, geo, { sourceAspect, canvasWidth = 1080, canvas
   const y0 = geo.windowTop + geo.videoTop + box.y * videoHeight;
   const x1 = x0 + box.width * geo.videoWidth;
   const y1 = y0 + box.height * videoHeight;
-  const left = Math.max(0, Math.floor(x0));
-  const right = Math.min(canvasWidth, Math.ceil(x1));
+  const left = Math.max(0, geo.windowLeft ?? 0, Math.floor(x0));
+  const right = Math.min(canvasWidth, (geo.windowLeft ?? 0) + (geo.windowWidth ?? canvasWidth), Math.ceil(x1));
   const top = Math.max(0, geo.windowTop, Math.floor(y0));
   const bottom = Math.min(canvasHeight, geo.windowTop + geo.windowHeight, Math.ceil(y1));
   return right > left && bottom > top ? { x: left, y: top, width: right - left, height: bottom - top } : null;
@@ -188,6 +189,13 @@ export function headWindowCut(box, geo, { sourceAspect, canvasHeight = 1920 } = 
   const videoHeight = Math.round(geo.videoWidth * sourceAspect);
   const y0 = geo.windowTop + geo.videoTop + box.y * videoHeight;
   const y1 = y0 + box.height * videoHeight;
+  if(geo.windowWidth!==undefined) {
+    const x0=geo.videoLeft+box.x*geo.videoWidth;
+    const rect={x:x0,y:y0,width:box.width*geo.videoWidth,height:box.height*videoHeight};
+    const win={x:geo.windowLeft,y:geo.windowTop,width:geo.windowWidth,height:geo.windowHeight,radius:geo.windowRadius??0};
+    if(!headInside(win,rect)) return 'pip-boundary';
+    return null;
+  }
   const windowBottom = geo.windowTop + geo.windowHeight;
   if (y1 <= geo.windowTop || y0 >= windowBottom) return null;
   if (geo.windowTop > 0 && y0 < geo.windowTop) return 'top';
@@ -202,6 +210,12 @@ export function manifestFrameState(edit, frame, { aspect, splitCanvasHeight = nu
   const active = edit.scenes.find((s) => frame >= s.fromFrame && frame < s.fromFrame + s.durationInFrames) ?? null;
   if (!edit.footage && !(splitCanvasHeight > 0)) throw new Error('splitCanvasHeight is required when the manifest has no footage geometry');
   const f = footageFrameState(edit, frame, { aspect, canvasHeight: splitCanvasHeight ?? edit.footage.split.windowTop });
+  const pip=edit.footage?.pip;
+  if(pip && active && pip.sceneIds.includes(active.id)) return {
+    sceneId:active.id,family:active.family,layout:'pip',visible:true,sourceFrame:foregroundSourceFrame(edit,frame),foregroundMatte:false,
+    geo:{windowTop:pip.y,windowHeight:pip.height,windowLeft:pip.x,windowWidth:pip.width,windowRadius:pip.radius,
+      videoWidth:pip.plate.width,videoLeft:pip.x+pip.plate.left,videoTop:pip.plate.top},
+  };
   return {
     sceneId: active?.id ?? null, family: active?.family ?? null, layout: f.layout, geo: f.geo,
     visible: footageVisibility(edit, frame, true), sourceFrame: foregroundSourceFrame(edit, frame),
@@ -322,8 +336,8 @@ export function classifyHeadFrame({ geometryReason = null, visible, box, boxReas
   if (geometryReason) return { status: 'NEEDS-REVIEW', reason: geometryReason };
   if (!visible) return { status: 'SKIPPED', reason: 'footage-hidden' };
   if (!box) return { status: 'NEEDS-REVIEW', reason: boxReason ?? 'no-envelope' };
-  if (!headRect) return { status: 'HEAD-OFFSCREEN', reason: 'head-outside-window' };
   if (windowCut) return { status: 'FAIL', reason: 'head-cut-by-window' };
+  if (!headRect) return { status: 'HEAD-OFFSCREEN', reason: 'head-outside-window' };
   if (paintedPx2 >= minAreaPx2) {
     return foregroundMatte ? { status: 'NEEDS-REVIEW', reason: 'behind-subject-matte' } : { status: 'FAIL', reason: 'graphic-in-head' };
   }

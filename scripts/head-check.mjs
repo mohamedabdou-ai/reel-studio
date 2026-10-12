@@ -161,7 +161,7 @@ async function checkComposition(comp) {
   const envelope = built.envelope;
   if (edit && envelope && envelope.source.sha256 !== edit.source.sha256) throw new UsageError(`${sourcePath} is not this edit's source (sha256 differs from props.edit.source).`);
 
-  const { serveUrl, hash: engineHash } = await getServeUrl({ log });
+  const { serveUrl, hash: engineHash } = await getServeUrl({ edit, log });
   const { renderFrames, renderStill, selectComposition, openBrowser } = requireFromEngine('@remotion/renderer');
   const browser = await openBrowser('chrome', { logLevel: 'warn' });
   try {

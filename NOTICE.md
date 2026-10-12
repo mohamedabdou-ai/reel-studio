@@ -28,6 +28,18 @@ Downloaded from Google Fonts under the SIL Open Font License 1.1: Cairo, IBM Ple
 | OpenAI Whisper model weights (downloaded on first transcription) | MIT | https://github.com/openai/whisper |
 | Other npm packages in engine/node_modules | Each package's own license file | https://www.npmjs.com |
 
+## Optional word alignment
+
+`node scripts/align-captions.mjs install` installs a project-local CPU alignment runtime only when requested. Its packages and model weights retain their own licenses; the alignment runner and installation code in this repository are Reel Studio code. The model repository and revision are recorded in `scripts/lib/alignment-contract.mjs`.
+
+| Component | License | Source |
+|---|---|---|
+| WhisperX 3.8.6 | BSD-2-Clause | https://github.com/m-bain/whisperX |
+| PyTorch and torchaudio CPU packages | Their BSD-style licenses and bundled third-party notices | https://github.com/pytorch/pytorch and https://github.com/pytorch/audio |
+| Hugging Face Transformers | Apache-2.0 | https://github.com/huggingface/transformers |
+| Arabic wav2vec2 alignment model | Apache-2.0 | https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-arabic |
+| English wav2vec2 alignment model | Apache-2.0 | https://huggingface.co/facebook/wav2vec2-base-960h |
+
 ## Adapted motion components
 
 Adapted source lives under `engine/src/motion-library/`; pinned upstream revisions, checksums and full license texts are in `third-party/motion-kits/`.

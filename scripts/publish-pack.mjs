@@ -4,7 +4,7 @@ import {promises as fs} from 'node:fs';
 import {ROOT, cliArgs, ensureOutput, fileSnapshot, readJson, relativePath, slug} from './lib/job-paths.mjs';
 import {PROFILE_FILE, readProfileFile} from './lib/branding.mjs';
 import {publishContext, renderPublishPack, validatePublishCopy} from './lib/publish-pack.mjs';
-import {checkCaptionCopy, spokenText} from './lib/caption-check.mjs';
+import {checkCaptionCopy, publishComparison} from './lib/caption-check.mjs';
 
 const USAGE = 'Usage: node scripts/publish-pack.mjs --project <slug> --video <file.mp4> [--keyword "<primary search phrase>"] [--copy <publish-copy.json>] [--profile <file>]';
 try {
@@ -18,19 +18,17 @@ try {
   const copyPath = (args.copy ?? `Projects/${id}/publish-copy.json`).replaceAll('\\', '/');
   relativePath(copyPath);
   const copy = validatePublishCopy(await readJson(copyPath), {profile, cta, writingStyle});
-  // The same teaser check as scripts/caption-check.mjs, so a pack is never written for copy that retells the video.
-  const spoken = spokenText(manifest);
-  if (spoken) {
-    const keyword = typeof args.keyword === 'string' && args.keyword.trim() ? args.keyword.trim() : null;
-    const check = checkCaptionCopy({copy, platforms: profile.platforms, spokenText: spoken, keyword});
-    if (!check.ok) throw new Error(`Rewrite the post description first (social-captions skill):\n- ${check.failures.join('\n- ')}`);
-  }
+  // Platform, search and duplication checks also apply when the video has no speech.
+  const comparison = publishComparison(manifest);
+  const keyword = typeof args.keyword === 'string' && args.keyword.trim() ? args.keyword.trim() : null;
+  const check = checkCaptionCopy({copy, platforms: profile.platforms, comparisonText: comparison.text, comparisonKind: comparison.source, keyword});
+  if (!check.ok) throw new Error(`Rewrite the post description first (social-captions skill):\n- ${check.failures.join('\n- ')}`);
   const videoPath = args.video.replaceAll('\\', '/');
   relativePath(videoPath);
   const video = await fileSnapshot(videoPath);
   const file = `Projects/${id}/PUBLISH_PACK.md`;
   await fs.writeFile(await ensureOutput(file, {project: id}), renderPublishPack({profile, copy, cta, writingStyle, video: {path: video.path, sha256: video.sha256}, source: manifest?.source?.path ?? null}), 'utf8');
-  console.log(JSON.stringify({ok: true, file, platforms: profile.platforms, cta, teaserCheck: spoken ? 'passed' : 'skipped: no reviewed spoken words in edit.json'}, null, 2));
+  console.log(JSON.stringify({ok: true, file, platforms: profile.platforms, cta, teaserCheck: 'passed', comparison: check.comparison}, null, 2));
 } catch (error) {
   console.error(JSON.stringify({ok: false, error: error.message}));
   process.exitCode = 1;

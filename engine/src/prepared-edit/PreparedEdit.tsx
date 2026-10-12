@@ -33,6 +33,7 @@ import {PreparedPlateProvider,ScreenRecordingScene} from '../screen-recording/Sc
 import {screenRecordingSceneSchema} from '../screen-recording/schema.ts';
 import {semanticSceneSchema} from '../creative-kit/semantic/schema.ts';
 import {SemanticSceneRenderer} from '../creative-kit/semantic/scenes';
+import {ProjectScene} from '../project-scenes/ProjectScene';
 
 export type PreparedEditProps = SafeProps & {
   edit:EditManifest|null;
@@ -63,6 +64,7 @@ export const calculatePreparedMetadata:CalculateMetadataFunction<PreparedEditPro
 };
 
 export const SceneLayer:React.FC<{scene:EditScene;style:EditManifest["style"];geometry:WindowGeo;aspect:number;seam:number;headBox?:HeadBoxPx|null;words?:ReturnType<typeof compileEdit>['words']}> = ({scene,style,geometry,aspect,seam,headBox=null,words=[]})=>{
+  if(scene.family==='project-scene')return <ProjectScene component={scene.data.component} values={scene.data.values} style={style} layout={scene.layout} motion={scene.motion} durationInFrames={scene.durationInFrames} seam={seam} headBox={headBox}/>;
   const semantic=semanticSceneSchema.safeParse(scene);
   if(semantic.success)return <SemanticSceneRenderer scene={semantic.data} style={style} words={words}/>;
   const screen=screenRecordingSceneSchema.safeParse(scene);

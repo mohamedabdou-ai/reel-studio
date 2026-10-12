@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "id": "idea-flow-example",
+  "style": "paper-collage",
+  "fps": 30,
+  "durationInFrames": 360,
+  "reviewedBy": "Synthetic fixture author",
+  "projectScenePack": "Projects/idea-flow-example/scene-pack.json",
+  "scenes": [
+    {
+      "id": "continuous-idea-flow",
+      "family": "project-scene",
+      "fromFrame": 0,
+      "durationInFrames": 360,
+      "layout": "takeover",
+      "motion": "quiet",
+      "data": {
+        "component": "idea-flow",
+        "values": {
+          "title": "من أفكار كتير لخطوة واضحة",
+          "resultLabel": "نختار خطوة ونبدأ",
+          "accent": "#BDF76B",
+          "items": [{"label": "فكرة"}, {"label": "معلومة"}, {"label": "سؤال"}]
+        }
+      }
+    }
+  ]
+}

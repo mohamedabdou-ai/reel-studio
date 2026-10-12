@@ -9,6 +9,7 @@ import { renderBudget, freeBytes as diskFree } from './disk-report.mjs';
 import { ffprobeJson, summarizeProbe } from './media.mjs';
 import { editManifestSchema } from '../../engine/src/prepared-edit/schema.ts';
 import { validateManifest } from '../../engine/src/review-editor/validate.ts';
+import {resolveProjectScenes} from './project-scenes.mjs';
 import { tryCompile } from '../../engine/src/review-editor/time.ts';
 import { EDIT_HISTORY_KEEP } from '../../engine/src/review-editor/types.ts';
 import { manifestRevision } from './review-editor-revision.mjs';
@@ -117,6 +118,7 @@ export function createManifestStore({ manifestPath, isBusy = () => false, now = 
   const dirRel = historyDir(manifestPath);
 
   async function save(body) {
+    if(body?.manifest?.projectScenes)await resolveProjectScenes(body.manifest);
     const input = body?.manifest;
     if (!input || typeof input !== 'object' || Array.isArray(input)) throw new HttpError(400, 'مفيش manifest في الطلب.');
     if (Object.hasOwn(body, 'baseRevision') && !/^[a-f0-9]{64}$/.test(body.baseRevision ?? '')) {

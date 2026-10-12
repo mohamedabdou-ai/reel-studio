@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { ROOT } from './media.mjs';
 import { useProcessTemp, hygienicRenderer } from './render-hygiene.mjs';
+import {projectSceneBuild} from './project-scenes.mjs';
 
 
 
@@ -93,8 +94,10 @@ export async function engineHash() {
 
 
 
-export async function getServeUrl({ force = false, log = (m) => process.stderr.write(m + '\n') } = {}) {
-  const hash = await engineHash();
+export async function getServeUrl({ force = false, edit, log = (m) => process.stderr.write(m + '\n') } = {}) {
+  const sceneBuild=edit?await projectSceneBuild(edit):null;
+  const baseHash = await engineHash();
+  const hash=sceneBuild?createHash('sha256').update(baseHash).update(sceneBuild.hash).digest('hex').slice(0,20):baseHash;
   const outDir = path.join(BUNDLE_CACHE, hash);
   const marker = path.join(outDir, 'index.html');
   if (!force && (await fs.stat(marker).catch(() => null))) {
@@ -127,7 +130,11 @@ export async function getServeUrl({ force = false, log = (m) => process.stderr.w
       enableCaching: true,
 
 
-      bundlerOverride: enableTailwind,
+      bundlerOverride: config=>{
+        const configured=enableTailwind(config);
+        if(sceneBuild){configured.resolve??={};configured.resolve.alias={...configured.resolve.alias,[sceneBuild.engineRegistry]:sceneBuild.registry,'@reel-studio':path.join(ENGINE,'src')};configured.resolve.modules=[path.join(ENGINE,'node_modules'),...(configured.resolve.modules??['node_modules'])];}
+        return configured;
+      },
       onProgress: (p) => { if (p % 25 === 0) log(`bundle ${p}%`); },
     });
   } finally {

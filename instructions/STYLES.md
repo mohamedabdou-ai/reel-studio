@@ -2,6 +2,8 @@
 
 This edition ships eleven styles, driven by `node scripts/editor.mjs` and rendered by `PreparedEdit`. Choose one per video with the creator. Recommendations consider all eleven directions and the authored scene mechanisms; explicit/profile-fixed choices always win. Use `EDITORIAL.md` to plan the idea and `MOTION-CHOICES.md` to check real family/layout contracts. A direction is not a fixed montage.
 
+Use [STYLE-RECIPES.md](STYLE-RECIPES.md) for composition, hierarchy, cue/hold, material, transition and sound decisions in each direction. To learn from named finished references, use [STYLE-LEARNING.md](STYLE-LEARNING.md): evidence stays in the current project's Style DNA and transfers into its actual scene plan/data/code. It does not add an unsupported style ID or change the creator's saved choices. [PROJECT-SCENES.md](PROJECT-SCENES.md) supports project-local behavior beyond a shipped family's mechanism.
+
 Two styles are the proven pair, refined on real footage first: **split-canvas** and **section-deck**. Five are newer: **kinetic-paper**, **calligraphic-receipts**, **paper-collage**, **judgment-board** and **stepped-editorial**. A newer style keeps its own palette (the plan adds a notice that brand colours do not apply) and every edit still needs the creator's own creative approval. For a newer style always show the fast preview (gate 2) first. If it shows clipped text, a broken layout or an unreadable frame, say so in one line and offer a proven style instead. Never deliver a style whose preview failed.
 
 ## split-canvas

@@ -31,7 +31,9 @@ if (!(SCALE > 0 && SCALE <= 1)) { console.error('--scale must be in (0, 1]'); pr
 
 class ContractError extends Error {}
 
-const { serveUrl, hash: engineHash } = await getServeUrl({ log });
+const {readRenderProps} = await import('./lib/render-props.mjs');
+const extraProps = await readRenderProps(args,{composition:args.comp});
+const { serveUrl, hash: engineHash } = await getServeUrl({ edit:extraProps?.edit, log });
 
 
 
@@ -242,8 +244,6 @@ if (args['self-test']) {
 
 
 const compId = args.comp;
-const {readRenderProps} = await import('./lib/render-props.mjs');
-const extraProps = await readRenderProps(args,{composition:args.comp});
 delete extraProps.probe;
 const propsHash = createHash('sha1').update(JSON.stringify(extraProps)).digest('hex').slice(0, 8);
 const enforced = args.profile

@@ -2,6 +2,8 @@
 
 Use this route when the creator asks for an animated explanation, map, title sequence or other motion video and has supplied no recording. The studio can create a silent generated base and run authored scenes through the normal editor. It does not need an uploaded source or a made-up transcript. Read [RULES.md](RULES.md), [EDITORIAL.md](EDITORIAL.md) and [MOTION-CHOICES.md](MOTION-CHOICES.md).
 
+Use [STYLE-RECIPES.md](STYLE-RECIPES.md) to decide the visual grammar, [STYLE-LEARNING.md](STYLE-LEARNING.md) for named-reference evidence and its content-specific application, and [ASSET-PRODUCTION.md](ASSET-PRODUCTION.md) for any supporting media. An authored mechanism can use [PROJECT-SCENES.md](PROJECT-SCENES.md) with project-local React code, declared fields and the normal live preview/render/checks. Reference notes alone do not change scene behavior.
+
 ## Author and check the specification
 
 Write `Projects/<slug>/graphics-spec.json` with `version: 1`, `id`, one of the eleven `style` ids, `fps` (30, 50 or 60), optional `durationInFrames`, and `scenes`. Scenes use the normal scene schema: `id`, `family`, `fromFrame`, `durationInFrames`, `layout: "takeover"`, `motion`, and `data`. They must cover the whole timeline without gaps or overlapping intervals. Plan readable final holds and meet each family's duration floor.

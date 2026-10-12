@@ -19,7 +19,7 @@ const ext = args.png ? 'png' : 'jpg';
 const outDir = assertProjectOutput(args.out ?? path.join(ROOT, 'engine', 'out', 'stills'));
 await fs.mkdir(outDir, { recursive: true });
 
-const { serveUrl } = await getServeUrl({ force: !!args['force-bundle'] });
+const { serveUrl } = await getServeUrl({ force: !!args['force-bundle'], edit:inputProps?.edit });
 let browser = await openBrowser('chrome', { logLevel: 'warn' });
 const written = [];
 try {

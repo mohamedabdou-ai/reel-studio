@@ -65,7 +65,7 @@ const sec = () => ((Date.now() - t0) / 1000).toFixed(1);
 const log = (m) => process.stderr.write(`[render ${sec()}s] ${m}\n`);
 
 
-const { serveUrl, hash, cached } = await getServeUrl({ force: !!args['force-bundle'], log });
+const { serveUrl, hash, cached } = await getServeUrl({ force: !!args['force-bundle'], edit:inputProps?.edit, log });
 
 
 const { renderMedia, selectComposition } = requireFromEngine('@remotion/renderer');

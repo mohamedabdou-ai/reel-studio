@@ -1,7 +1,8 @@
 import {PLATFORM_LABELS} from './publish-pack.mjs';
+import {valuesSchema} from '../../engine/src/project-scenes/schema.ts';
 
 // The post description is a search card and a teaser: it may name what the video covers, never retell it.
-export const KEYWORD_WINDOW = Object.freeze({instagram: 125, tiktok: 100});
+export const KEYWORD_WINDOW = Object.freeze({instagram: 125, tiktok: 100, youtube: 150});
 export const MAX_SPOKEN_RUN = 5;
 export const MAX_SPOKEN_SHARE = 0.2;
 export const MAX_PLATFORM_SHARE = 0.5;
@@ -9,7 +10,7 @@ const FILLER_HASHTAGS = new Set(['#fyp', '#foryou', '#foryoupage', '#explore', '
 
 // Words compared without tashkeel, tatweel, letter variants (alef, hamza on waw or yaa, yaa, taa marbuta),
 // punctuation, emoji or case; Arabic-Indic digits read as 0-9.
-export function captionWords(text) {
+export function captionWords(text = '') {
   return text.normalize('NFC')
     .replace(/[ً-ٰٟـ️‍]/g, '')
     .replace(/[أإآٱ]/g, 'ا').replace(/ؤ/g, 'و').replace(/[ىئ]/g, 'ي').replace(/ة/g, 'ه')
@@ -23,6 +24,52 @@ export function captionWords(text) {
 // The reviewed spoken words of a project manifest as one text ('' when there are none).
 export function spokenText(manifest) {
   return (manifest?.captions?.words ?? []).map((word) => word.text).join(' ');
+}
+
+const COPY_KEY = /(?:title|subtitle|headline|label|detail|text|caption|body|question|answer|message|description|copy)$/i;
+const TECHNICAL_KEY = /^(id|.*Id|src|path|file|url)$/i;
+
+/** Collect actual visual copy, never code, asset paths or made-up spoken words. */
+export function authoredText(manifest) {
+  if (manifest?.contentMode !== 'graphics') return '';
+  const parts = [];
+  let characters = 0;
+  const append = (value, maxLength = 2000) => {
+    if (typeof value !== 'string' || !value.trim() || value.length > maxLength || /^[#][\da-f]{6}$/i.test(value)
+      || /^(?:https?:\/\/|(?:Projects|Raw|Reference|Outputs)\/)/i.test(value) || characters + value.length > 100_000) return;
+    parts.push(value.trim()); characters += value.length;
+  };
+  function visual(value, key = '', depth = 0, declared = false) {
+    if (depth > 12 || TECHNICAL_KEY.test(key)) return;
+    if (typeof value === 'string') {if (declared || COPY_KEY.test(key)) append(value);}
+    else if (Array.isArray(value)) value.forEach(item => visual(item, key, depth + 1, declared));
+    else if (value && typeof value === 'object') Object.entries(value).forEach(([name, item]) => visual(item, name, depth + 1, declared));
+  }
+  function contracted(value, field, depth = 0) {
+    if (!field || depth > 12 || TECHNICAL_KEY.test(field.key ?? '')) return;
+    if (['string', 'enum'].includes(field.type)) append(value, 10000);
+    else if (field.type === 'array' && Array.isArray(value)) value.forEach(item => contracted(item, field.items, depth + 1));
+    else if (field.type === 'object' && value && typeof value === 'object' && !Array.isArray(value)) {
+      for (const child of field.fields ?? []) contracted(value[child.key], child, depth + 1);
+    }
+  }
+  for (const scene of manifest.scenes ?? []) {
+    if (scene.family === 'project-scene') {
+      const contract = manifest.projectScenes?.scenes?.find(item => item.id === scene.data?.component);
+      if (contract) {
+        const values = valuesSchema(contract.fields).parse(scene.data?.values);
+        for (const field of contract.fields) contracted(values[field.key], field);
+      } else visual(scene.data?.values, '', 0, true);
+    } else visual(scene.data);
+  }
+  return parts.join(' ');
+}
+
+export function publishComparison(manifest) {
+  const spoken = spokenText(manifest);
+  if (spoken.trim()) return {text: spoken, source: 'spoken'};
+  const authored = authoredText(manifest);
+  return {text: authored, source: authored ? 'authored' : 'none'};
 }
 
 // 3-word phrases; a caption of one or two words is a single phrase, so identical short captions still compare.
@@ -49,8 +96,11 @@ function longestSpokenRun(words, spoken) {
   return best;
 }
 
-export function checkCaptionCopy({copy, platforms, spokenText: spokenCopy, keyword = null}) {
-  const spokenWords = captionWords(spokenCopy);
+export function checkCaptionCopy({copy, platforms, spokenText: spokenCopy = '', comparisonText, comparisonKind, keyword = null}) {
+  const baseline = comparisonText ?? spokenCopy;
+  const source = comparisonKind ?? (baseline.trim() ? 'spoken' : 'none');
+  const sourceLabel = source === 'authored' ? 'authored' : 'spoken';
+  const spokenWords = captionWords(baseline);
   const spoken = ` ${spokenWords.join(' ')} `;
   const spokenPhrases = new Set(phrases(spokenWords));
   const searchPhrase = keyword ? ` ${captionWords(keyword).join(' ')} ` : null;
@@ -59,18 +109,28 @@ export function checkCaptionCopy({copy, platforms, spokenText: spokenCopy, keywo
   const own = {};
   for (const platform of platforms) {
     const label = PLATFORM_LABELS[platform];
-    const {caption, hashtags} = copy[platform];
+    const entry = copy[platform];
+    const {hashtags} = entry;
+    const caption = platform === 'youtube' ? entry.description : entry.caption;
     const words = captionWords(caption);
     own[platform] = phrases(words);
     const share = own[platform].length ? own[platform].filter((phrase) => spokenPhrases.has(phrase)).length / own[platform].length : 0;
-    const run = longestSpokenRun(words, spoken);
-    if (run.length > MAX_SPOKEN_RUN) failures.push(`${label}: repeats ${run.length} spoken words in a row («${run.join(' ')}»). Say the idea in new words.`);
-    if (share > MAX_SPOKEN_SHARE) failures.push(`${label}: ${Math.round(share * 100)} % of its 3-word phrases come from the spoken words (at most ${MAX_SPOKEN_SHARE * 100} %). Tease the video instead of retelling it.`);
+    const captionRun = longestSpokenRun(words, spoken);
+    const titleRun = platform === 'youtube' ? longestSpokenRun(captionWords(entry.title), spoken) : [];
+    const run = titleRun.length > captionRun.length ? titleRun : captionRun;
+    if (run.length > MAX_SPOKEN_RUN) failures.push(`${label}: repeats ${run.length} ${sourceLabel} words in a row («${run.join(' ')}»). Say the idea in new words.`);
+    if (share > MAX_SPOKEN_SHARE) failures.push(`${label}: ${Math.round(share * 100)} % of its 3-word phrases come from the ${sourceLabel} words (at most ${MAX_SPOKEN_SHARE * 100} %). Tease the video instead of retelling it.`);
+    if (platform === 'youtube' && searchPhrase && !` ${captionWords(entry.title).join(' ')} `.includes(searchPhrase)) {
+      failures.push(`${label}: the title does not contain the search phrase «${keyword}».`);
+    }
     if (searchPhrase && !` ${openingWords(caption, KEYWORD_WINDOW[platform]).join(' ')} `.includes(searchPhrase)) {
       failures.push(`${label}: the search phrase «${keyword}» is not in the first ${KEYWORD_WINDOW[platform]} characters.`);
     }
     for (const tag of hashtags) if (FILLER_HASHTAGS.has(tag.toLowerCase())) failures.push(`${label}: ${tag} is a filler hashtag. Use a tag about the topic.`);
-    report[platform] = {characters: Array.from(caption).length, hashtags: hashtags.length, spokenPhrasePercent: Math.round(share * 100), longestSpokenRun: run.length};
+    report[platform] = {characters: Array.from(caption).length, hashtags: hashtags.length,
+      spokenPhrasePercent: source === 'spoken' ? Math.round(share * 100) : 0, longestSpokenRun: source === 'spoken' ? run.length : 0,
+      sourcePhrasePercent: Math.round(share * 100), longestSourceRun: run.length,
+      ...(platform === 'youtube' ? {titleCharacters: Array.from(entry.title).length} : {})};
   }
   for (let i = 0; i < platforms.length; i++) {
     for (let j = i + 1; j < platforms.length; j++) {
@@ -80,5 +140,5 @@ export function checkCaptionCopy({copy, platforms, spokenText: spokenCopy, keywo
       if (share > MAX_PLATFORM_SHARE) failures.push(`${PLATFORM_LABELS[platforms[i]]} and ${PLATFORM_LABELS[platforms[j]]} share ${Math.round(share * 100)} % of their phrases. Write each platform separately.`);
     }
   }
-  return {ok: failures.length === 0, failures, platforms: report};
+  return {ok: failures.length === 0, failures, platforms: report, comparison: {source, words: spokenWords.length}};
 }

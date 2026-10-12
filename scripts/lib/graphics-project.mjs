@@ -6,10 +6,11 @@ import {editManifestSchema} from '../../engine/src/prepared-edit/schema.ts';
 import {ROOT,checkedPath,ensureOutput,fileSnapshot,finite,object,readJson,slug,withFileLock} from './job-paths.mjs';
 import {inspectEditSource} from './edit-project.mjs';
 import {run} from './media.mjs';
+import {loadProjectScenePack,resolveProjectScenes} from './project-scenes.mjs';
 
 /** Approved graphic copy is authored data, never a fabricated speech transcript. */
 export function normalizeGraphicsSpec(raw,{delivery=false}={}) {
-  object(raw,['version','id','style','fps','durationInFrames','fontFamily','creator','reviewedBy','scenes','sounds','transitions'],'graphics specification');
+  object(raw,['version','id','style','fps','durationInFrames','fontFamily','creator','reviewedBy','scenes','sounds','transitions','projectScenePack','projectScenes'],'graphics specification');
   if(raw.version!==1)throw new Error('Graphics specification version must be 1.');
   const id=slug(raw.id),fps=raw.fps??30;
   finite(fps,30,60,'graphics fps',{integer:true});
@@ -22,6 +23,7 @@ export function normalizeGraphicsSpec(raw,{delivery=false}={}) {
   if(!reviewed)throw new Error('Graphics initialization requires reviewed authored copy and reviewedBy.');
   const edit=editManifestSchema.parse({
     version:1,id,purpose:delivery?'delivery':'test',contentMode:'graphics',presenter:false,style:raw.style??'paper-collage',
+    ...(raw.projectScenes?{projectScenes:raw.projectScenes}:{}),
     creator:raw.creator??{displayName:'Graphics',handle:null,ending:{cta:null,followCard:false,signOff:null}},
     ...(raw.fontFamily===undefined?{}:{fontFamily:raw.fontFamily}),
     source:{path:`Projects/${id}/graphics-source.mp4`,sha256:'0'.repeat(64),fps,width:1080,height:1920,totalFrames:frames},
@@ -49,7 +51,10 @@ async function createJsonExclusive(relative,data,options) {
 
 /** Create only the explicit project; subsequent editing uses the ordinary manifest. */
 export async function initializeGraphicsProject(specFile,{check=false,delivery=false,onProgress=()=>{}}={}) {
-  const raw=await readJson(specFile),edit=normalizeGraphicsSpec(raw,{delivery});
+  const raw=await readJson(specFile);
+  if(raw.projectScenePack)raw.projectScenes=await loadProjectScenePack(raw.projectScenePack,{id:raw.id});
+  const edit=normalizeGraphicsSpec(raw,{delivery});
+  await resolveProjectScenes(edit);
   const summary={ok:true,id:edit.id,contentMode:'graphics',fps:edit.source.fps,durationInFrames:edit.source.totalFrames,copyStatus:edit.captions.status};
   if(check)return {...summary,stage:'schema-only'};
   const options={project:edit.id};

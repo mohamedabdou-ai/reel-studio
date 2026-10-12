@@ -5,6 +5,8 @@ import { librarySceneVariants } from "../../motion-library/schema.ts";
 import {semanticSceneVariants} from '../../creative-kit/semantic/schema.ts';
 import {screenRecordingVariants} from '../../screen-recording/schema.ts';
 import { getIn, type Path } from "../ops/paths.ts";
+import {PROJECT_SCENES} from '../../project-scenes/registry.ts';
+import {valuesSchema} from '../../project-scenes/schema.ts';
 
 
 
@@ -20,6 +22,8 @@ for (const variant of [...kineticSceneVariants, ...librarySceneVariants,...seman
   const shape = (variant as any).shape;
   FAMILY_DATA[shape.family.value as string] = shape.data as z.ZodType;
 }
+const projectContracts=Object.values(PROJECT_SCENES).map(item=>z.object({component:z.literal(item.contract.id),values:valuesSchema(item.contract.fields)}).strict());
+if(projectContracts.length)FAMILY_DATA['project-scene']=projectContracts.length===1?projectContracts[0]:z.union([projectContracts[0],projectContracts[1],...projectContracts.slice(2)]);
 
 export const familyDataSchema = (family: string): z.ZodType | undefined => FAMILY_DATA[family];
 export const formFamilies = (): string[] => Object.keys(FAMILY_DATA);
@@ -57,8 +61,8 @@ export type StringField = Base & { kind: "string"; minLength?: number; maxLength
 export type NumberField = Base & { kind: "number"; integer: boolean; min?: number; max?: number; exclusiveMin?: number; step: number | "any"; isFrame: boolean; default?: number };
 export type BooleanField = Base & { kind: "boolean"; default?: boolean };
 export type EnumField = Base & { kind: "enum"; options: (string | number | boolean)[]; fixed: boolean; default?: string | number | boolean };
-export type ObjectField = Base & { kind: "object"; fields: Field[] };
-export type ArrayField = Base & { kind: "array"; item: Field; minItems: number; maxItems: number;                                                                                fixedLength: boolean };
+export type ObjectField = Base & { kind: "object"; fields: Field[]; default?:Record<string,unknown> };
+export type ArrayField = Base & { kind: "array"; item: Field; minItems: number; maxItems: number; fixedLength: boolean; default?:unknown[] };
 export type UnionVariant = { label: string; field: ObjectField;                                                                                         consts: Record<string, string | number | boolean>; required: string[]; properties: string[]; closed: boolean };
 export type UnionField = Base & { kind: "union"; variants: UnionVariant[] };
 export type JsonField = Base & { kind: "json"; schema: unknown };
@@ -67,7 +71,7 @@ export type Field = StringField | NumberField | BooleanField | EnumField | Objec
 type JS = Record<string, any>;
 
 function fromJsonSchema(js: JS, key: string, required: boolean): Field {
-  const base: Base = { key, label: fieldLabel(key), required, ...(typeof js.description === "string" ? { description: js.description } : {}) };
+  const base: Base = { key, label: typeof js.title==='string'?js.title:fieldLabel(key), required, ...(typeof js.description === "string" ? { description: js.description } : {}) };
   const options = (js.anyOf ?? js.oneOf) as JS[] | undefined;
   if (Array.isArray(options)) {
     const objects = options.every((o) => o.type === "object" && o.properties);
@@ -91,7 +95,7 @@ function fromJsonSchema(js: JS, key: string, required: boolean): Field {
       return {
         ...base, kind: "string", minLength: js.minLength, maxLength: js.maxLength,
         multiline: typeof js.maxLength === "number" && js.maxLength >= MULTILINE_FROM,
-        asset: ASSET_KEYS.has(key),
+        asset: ASSET_KEYS.has(key)||js['x-reel-asset']===true,
         ...(typeof js.default === "string" ? { default: js.default } : {}),
       };
     case "integer":
@@ -109,13 +113,13 @@ function fromJsonSchema(js: JS, key: string, required: boolean): Field {
     case "object": {
       if (!js.properties) return { ...base, kind: "json", schema: js };
       const need = new Set<string>(js.required ?? []);
-      return { ...base, kind: "object", fields: Object.entries<JS>(js.properties).map(([k, v]) => fromJsonSchema(v, k, need.has(k))) };
+      return { ...base, kind: "object", fields: Object.entries<JS>(js.properties).map(([k, v]) => fromJsonSchema(v, k, need.has(k))),...(js.default!==undefined?{default:js.default}:{}) };
     }
     case "array": {
       if (!js.items || Array.isArray(js.items)) return { ...base, kind: "json", schema: js };
       const min = typeof js.minItems === "number" ? js.minItems : 0;
       const max = typeof js.maxItems === "number" ? js.maxItems : Infinity;
-      return { ...base, kind: "array", item: fromJsonSchema(js.items, "", true), minItems: min, maxItems: max, fixedLength: min === max };
+      return { ...base, kind: "array", item: fromJsonSchema(js.items, "", true), minItems: min, maxItems: max, fixedLength: min === max,...(js.default!==undefined?{default:js.default}:{}) };
     }
     default:
       return { ...base, kind: "json", schema: js };
@@ -137,6 +141,9 @@ export function buildFields(schema: z.ZodType): Field[] {
 export function fieldsForFamily(family: string): Field[] {
   const schema = familyDataSchema(family);
   return schema ? buildFields(schema) : [];
+}
+export function formDataWithDefaults(schema:z.ZodType|undefined,data:unknown):unknown {
+  const parsed=schema?.safeParse(data);return parsed?.success?parsed.data:data;
 }
 
 

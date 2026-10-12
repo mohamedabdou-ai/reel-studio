@@ -3,6 +3,7 @@ import {promises as fs} from 'node:fs';
 import {WRITING_GUIDES} from '../engine/src/core/preference-options.ts';
 import {ROOT} from './lib/project-paths.mjs';
 import {PROFILE_FILE, ProfileError, normalizeCreatorProfile, profileToBrief, readProfileFile} from './lib/branding.mjs';
+import {captionWords, publishComparison} from './lib/caption-check.mjs';
 
 const USAGE = 'Usage: node scripts/profile.mjs check|brief|writing [--profile <file>] [--cta <keyword> | --no-cta] [--project <slug>]';
 try {
@@ -27,8 +28,10 @@ try {
     const manifest = options.project ? JSON.parse(await fs.readFile(path.join(ROOT, 'Projects', options.project, 'edit.json'), 'utf8')) : null;
     const writingStyle = manifest?.writingStyle ?? (profile.preferences.writingStyle.mode === 'fixed' ? profile.preferences.writingStyle.value : null);
     if (writingStyle !== null && !Object.hasOwn(WRITING_GUIDES, writingStyle)) throw new Error('The project contains an unknown writingStyle.');
+    const comparison = publishComparison(manifest);
     console.log(JSON.stringify({ok: true, writingStyle, guide: writingStyle ? WRITING_GUIDES[writingStyle] : 'اختار طريقة وصف مناسبة لمحتوى الفيديو الفعلي.',
-      language: profile.language, platforms: profile.platforms, cta: manifest ? manifest.creator?.ending?.cta ?? null : profile.ending.ctaDefault}, null, 2));
+      language: profile.language, platforms: profile.platforms, cta: manifest ? manifest.creator?.ending?.cta ?? null : profile.ending.ctaDefault,
+      comparison: {source: comparison.source, words: captionWords(comparison.text).length}}, null, 2));
   } else {
     const fields = profileToBrief(profile);
     const creator = fields.creator;

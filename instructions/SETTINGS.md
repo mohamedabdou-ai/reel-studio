@@ -31,7 +31,7 @@ Ask, one at a time, and never invent an answer:
 4. Default comment keyword for the CTA — optional; they can change it for each video.
 5. Their recorded sign-off — the exact words they say at the very end, optional.
 6. Brand colours: primary and accent (`#RRGGBB`); background and text are optional (`null` keeps each style's own). Offer the example's colours if they have none.
-7. Platforms: Instagram and/or TikTok.
+7. Platforms: Instagram, TikTok and/or YouTube Shorts. Preserve existing selections; do not add a platform the creator did not choose.
 8. Each preference above: automatic or fixed from its listed choices. Offer automatic when undecided.
 
 Write it like `PROFILE.example.json` (schema 3, `language` "ar-EG", all six `preferences`) and validate with `node scripts/profile.mjs check`. Relay Arabic errors and fix the answer. A request to change defaults authorizes that change; preserve all other fields. Prefer the screen's backed-up save.

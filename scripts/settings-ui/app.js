@@ -93,7 +93,7 @@ function identity() {
     field('اليوزر بتاعك — اختياري', 'handle', draft.handle, value => {draft.handle = value || null;}, {max: 31, dir: 'ltr', hint: 'زي @yourname. سيبه فاضي لو مش محتاج كارت متابعة.'}));
   const platformBox = el('div', null, {class: 'wide'}); platformBox.append(el('h3', 'بتنشر فين؟', {class: 'section-title'}));
   const platforms = el('div', null, {class: 'platforms'});
-  for (const [id, labelText] of [['instagram', 'Instagram'], ['tiktok', 'TikTok']]) {
+  for (const [id, labelText] of [['instagram', 'Instagram'], ['tiktok', 'TikTok'], ['youtube', 'YouTube Shorts']]) {
     const label = el('label'); const input = el('input', null, {type: 'checkbox', id}); input.checked = draft.platforms.includes(id);
     input.addEventListener('change', () => {draft.platforms = input.checked ? [...draft.platforms, id] : draft.platforms.filter(p => p !== id); changed();}); label.append(input, el('span', labelText, {dir: 'ltr'})); platforms.append(label);
   }
@@ -139,7 +139,7 @@ function fontsPage() {
   content.append(grid, note('التلقائي بيختار خط مناسب للستايل. لو ثبّتّ خط، هيفضل هو الأساس لكل فيديو.'));
 }
 function writingPage() {
-  title('ووصف المنشور يتكتب إزاي؟', 'ده الكلام اللي بيتنشر تحت الفيديو على Instagram وTikTok. اختار طريقتك، أو سيبها حسب فكرة كل فيديو.');
+  title('ووصف المنشور يتكتب إزاي؟', 'ده الكلام اللي بيتنشر تحت الفيديو على المنصات اللي اخترتها. اختار طريقتك، أو سيبها حسب فكرة كل فيديو.');
   content.append(modeChoice('writingStyle'), pills('writingStyle'));
   const value = draft.preferences.writingStyle.value ?? 'educational';
   content.append(el('span', 'مثال للتوضيح', {class: 'tag'}), el('p', sampleWriting[value], {class: 'writing-demo'}), note('المساعد بيكتب الوصف من محتوى الفيديو الحقيقي، مع كلمة الكومنت اللي تختارها.'));

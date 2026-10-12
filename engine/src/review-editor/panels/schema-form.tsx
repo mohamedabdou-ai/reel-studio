@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useId, useMemo, useRef, useState } from "react";
 import { getIn, removeIn, setIn, type Path } from "../ops/paths.ts";
 import {
-  blankValue, blankVariant, defaultItem, fieldsForFamily, issuesByPath, parseNumberText, validateData, variantIndex,
+  blankValue, blankVariant, defaultItem, fieldsForFamily, familyDataSchema, formDataWithDefaults, issuesByPath, parseNumberText, validateData, variantIndex,
   type ArrayField, type Field, type JsonField, type NumberField, type ObjectField, type StringField, type UnionField,
 } from "./form-schema.ts";
 
@@ -32,7 +32,7 @@ const MEDIA = /\.(png|jpe?g|webp|gif|svg|mp4|webm)$/i;
 
 export const SchemaForm: React.FC<SchemaFormProps> = memo(({ family, data, fps, assets = [], demoPaths = [], onCommit }) => {
   const fields = useMemo(() => fieldsForFamily(family), [family]);
-  const [draft, setDraft] = useState<unknown>(data);
+  const [draft, setDraft] = useState<unknown>(()=>family==='project-scene'?formDataWithDefaults(familyDataSchema(family),data):data);
   const [refusal, setRefusal] = useState<string | null>(null);
   const committed = useRef<unknown>(data);
   const uid = useId();
@@ -41,7 +41,7 @@ export const SchemaForm: React.FC<SchemaFormProps> = memo(({ family, data, fps, 
   useEffect(() => {
     if (data !== committed.current) {
       committed.current = data;
-      setDraft(data);
+      setDraft(family==='project-scene'?formDataWithDefaults(familyDataSchema(family),data):data);
       setRefusal(null);
     }
   }, [data]);
@@ -51,7 +51,8 @@ export const SchemaForm: React.FC<SchemaFormProps> = memo(({ family, data, fps, 
   const demo = useMemo(() => new Set(demoPaths), [demoPaths]);
 
   const change = (path: Path, value: unknown, key: string) => {
-    const next = value === undefined ? removeIn(draft, path) : setIn(draft, path, value);
+    const rawNext = value === undefined ? removeIn(draft, path) : setIn(draft, path, value);
+    const next = family==='project-scene'?formDataWithDefaults(familyDataSchema(family),rawNext):rawNext;
     setDraft(next);
     if (!validateData(family, next).ok) { setRefusal(null); return; }
     const err = onCommit(next, key);
@@ -64,7 +65,7 @@ export const SchemaForm: React.FC<SchemaFormProps> = memo(({ family, data, fps, 
   const pending = validation.ok && refusal !== null;
   return (
     <div className="sf" dir="rtl">
-      {fields.map((f) => <FieldView key={f.key} field={f} path={[f.key]} draft={draft} ctx={ctx} />)}
+      {fields.map((f) => <FieldView key={f.key} field={f} path={f.key?[f.key]:[]} draft={draft} ctx={ctx} />)}
       {issues.get("") ? <div className="sf-msg bad">{issues.get("")!.join(" · ")}</div> : null}
       {refusal ? <div className="sf-msg bad" role="alert">مش متطبّق: {refusal}</div> : null}
       <div className={`sf-status ${validation.ok && !pending ? "ok" : "bad"}`} aria-live="polite">

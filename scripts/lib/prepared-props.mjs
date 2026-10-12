@@ -9,6 +9,8 @@ import {readJson,fileSnapshot,digest,checkedPath} from './job-paths.mjs';
 import {ffprobeJson,run} from './media.mjs';
 import {verifyPreparedHeadGuide} from './head-guide.mjs';
 import {readFile} from 'node:fs/promises';
+import {projectSceneBuild} from './project-scenes.mjs';
+import {projectSceneAssets} from '../../engine/src/project-scenes/schema.ts';
 
 // SVG is rendered by the browser; FFprobe builds without librsvg cannot probe it.
 // Read the intrinsic vector viewport while retaining the same file hash contract.
@@ -35,9 +37,10 @@ export async function verifyKineticAssets(edit){
   const assets=new Map();
   for(const input of edit.scenes){
     const parsed=kineticSceneSchema.safeParse(input),library=librarySceneSchema.safeParse(input),semantic=semanticSceneSchema.safeParse(input);
-    if(!parsed.success && !library.success && !semantic.success)continue;
-    const scene=parsed.success?parsed.data:library.success?library.data:semantic.data;
-    const sources=parsed.success?kineticAssets(parsed.data):library.success?libraryAssets(library.data):semanticAssets(semantic.data);
+    const custom=input.family==='project-scene';
+    if(!parsed.success && !library.success && !semantic.success && !custom)continue;
+    const scene=parsed.success?parsed.data:library.success?library.data:semantic.success?semantic.data:input;
+    const sources=parsed.success?kineticAssets(parsed.data):library.success?libraryAssets(library.data):semantic.success?semanticAssets(semantic.data):projectSceneAssets({...edit,scenes:[input]});
     for(const src of sources){
       if(!assets.has(src)){
         const file=`engine/public/${src}`,absolute=await checkedPath(file,{mustExist:true});
@@ -120,6 +123,8 @@ export async function verifyKineticAssets(edit){
 export async function verifyPreparedProps(props){
   if(!props.edit || !props.plate) throw new Error('CLI PreparedEdit rendering needs an authored edit and verified plate; the Studio placeholder cannot be rendered as an edit.');
   const edit=editManifestSchema.parse(props.edit);
+  const sceneBuild=await projectSceneBuild(edit);
+  if(sceneBuild&&digest(props.projectSceneIdentity)!==digest({hash:sceneBuild.hash,files:sceneBuild.files}))throw new Error('Project scene code changed after preparation. Prepare the project again before rendering.');
   const plate=props.plate;
   if(!plate || typeof plate.src!=='string' || !/^_prepared\/[a-z0-9-]+\/[a-f0-9]{64}\.mp4$/.test(plate.src)
     || plate.src.split('/')[1]!==edit.id || plate.width!==edit.source.width || plate.height!==edit.source.height) throw new Error('Prepared plate path or dimensions disagree with this edit.');

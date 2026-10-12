@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "scenes": [
+    {
+      "id": "idea-flow",
+      "label": "Idea flow",
+      "entry": "scenes/IdeaFlow.tsx",
+      "fields": [
+        {"key": "title", "type": "string", "required": true, "max": 80},
+        {"key": "resultLabel", "type": "string", "required": true, "max": 80},
+        {"key": "accent", "type": "color", "required": true},
+        {
+          "key": "items", "type": "array", "min": 3, "max": 3, "required": true,
+          "items": {
+            "key": "item", "type": "object",
+            "fields": [{"key": "label", "type": "string", "required": true, "max": 40}]
+          }
+        }
+      ]
+    }
+  ]
+}

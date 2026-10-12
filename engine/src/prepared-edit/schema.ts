@@ -12,6 +12,7 @@ import {TRANSITION_KINDS,TRANSITION_DIRS,graphicsTransitionIssues} from './graph
 import {LAYOUT_TRANSITION_MIN_FRAMES,layoutTransitionIssues} from './footage.ts';
 import {CAPTION_EMPHASIS_KINDS,captionEmphasisIssues} from './caption-emphasis.ts';
 import {compileEdit} from './timeline.ts';
+import {projectSceneVariant,projectScenesMetadataSchema,projectSceneIssues} from '../project-scenes/schema.ts';
 
 const frame = z.number().int().min(0).max(4320000);
 const slug = z.string().regex(/^[a-z0-9][a-z0-9-]{0,63}$/);
@@ -49,6 +50,7 @@ const sceneUnion = z.discriminatedUnion("family",[
   ...librarySceneVariants,
   ...screenRecordingVariants,
   ...semanticSceneVariants,
+  projectSceneVariant,
 ]);
 
 export const editSceneSchema = z.intersection(sceneUnion,z.object({chapter:chapterSchema.optional()}));
@@ -83,6 +85,7 @@ import {FONT_CHOICES, CAPTION_GROUPING, CAPTION_PRESENTATION, WRITING_STYLES} fr
 export const editManifestSchema = z.object({
   version:z.literal(1), id:slug, purpose:z.enum(["test","delivery"]),
   contentMode:z.literal('graphics').optional(),
+  projectScenes:projectScenesMetadataSchema.optional(),
   style:styleSchema,
   fontFamily:z.enum(FONT_CHOICES).optional(),
   writingStyle:z.enum(WRITING_STYLES).optional(),
@@ -116,6 +119,7 @@ export const editManifestSchema = z.object({
   layoutTransitions:z.array(layoutTransitionSchema).max(100).optional(),
 }).strict().superRefine((m,ctx)=>{
   const issue=(message:string)=>ctx.addIssue({code:"custom",message});
+  for(const message of projectSceneIssues(m))issue(message);
   let last=0,total=0;
   for(const s of m.segments){
     if(s.fromFrame<last || s.toFrame<=s.fromFrame || s.toFrame>m.source.totalFrames) issue("Source ranges must be ordered, disjoint and inside the source.");

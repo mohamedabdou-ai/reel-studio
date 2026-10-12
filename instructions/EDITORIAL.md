@@ -1,6 +1,6 @@
 # From meaning to an edit
 
-The edit should make the idea easier to see. A style supplies its material, type and motion grammar; the sentence supplies the action. Start here for recorded and authored graphics videos, then use [motion choices](MOTION-CHOICES.md), [examples](EXAMPLES.md) and [visual review](VISUAL-REVIEW.md).
+The edit should make the idea easier to see. A style supplies its material, type and motion grammar; the sentence supplies the action. Start here for recorded and authored graphics videos, then use [motion choices](MOTION-CHOICES.md), [examples](EXAMPLES.md) and [visual review](VISUAL-REVIEW.md). [Style recipes](STYLE-RECIPES.md) explain the eleven directions' decisions; named references use [style learning](STYLE-LEARNING.md), and supporting media uses [asset production](ASSET-PRODUCTION.md).
 
 ## Build the idea before choosing an effect
 
@@ -24,11 +24,13 @@ Write `Projects/<slug>/EDITORIAL_PLAN.md` before authoring the beat data. Keep i
 | Timing | Cue, entrance, demonstration, readable hold and exit |
 | Layout | Presenter/split/takeover and why it helps |
 | Assets | Exact named asset or generated illustration; evidence/source note |
-| Implementation | Supported family/concept plus its schema and duration limits |
+| Implementation | Supported family/concept plus its schema and duration limits, or declared project scene component/values |
 | Text and sound | Literal subtitle versus explanatory label; action-linked sound or silence |
 | Review concern | The hardest moment to understand or keep readable |
 
 Use this plan to give the creator a concise recommendation and a representative preview. A new style choice needs its own creative review. Keep already approved direction, cuts and scope; an explicit request to finish authorizes the remaining agreed production work. Ask again only for a new consequential choice, uncertain source meaning or work outside that scope.
+
+When references inform the plan, link evidence IDs from the project's Style DNA and record which rule is retained and which variable adapts to this message. Apply that decision to actual scene data/assets/code. If no shipped family can express the planned state change, follow [PROJECT-SCENES.md](PROJECT-SCENES.md) for project-local authored code and its declared editable data; normal customer work keeps tracked engine files intact.
 
 ## Carry an idea across scenes
 

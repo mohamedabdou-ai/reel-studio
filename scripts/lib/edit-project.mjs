@@ -12,11 +12,11 @@ import {soundRecipe,validateHits} from './job-sound.mjs';
 import {assertPreparedMedia} from './prepared-media.mjs';
 import {verifyKineticAssets} from './prepared-props.mjs';
 import {buildPreparedHeadGuide} from './head-guide.mjs';
+import {projectSceneBuild} from './project-scenes.mjs';
 
 
 export function assertEditionManifest(manifest){
   if(!EDITION_STYLE_IDS.includes(manifest.style)) throw new Error(`style must be one of ${EDITION_STYLE_IDS.join(', ')}.`);
-  if(manifest.footage?.pip!==undefined) throw new Error('Picture-in-picture is not available in this edition.');
   return manifest;
 }
 const relative=p=>path.relative(ROOT,p).split(path.sep).join('/');
@@ -119,6 +119,7 @@ export function preparedDir(id,outDir,inputs=[]){
 export async function prepareEditProject(manifestPath,{proxy=true,onProgress=()=>{},outDir}={}){
   const start=performance.now();
   const {manifest:m,compiled:c}=await loadEditProject(manifestPath);
+  const sceneBuild=await projectSceneBuild(m);
   const assets=await verifyKineticAssets(m);
   const base=preparedDir(m.id,outDir,[manifestPath,m.source.path]),opts={project:m.id};
   return withFileLock(`Projects/${m.id}/prepare.lock`,opts,async()=>{
@@ -186,7 +187,7 @@ export async function prepareEditProject(manifestPath,{proxy=true,onProgress=()=
       const result=await run(process.execPath,[path.join(ROOT,'scripts/proxy.mjs'),plateFile,'--height','540','--out',plateFile.replace('.mp4','-proxy.mp4')],{cwd:ROOT});
       preview=JSON.parse(result.stdout);
     }
-    const props={edit:m,plate:{src:publicSrc,width:m.source.width,height:m.source.height},guides:false,plates:[publicSrc],...(assets.length?{assets}:{}),...(head?{headGuide:head.guide}:{})};
+    const props={edit:m,plate:{src:publicSrc,width:m.source.width,height:m.source.height},guides:false,plates:[publicSrc],...(sceneBuild?{projectSceneIdentity:{hash:sceneBuild.hash,files:sceneBuild.files}}:{}),...(assets.length?{assets}:{}),...(head?{headGuide:head.guide}:{})};
     const propsFile=`${base}/props.json`;
     await atomicJson(propsFile,props,opts);
     await atomicJson(`${base}/timeline.json`,c,opts);

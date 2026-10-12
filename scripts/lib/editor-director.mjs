@@ -23,6 +23,8 @@ import {resolvePreferences, WRITING_GUIDES} from '../../engine/src/core/preferen
 import {applyBrandToScenes} from '../../engine/src/core/brand.ts';
 import {editCues} from './scene-cues.mjs';
 import {loadStylePalette, planSfxEvents} from './sfx-events.mjs';
+import {loadProjectScenePack} from './project-scenes.mjs';
+import {projectSceneDataSchema,projectScenesMetadataSchema} from '../../engine/src/project-scenes/schema.ts';
 
 const EMPHASIS_DEFAULTS = Object.freeze({holdSec: 1.5});
 import {emphasisPunch, composeTrack, toManifestKeys, PUNCH_KINDS, PUNCH_CAPS} from '../../engine/src/core/camera.ts';
@@ -32,12 +34,12 @@ export const EDITOR_TONES = Object.freeze(['energetic','calm','editorial']);
 export const EDITOR_SOUND_MODES = Object.freeze(['recipes','auto']);
 const KINETIC_SCHEMAS=Object.fromEntries([...kineticSceneVariants,...librarySceneVariants,...screenRecordingVariants,...semanticSceneVariants].map(schema=>[schema.shape.family.value,schema]));
 export const BEAT_FAMILIES = Object.freeze({hook:'intro',intro:'intro',evidence:'proof',proof:'proof',steps:'process',process:'process',
-  comparison:'comparison',comment:'comment','comment-cta':'comment',follow:'follow','follow-cta':'follow',
+  comparison:'comparison',comment:'comment','comment-cta':'comment',follow:'follow','follow-cta':'follow','project-scene':'project-scene',
   ...Object.fromEntries(Object.keys(KINETIC_SCHEMAS).map(family=>[family,family]))});
-const DATA_SCHEMAS = {intro:introSchema,proof:proofSchema,process:processSchema,comparison:comparisonSchema,comment:commentSchema,follow:followSchema,
+const DATA_SCHEMAS = {intro:introSchema,proof:proofSchema,process:processSchema,comparison:comparisonSchema,comment:commentSchema,follow:followSchema,'project-scene':projectSceneDataSchema,
   ...Object.fromEntries(Object.entries(KINETIC_SCHEMAS).map(([family,schema])=>[family,schema.shape.data]))};
 const SEMANTIC_FAMILIES=semanticSceneVariants.map(schema=>schema.shape.family.value);
-const defaultLayout=family=>SEMANTIC_FAMILIES.includes(family)?'takeover':KINETIC_SCHEMAS[family]?.shape.layout.value??(['process','comparison','follow','data-story'].includes(family)?'takeover':'split');
+const defaultLayout=family=>family==='project-scene'||SEMANTIC_FAMILIES.includes(family)?'takeover':KINETIC_SCHEMAS[family]?.shape.layout.value??(['process','comparison','follow','data-story'].includes(family)?'takeover':'split');
 
 const PURPOSE_FIT = {
   explainer: {'section-deck':16,'split-canvas':13,'kinetic-paper':12,'stepped-editorial':10},
@@ -88,9 +90,11 @@ export function listEditorStyles() {
 }
 
 export function validateEditorBrief(raw) {
-  object(raw,['version','id','source','sourceKind','transcript','creator','brand','purpose','tone','style','preferences','fontFamily','captionsGrouping','captionsPresentation','captionsVisible','writingStyle','recentStyles','captionsReviewedBy','captionsMode','signoffFromSec','endAtSec','beats','footage','transitions','sound','segments'],'editor brief');
+  object(raw,['version','id','source','sourceKind','transcript','creator','brand','purpose','tone','style','preferences','fontFamily','captionsGrouping','captionsPresentation','captionsVisible','writingStyle','recentStyles','captionsReviewedBy','captionsMode','signoffFromSec','endAtSec','beats','footage','transitions','sound','segments','emphasisFile','emphasisApprovedBy','projectScenePack','projectScenes'],'editor brief');
   if(raw.version!==1) throw new Error('Editor brief version must be 1.');
   slug(raw.id); const creator=normalizeCreatorProfile(raw.creator);
+  if(raw.projectScenePack!==undefined){relativePath(raw.projectScenePack);if(!raw.projectScenePack.startsWith(`Projects/${raw.id}/`))throw new Error('Project scene pack must belong to its project');}
+  if(raw.projectScenes!==undefined)projectScenesMetadataSchema.parse(raw.projectScenes);
   validateEditorSource({source:raw.source,transcript:raw.transcript}); relativePath(raw.source); relativePath(raw.transcript);
   choice(raw.purpose,EDITOR_PURPOSES,'purpose');choice(raw.tone,EDITOR_TONES,'tone');
   if(raw.style!==undefined) style(raw.style);
@@ -115,7 +119,6 @@ export function validateEditorBrief(raw) {
     if([raw.source,raw.transcript].some(input=>input.toLowerCase()===raw.emphasisFile.toLowerCase())) throw new Error('The emphasis file must differ from the source and transcript.');
     text(raw.emphasisApprovedBy,'emphasis approver');
   } else if(raw.emphasisApprovedBy!==undefined) throw new Error('emphasisApprovedBy needs an emphasisFile.');
-  if(raw.footage?.pip!==undefined) throw new Error('Picture-in-picture is not available in this edition.');
   if(raw.segments!==undefined) {
     if(!Array.isArray(raw.segments) || !raw.segments.length || raw.segments.length>300) throw new Error('segments must list 1 to 300 approved source ranges.');
     let end=0;
@@ -213,12 +216,14 @@ export function buildEditorPlan(raw,source,captions,{delivery=false,emphasis}={}
   const branded=applyBrandToScenes(selection.style,brief.brand??null,scenes);
   let camera=[],emphasisRecord=null;
   if(brief.emphasisFile!==undefined) {
+    if(!brief.captionsReviewedBy) throw new Error('Emphasis planning needs reviewed captions and captionsReviewedBy.');
     if(emphasis===undefined) throw new Error(`The brief names emphasisFile ${brief.emphasisFile}; load it and pass it to the planner.`);
     const approved=validateEmphasisProposals(emphasis,{words,fps:source.fps});
-    camera=emphasisCameraKeys(approved,{fps:source.fps,limitFrame:signoffFromFrame??retainedFrames,anchored:brief.footage!==undefined});
+    camera=emphasisCameraKeys(approved,{fps:source.fps,limitFrame:signoffFromFrame??editFrames,anchored:brief.footage!==undefined,segments});
     emphasisRecord={file:brief.emphasisFile,approvedBy:brief.emphasisApprovedBy,proposals:approved.length,keys:camera.length};
   }
   const manifest=editManifestSchema.parse({version:1,id:brief.id,purpose:delivery?'delivery':'test',style:selection.style,creator:ending.creator,...(branded.brand?{brand:branded.brand}:{}),source,
+    ...(brief.projectScenes?{projectScenes:brief.projectScenes}:{}),
     ...(preferences.fontFamily===undefined?{}:{fontFamily:preferences.fontFamily}),
     ...(preferences.writingStyle===undefined?{}:{writingStyle:preferences.writingStyle}),
     segments,captions:{status:brief.captionsReviewedBy?'reviewed':'draft',
@@ -326,14 +331,24 @@ export function validateEmphasisProposals(raw,{words,fps}={}) {
 
 
 
-export function emphasisCameraKeys(proposals,{fps,limitFrame,anchored=false}={}) {
+export function emphasisCameraKeys(proposals,{fps,limitFrame,anchored=false,segments}={}) {
   finite(fps,1,120,'fps');
   const holdFrames=Math.round(EMPHASIS_DEFAULTS.holdSec*fps);
   const parts=proposals.map(p=>{
     if(p.kind==='slow-push' && p.atFrame<1) throw new Error(`Emphasis proposal at frame ${p.atFrame} needs at least one earlier frame for a slow-push.`);
     const pushFrames=p.kind==='slow-push'?Math.min(30,p.atFrame):undefined;
-    return emphasisPunch({kind:p.kind,atFrame:p.atFrame,scale:p.scale,holdFrames,
+    const part=emphasisPunch({kind:p.kind,atFrame:p.atFrame,scale:p.scale,holdFrames,
       ...(pushFrames!==undefined?{pushFrames}:{}),...(anchored && p.anchor?{anchor:p.anchor}:{})});
+    if(!segments) return part;
+    let offset=0;
+    for(const range of segments) {
+      if(p.atFrame>=range.fromFrame && p.atFrame<range.toFrame) {
+        if(part.some(key=>key.frame<range.fromFrame || key.frame>=range.toFrame)) throw new Error(`Emphasis proposal at source frame ${p.atFrame} crosses a retained source cut; remove or revise it after review.`);
+        return part.map(key=>({...key,frame:offset+key.frame-range.fromFrame}));
+      }
+      offset+=range.toFrame-range.fromFrame;
+    }
+    throw new Error(`Emphasis proposal at source frame ${p.atFrame} names a removed word outside the retained source ranges.`);
   });
   const keys=composeTrack(parts);
   keys.forEach((key,i)=>{
@@ -363,7 +378,9 @@ const decisionMarkdown=record=>[
 ].join('\n');
 
 export async function planEditorBrief(briefPath,{out,delivery=false,replace=false}={}) {
-  const brief=validateEditorBrief(await readJson(briefPath));
+  const raw=await readJson(briefPath);
+  if(raw.projectScenePack)raw.projectScenes=await loadProjectScenePack(raw.projectScenePack,{id:raw.id});
+  const brief=validateEditorBrief(raw);
   const manifestPath=out??`Projects/${brief.id}/edit.json`;
   if(replace && brief.captionsVisible===undefined){
     const existing=await readJson(manifestPath,{optional:true});
@@ -393,6 +410,7 @@ export async function planEditorBrief(briefPath,{out,delivery=false,replace=fals
         else beat.soundOmitted='No palette cue was placed inside this beat.';
       }
     } else for(const [i,scene] of plan.manifest.scenes.entries()) {
+      if(!SOUND_FOR_FAMILY[scene.family]){plan.decision.beatDecisions[i].soundOmitted='Custom scene sound is authored explicitly; no unrelated cue is assumed.';continue;}
       const recipe=await soundRecipe(SOUND_FOR_FAMILY[scene.family]);
       const soundEnd=scene.fromFrame+Math.ceil(recipe.duration*plan.manifest.source.fps);
       if(soundEnd<=Math.min(scene.fromFrame+scene.durationInFrames,plan.manifest.signoffFromFrame??info.source.totalFrames)) {

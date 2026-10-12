@@ -3,6 +3,8 @@
 Use `EDITORIAL.md` to design the explanation, `MOTION-CHOICES.md` to select a supported mechanism, and `VISUAL-REVIEW.md` to review the result. This guide describes runtime capabilities; `technique-catalog.json` is the technical inventory.
 
 - **Authored graphics** (`scripts/editor.mjs graphics`): a validated source-free specification creates a generated silent base and a normal editable manifest. No fabricated transcript; see `GRAPHICS.md`.
+- **Project-authored scenes** (`engine/src/project-scenes/`): project-local React visuals and declared editable fields use the same preview/render registry and dependency identity. See `PROJECT-SCENES.md`.
+- **Recorded-performance controls**: reviewed word/audio camera proposals, supported presenter PiP and optional post-review forced alignment. See `PERFORMANCE.md`; alignment timing remains a draft for listening review.
 - **Motion concepts** (`engine/src/motion-concepts/`): all fifteen are normal takeover `motion-concept` scenes with their existing typed config and duration floors.
 - **Recorded kinetic text and evidence comparison** (`engine/src/creative-kit/semantic/`): literal recorded word indices for emphasis; supplied image assets for before/after wipes.
 

@@ -1,6 +1,6 @@
 ---
 name: reel-studio
-description: Use when working in a Reel Studio folder on setup, preferences, a named recording, motion graphics without a recording, podcast clips, revisions, previews, review or delivery.
+description: Use when working in a Reel Studio folder on setup, preferences, a named recording, reference styles, asset production, project scenes, motion graphics without a recording, podcast clips, revisions, previews, review or delivery.
 ---
 
 # Reel Studio
@@ -20,10 +20,14 @@ For an edit, read [EDITORIAL](../../../instructions/EDITORIAL.md), then choose:
 | Several clips from one recording | [PODCAST](../../../instructions/PODCAST.md) |
 | Render/resume or audio/picture revision | [PRODUCTION](../../../instructions/PRODUCTION.md) |
 
+Named finished references use [STYLE-LEARNING](../../../instructions/STYLE-LEARNING.md): keep evidence/timecodes/confidence in project-local Style DNA and map its decisions to the new scene. Choose a base grammar with [STYLE-RECIPES](../../../instructions/STYLE-RECIPES.md). Supporting media uses [ASSET-PRODUCTION](../../../instructions/ASSET-PRODUCTION.md) for tool selection, current-project authorization, provenance, revisions and destination review.
+
 ## Make and review the scene plan
 
+For performance-timed camera proposals, presenter PiP or optional post-review word alignment, use [PERFORMANCE](../../../instructions/PERFORMANCE.md). Keep reviewed source timing and applicable face/safe checks.
+
 1. Identify the viewer takeaway and the message's progression. Write `EDITORIAL_PLAN.md`: phrase/message → initial visual state → action → resolved state, with cue/hold, layout reason, asset provenance and supported family.
-2. Choose a mechanism using [MOTION-CHOICES](../../../instructions/MOTION-CHOICES.md) and the actual schema. All fifteen concepts are normal editable `motion-concept` takeover scenes with `{concept,config}`. Use their duration floors. Literal `kinetic-text` requires recorded word indices; `outcome` is split-only. A source-free request needs no uploaded video or invented transcript.
+2. Choose a mechanism using [MOTION-CHOICES](../../../instructions/MOTION-CHOICES.md) and the actual schema. All fifteen concepts are normal editable `motion-concept` takeover scenes with `{concept,config}`. Use their duration floors. When the idea needs authored behavior, use [PROJECT-SCENES](../../../instructions/PROJECT-SCENES.md) with project-local code and declared editable fields. Literal `kinetic-text` requires recorded word indices; `outcome` is split-only. A source-free request needs no uploaded video or invented transcript.
 3. Preserve the relevant object's identity across the explanation. A prompt can produce outputs; a process carries an input to a result; a contrast changes the same subject. Adapt [EXAMPLES](../../../instructions/EXAMPLES.md), not their fixed timing or copy.
 4. Prepare the first draft, start `node scripts/review-editor.mjs Projects/<slug>/edit.json` and open its URL immediately. Keep it running while editing and awaiting decisions. Protect manual edits; reprepare changed cuts before calling footage current.
 5. Review a representative difficult passage and the full arc through [VISUAL-REVIEW](../../../instructions/VISUAL-REVIEW.md). Keep existing approvals; an agreed request to finish does not require the same approval at each step.

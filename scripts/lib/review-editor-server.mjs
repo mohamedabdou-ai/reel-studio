@@ -9,6 +9,7 @@ import { loadReviewProject, resolveManifestPath, PUBLIC_DIR } from './review-edi
 import { createJobManager, createManifestStore, HttpError } from './review-editor-jobs.mjs';
 import { validateManifest } from '../../engine/src/review-editor/validate.ts';
 import { TOKEN_HEADER } from '../../engine/src/review-editor/types.ts';
+import {projectSceneBuild,resolveProjectScenes} from './project-scenes.mjs';
 
 export { HttpError };
 
@@ -109,8 +110,12 @@ async function servePublic(req, res, urlPath) {
 
 export function apiHandlers() {
   return {
-    'GET /api/project': ({ ctx }) => loadReviewProject(ctx.manifestPath),
-    'POST /api/validate': ({ body }) => validateManifest(body?.manifest),
+    'GET /api/project': async({ ctx }) => {
+      const project=await loadReviewProject(ctx.manifestPath),sceneBuild=await projectSceneBuild(project.manifest);
+      if((sceneBuild?.hash??null)!==ctx.projectSceneHash)project.warnings.push('كود المشهد الخاص اتغيّر. المعاينة الحالية تعرض النسخة السابقة؛ احفظ تعديلاتك وافتح المحرر من جديد لمراجعة النسخة الجديدة.');
+      return project;
+    },
+    'POST /api/validate': async({ body }) => {const check=validateManifest(body?.manifest);if(check.ok)await resolveProjectScenes(body.manifest);return check;},
     'POST /api/save': ({ body, ctx }) => ctx.store.save(body),
     'GET /api/history': ({ ctx }) => ctx.store.history(),
     'POST /api/restore': ({ body, ctx }) => ctx.store.restore(body),
@@ -151,11 +156,11 @@ const sameToken = (given, expected) => {
 
 export async function createReviewServer({ manifestPath, port = 0, token = randomToken(), dev = false, bundle, log = () => {}, deps = {} }) {
   const rel = resolveManifestPath(manifestPath);
-  await loadReviewProject(rel);
-  const built = bundle ?? (await buildReviewApp({ dev }));
+  const initialProject=await loadReviewProject(rel);
+  const built = bundle ?? (await buildReviewApp({ dev, edit:initialProject.manifest }));
   const jobs = createJobManager({ manifestPath: rel, log, ...deps });
   const store = createManifestStore({ manifestPath: rel, isBusy: jobs.busy, ...(deps.now ? { now: deps.now } : {}) });
-  const ctx = { manifestPath: rel, token, store, jobs };
+  const ctx = { manifestPath: rel, token, store, jobs, projectSceneHash:built.projectSceneHash??null };
   const handlers = apiHandlers();
   let actualPort = port;
 
