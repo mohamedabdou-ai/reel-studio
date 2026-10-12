@@ -28,18 +28,6 @@ Ignoring a file does not remove a file that is already tracked or erase old
 Git history. Check the staged diff before submitting a change. Use your GitHub
 noreply email for commits if you do not want a personal email in commit metadata.
 
-## Write for the people using the studio
-
-Use short, natural Egyptian Arabic for public commit messages, pull request
-titles and descriptions, release notes and product copy unless another language
-is requested. Explain the visible improvement and its benefit. For example:
-«اختار خطك والستايل اللي يناسب فيديوهاتك».
-
-Avoid development prefixes, implementation details, debugging logs and private
-work conversations. Keep necessary source code, installation commands and
-license information precise. Follow the shared publishing rules in
-[AGENTS.md](AGENTS.md), and use GitHub's noreply email in public metadata.
-
 ## Validate a change
 
 Use Node.js 22.20.0 or newer. After the engine dependencies are available, run
