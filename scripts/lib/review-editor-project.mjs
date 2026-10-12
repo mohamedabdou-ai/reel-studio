@@ -121,6 +121,7 @@ export async function loadReviewProject(manifestRel) {
   if (!manifestRel.startsWith(`Projects/${manifest.id}/`)) warnings.push(`Manifest id "${manifest.id}" does not match its folder: prepare/export will refuse it (the pipeline needs Projects/${manifest.id}/).`);
   const { plate, needsPrepare, needsPrepareReason } = await findPlate(manifest, manifestRel);
   const motionPlanPath = (await exists(path.join(ROOT, dir, 'motion-plan.json'))) ? `${dir}/motion-plan.json` : null;
+  const deliveryMotionReady = manifest.presenter === false || motionPlanPath !== null;
   const catalog = await loadSoundCatalog().catch(() => ({ recipes: [] }));
   const props = await readJson(`${dir}/prepared/props.json`, { optional: true }).catch(() => null);
   return {
@@ -136,7 +137,7 @@ export async function loadReviewProject(manifestRel) {
     motionPlanPath,
     exportModes: [
       { id: 'preview', label: 'معاينة سريعة (proxy)', available: true },
-      { id: 'deliver', label: 'تصدير نهائي (Instagram)', available: motionPlanPath !== null, ...(motionPlanPath ? {} : { reason: 'مفيش motion-plan.json جنب الـ manifest' }) },
+      { id: 'deliver', label: 'تصدير نهائي (Instagram)', available: deliveryMotionReady, ...(deliveryMotionReady ? {} : { reason: 'مفيش motion-plan.json جنب الـ manifest' }) },
     ],
     recipes: catalog.recipes.map((r) => r.id),
     recipeInfo: catalog.recipes.map((r) => ({ id: r.id, name: r.name, use: r.use, duration: r.duration })),

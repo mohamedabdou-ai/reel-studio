@@ -59,7 +59,7 @@ async function main() {
   await run('editor-tests', ['--test', '--test-concurrency=1', 'tests/engine-dependencies.test.mjs', 'tests/clean-install.test.mjs',
     'tests/review-live-api.test.mjs', 'tests/review-live-follow.test.mjs', 'tests/review-live-save.test.mjs',
     'tests/graphics-audio.test.mjs', 'tests/graphics-audio-ffmpeg.test.mjs', 'tests/project-scenes.test.mjs',
-    'tests/performance-controls.test.mjs', 'tests/alignment-workflow.test.mjs', 'tests/emphasis-proposals.test.mjs', 'tests/publishing-flexibility.test.mjs', 'tests/bootstrap-profile.test.mjs', 'tests/project-scene-example.test.mjs']);
+    'tests/performance-controls.test.mjs', 'tests/alignment-workflow.test.mjs', 'tests/emphasis-proposals.test.mjs', 'tests/publishing-flexibility.test.mjs', 'tests/bootstrap-profile.test.mjs', 'tests/project-scene-example.test.mjs', 'tests/proxy-cache-hardlinks.test.mjs', 'tests/review-export.test.mjs']);
   await run('doctor-quick', ['scripts/studio.mjs', 'doctor', '--quick']);
   if (values.doctor) await run('doctor-render', ['scripts/studio.mjs', 'doctor']);
   if (ref && git(root, ['status', '--porcelain', '--untracked-files=no']).trim()) throw new Error('The installation changed tracked release files.');

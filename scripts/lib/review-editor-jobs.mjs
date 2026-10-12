@@ -439,8 +439,8 @@ export function createJobManager({
       const delivery = check.issues.filter((i) => i.stage === 'delivery');
       throw new HttpError(422, `مش جاهز للتصدير النهائي (${delivery.length} حاجة ناقصة): ${delivery[0]?.message ?? ''}`, { issues: delivery });
     }
-    const motionPlan = `${dir}/motion-plan.json`;
-    if (kind === 'export' && mode === 'deliver' && !(await exists(path.join(ROOT, ...motionPlan.split('/'))))) {
+    const motionPlan = manifest.presenter === false ? null : `${dir}/motion-plan.json`;
+    if (kind === 'export' && mode === 'deliver' && motionPlan && !(await exists(path.join(ROOT, ...motionPlan.split('/'))))) {
       throw new HttpError(422, `التصدير النهائي محتاج ${motionPlan} جنب الـ manifest (قياس حركة الـ presenter). مش موجود.`);
     }
     const budget = budgetFor(kind === 'prepare' ? 'prepare' : mode, manifest);
@@ -455,7 +455,7 @@ export function createJobManager({
     let output = outputFor('');
     for (let n = 2; await exists(path.join(ROOT, ...output.split('/'))); n++) output = outputFor(`-${n}`);
     await ensureOutput(output, { project: manifest.id });
-    const deliver = mode === 'deliver' ? ['--deliver', '--motion-plan', motionPlan, '--png', '--crf', String(DELIVERY_CRF)] : [];
+    const deliver = mode === 'deliver' ? ['--deliver', ...(motionPlan ? ['--motion-plan', motionPlan] : []), '--png', '--crf', String(DELIVERY_CRF)] : [];
     return { kind: mode, project: manifest.id, output, args: ['render', manifestPath, '--out', output, ...deliver] };
   }
 
