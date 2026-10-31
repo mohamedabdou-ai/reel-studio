@@ -71,6 +71,7 @@ import {getSceneGeometry, getSceneTheme} from './engine/src/creative-kit/primiti
 import {LOADED_FAMILIES} from './engine/src/core/fonts';
 import {DigitsProvider} from './engine/src/creative-kit/digits';
 import {TypographyProvider} from './engine/src/creative-kit/chapter-theme';
+import {PreparedPlateProvider} from './engine/src/screen-recording/ScreenRecordingScene';
 
 const h = React.createElement;
 
@@ -99,6 +100,7 @@ export function renderScene(scene, style, frame, options = {}) {
   // The providers PreparedEdit mounts. An option that is left out mounts nothing, so the default markup is the old markup.
   if (options.fontFamily) node = h(TypographyProvider, {fontFamily: options.fontFamily}, node);
   if (options.digits !== undefined) node = h(DigitsProvider, {digits: options.digits}, node);
+  if (options.plate) node = h(PreparedPlateProvider, {plate: options.plate}, node);
   return inComposition(node, frame, scene.durationInFrames);
 }
 

@@ -97,6 +97,10 @@ The layouts it uses (`split`, `takeover`), how the presenter and footage appear,
 - **Transition/sound:** what carries across beats and which sound marks a real state change.
 - **Application/review:** the families to use and what to check before delivery.
 
+## Design system
+
+Only a style with a design system carries this section: the law of the style, the parts and when to use each, the decision order, and worked compositions.
+
 ## Style-owned scenes
 
 Each own scene family with its data contract, timing rules and limits. Without own families, say that the style renders the shared families.

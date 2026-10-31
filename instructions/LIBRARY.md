@@ -37,7 +37,7 @@ Use the JSON inventory for exact fields and source references. The Markdown form
 1. Read `EDITORIAL.md`. State the viewer takeaway, visual starting state, action and resolved hold. Interpret the mood from the actual content and the creator's words; you cannot hear the delivery.
 2. Preserve explicit and profile-fixed choices. Choose or retain the style using `STYLES.md` and its own guide; check its brand and layout policies.
 3. Search the inventory for the visual job. Start with a short list, then inspect the relevant record and its actual schema/source. Match required assets, source mode, recorded words, duration at the project fps, layout and style ownership.
-4. Follow `MOTION-CHOICES.md` and the normal brief/manifest contracts. A concept uses `{concept, config}`; an effect uses its own supported slot. An internal helper does not become a valid family by naming it in a brief.
+4. Follow `MOTION-CHOICES.md` and the normal brief/manifest contracts. A concept uses `{concept, config}`; an effect uses its own supported slot. An internal helper does not become a valid family by naming it in a brief. In a style with a design system, when no family states the idea exactly, compose the page from the system's parts (`scene:compose`, worked examples in the style guide) before reaching for a project scene.
 5. Author real data and timing. Keep literal recorded words separate from explanatory copy. Do not substitute demonstration claims or missing evidence assets.
 6. Continue through the normal planner, open live editor and actual visual review. Apply changes to the current edit with its manual-draft protections. Inventory lookup is never permission to rebuild or discard user edits.
 

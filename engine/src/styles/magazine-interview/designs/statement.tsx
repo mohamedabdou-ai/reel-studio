@@ -1,6 +1,7 @@
 import {DesignText} from '../../../style-kit/digits';
 import {StatementBand} from '../../../style-kit/statement-band';
 import React from 'react';
+import {DesignSurface} from '../../../core/safe';
 import {AbsoluteFill,useCurrentFrame} from 'remotion';
 import type {FamilyDesignProps} from '../../family-designs';
 import {NAVY,W,X0,X1,CW,ramp,Headline,Rule,Diamond,QuoteGlyph,MagazineScope,useMagazine,useType,statementPlacement} from './kit';
@@ -16,7 +17,7 @@ const Drawing: React.FC<{d: {kicker: string; title: string};headBox?:FamilyDesig
   const top = 418;   // the whole block ends by y 760 so the face (about y 550 to 1100) stays clear below it
   const placement=statementPlacement(plan.height,headBox);
   return <AbsoluteFill>
-    <div style={{position:'absolute',left:0,top:250,width:1080,height:placement.bottom-250,background:'linear-gradient(180deg,rgba(8,19,33,0.94),rgba(8,19,33,0.55))'}}/>
+    <DesignSurface style={{position:'absolute',left:0,top:250,width:1080,height:placement.bottom-250,background:'linear-gradient(180deg,rgba(8,19,33,0.94),rgba(8,19,33,0.55))'}}/>
     <div style={{position: 'absolute', top: 270, [copy.side]: X0, width: CW * ramp(f, 0, 22), height: 2, background: th.gold}}/>
     <div style={{position: 'absolute', top: 286, [copy.side]: X0, fontFamily: AR, fontWeight: 400, fontSize: 30, lineHeight: '34px', color: th.dim, opacity: ramp(f, 8, 18), direction: copy.dir}}><DesignText>{magazineCopy('issue',copy)}</DesignText></div>
     <div style={{position: 'absolute', top: 286, [copy.opposite]: X0, fontFamily: AR, fontWeight: 400, fontSize: 30, lineHeight: '34px', color: th.dim, opacity: ramp(f, 8, 18), direction: copy.dir}}>{magazineCopy('quote',copy)}</div>

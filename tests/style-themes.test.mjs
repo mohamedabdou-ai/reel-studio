@@ -24,7 +24,7 @@ const LAYOUTS = ['split', 'takeover'];
 const bundle = await build({
   stdin: {
     contents: `
-      export {getStyleTheme, getStyleLayout, getGalleryCut} from './engine/src/styles/themes';
+      export {getStyleTheme, getStyleLayout, getGalleryCut, getStyleCaption} from './engine/src/styles/themes';
       export {getSceneTheme, getSceneGeometry} from './engine/src/creative-kit/primitives';
     `,
     resolveDir: root,
@@ -35,8 +35,12 @@ const bundle = await build({
 });
 const mod = {exports: {}};
 new Function('require', 'module', 'exports', bundle.outputFiles[0].text)(engineRequire, mod, mod.exports);
-const {getStyleTheme, getStyleLayout, getGalleryCut, getSceneTheme, getSceneGeometry} = mod.exports;
+const {getStyleTheme, getStyleLayout, getGalleryCut, getStyleCaption, getSceneTheme, getSceneGeometry} = mod.exports;
 const plain = (value) => JSON.parse(JSON.stringify(value));
+
+test('only the magazine caption contract opts into transition hiding and landing fade', () => {
+  for (const id of STYLE_IDS) assert.equal(getStyleCaption(id)?.hideDuringTransitions ?? false, id === 'magazine-interview', id);
+});
 
 test('every registered style has a theme module that agrees with its meta', () => {
   for (const id of STYLE_IDS) {

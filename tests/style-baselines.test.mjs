@@ -19,6 +19,7 @@ import {BASELINE_FILE, BASELINE_SECTIONS, captureStyleBaselines} from '../script
 // 2026-10-28: section-deck kinetic:checklist/count/statement markup was re-recorded
 // for English labels, direction and display type; Arabic pilot markup stays identical.
 // 2026-10-28: five approved V4 style ports re-record only their existing keys; see state/v4-five-styles-baseline-changes.json.
+// 2026-10-31: magazine-interview migrations: state/magazine-system-baseline-changes.json, state/magazine-system-baseline-changes-task12.json, state/magazine-system-baseline-changes-d2.json, state/magazine-system-baseline-changes-d3.json, state/magazine-system-baseline-changes-d4.json, state/magazine-system-baseline-changes-task16.json, state/magazine-system-baseline-changes-task20.json, state/magazine-system-baseline-changes-task21.json.
 const fixture = v4Baseline(JSON.parse(await readFile(BASELINE_FILE, 'utf8')));
 // The recorded example files are passed back, so an example added to instructions/examples later changes nothing.
 const recordedExamples = Object.keys(fixture.parses).filter((key) => key.startsWith('example:')).map((key) => key.slice('example:'.length));

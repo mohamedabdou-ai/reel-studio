@@ -11,6 +11,7 @@ import { screenRectToFrame, screenTrackPose, SCREEN_VIEWPORT_TOP } from "./pose"
 
 export type PreparedPlate = { src: string; width: number; height: number };
 const PlateContext = React.createContext<PreparedPlate | null>(null);
+export const usePreparedPlate = (): PreparedPlate | null => React.useContext(PlateContext);
 
 
 export const PreparedPlateProvider: React.FC<{ plate: PreparedPlate; children?: React.ReactNode }> = ({ plate, children }) => (

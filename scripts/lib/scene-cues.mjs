@@ -1,3 +1,4 @@
+import {resolveComposeAt} from '../../engine/src/creative-kit/compose/timing.ts';
 import {arabicTypeCues} from '../../engine/src/arabic-type/timing.ts';
 import {chatMessageFrames,chatTypingFrames} from '../../engine/src/creative-kit/chat-thread/timing.ts';
 import { oneShotCues } from '../../engine/src/styles/one-shot/scenes/math.ts';
@@ -39,7 +40,7 @@ export function sortCues(cues) {
 }
 
 
-/** `words` are the compiled edit words; only cartoon scenes read them (their times are word anchors). */
+/** `words` are the compiled edit words; cartoon and compose scenes read them (their times are word anchors). */
 export function sceneCues(scene, fps = 30, { words = [] } = {}) {
   const from = frameOf(scene?.fromFrame);
   if (from === null || from < 0) return [];
@@ -60,6 +61,16 @@ export function sceneCues(scene, fps = 30, { words = [] } = {}) {
   // B-roll plays silently under the voice: it gets no cue, neither at its start nor at a clip change.
   if (!isBrollScene(scene) && scene.family !== 'one-shot' && scene.family !== CARTOON_FAMILIES[0]) add(0, dipEntrance ? 'stamp' : 'transition');
   switch (scene.family) {
+    case 'compose':
+      for (const part of list(data.parts)) {
+        if (!part?.at) continue;
+        const at = resolveComposeAt(part.at, scene, words, fps);
+        if (at === null) continue; // Cut-away/out-of-window anchors never make a cue.
+        const offsets = part.kind === 'steps' ? list(part.items).map(row => row.offsetFrames)
+          : part.kind === 'list' ? list(part.items).map((_, i) => i * (part.staggerFrames ?? 10)) : [0];
+        for (const offset of offsets) if (at + offset !== 0) add(at + offset, 'reveal');
+      }
+      break;
     case 'figures':
       if(data.variant==='bars')list(data.bars).forEach((_,i)=>add(Math.round(i*.12*fps),'count'));
       else add(0,'count');
@@ -178,9 +189,9 @@ export function editCues(manifest) {
   const scenes = list(manifest?.scenes);
   // Not flatMap(sceneCues): flatMap would hand the array index to sceneCues as its fps.
   const fps = manifest?.source?.fps;
-  // Cartoon scenes cue on the recorded words: compile them once for the whole edit.
+  // Cartoon and compose scenes cue on the recorded words: compile once for the whole edit.
   let words = [];
-  if (scenes.some((scene) => CARTOON_FAMILIES.includes(scene?.family))) { try { words = compileEdit(manifest).words; } catch { words = []; } }
+  if (scenes.some((scene) => CARTOON_FAMILIES.includes(scene?.family) || (scene?.family === 'compose' && list(scene.data?.parts).some(part => part.at && 'word' in part.at)))) { try { words = compileEdit(manifest).words; } catch { words = []; } }
   const cues = scenes.flatMap((scene) => sceneCues(scene, fps, { words }));
   for (const transition of list(manifest?.transitions)) {
     const frame = frameOf(transition?.atFrame);

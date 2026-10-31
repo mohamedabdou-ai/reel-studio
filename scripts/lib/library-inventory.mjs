@@ -27,6 +27,7 @@ const SCENE_GROUPS = [
   ['engine/src/creative-kit/chat-thread/schema.ts', 'chatThreadSceneVariants'],
   ['engine/src/styles/scenes.ts', 'styleSceneVariants'],
   ['engine/src/creative-kit/proof-screen/schema.ts', 'proofScreenSceneVariants'],
+  ['engine/src/creative-kit/compose/schema.ts', 'composeSceneVariants'],
   ['engine/src/project-scenes/schema.ts', 'projectSceneVariant'],
 ];
 const PRIMITIVE_FILES = [

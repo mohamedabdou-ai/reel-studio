@@ -8,6 +8,7 @@ import { getServeUrl, requireFromEngine } from './lib/bundle.mjs';
 import { renderChromiumOptions } from './lib/render-gl.mjs';
 import { SPEC, zone, zoneTests, profileIds } from './lib/ig.mjs';
 import { assertProjectOutput } from './lib/project-paths.mjs';
+import {analyseSafeFrame,ProbeContractError as ContractError} from './lib/safe-probe.mjs';
 
 const args = parseArgs(process.argv.slice(2), { step: '0.5', scale: '0.5', 'min-alpha': '0.35', 'min-area': '400', concurrency: '4' });
 const { renderFrames, renderStill, selectComposition, openBrowser } = requireFromEngine('@remotion/renderer');
@@ -31,7 +32,7 @@ const outArg = args.out ? assertProjectOutput(path.resolve(String(args.out))) : 
 if (!(Number(args.step) > 0)) { console.error('--step must be a positive number of seconds'); process.exit(1); }
 if (!(SCALE > 0 && SCALE <= 1)) { console.error('--scale must be in (0, 1]'); process.exit(1); }
 
-class ContractError extends Error {}
+
 
 const {readRenderProps} = await import('./lib/render-props.mjs');
 const extraProps = await readRenderProps(args,{composition:args.comp});
@@ -49,8 +50,8 @@ const pngToRgb = (png) => new Promise((resolve, reject) => {
 });
 
 
-async function renderProbe(compId, extraProps, probe, frames, browser) {
-  const inputProps = { ...extraProps, probe };
+async function renderProbe(compId, extraProps, probe, frames, browser, probeSurfaces) {
+  const inputProps = { ...extraProps, probe, probeSurfaces };
 
   const composition = await selectComposition({ serveUrl, id: compId, inputProps, logLevel: 'warn', puppeteerInstance: browser });
   if (composition.width !== W || composition.height !== H) {
@@ -85,58 +86,6 @@ const bandFile = bandsPath ? JSON.parse(await fs.readFile(bandsPath, 'utf8')) : 
 const bandTests = bandFile.map((b) => ({ id: b.id ?? b.label, why: b.label ?? b.id, test: (x, y) => y >= b.top && y < b.bottom }));
 
 
-function analyse(a, b) {
-  const n = w * h;
-  if (a.length !== n * 3 || b.length !== n * 3) {
-    throw new ContractError(`probe frame is ${a.length / 3} px, expected ${n} (${w}x${h}) — use a scale Chrome can honour exactly (0.5, 0.25, 1)`);
-  }
-  const alpha = new Float32Array(n);
-  const mask = new Uint8Array(n);
-  let painted = 0, identical = 0;
-  for (let i = 0; i < n; i++) {
-    const o = i * 3;
-    const d = Math.max(Math.abs(a[o] - b[o]), Math.abs(a[o + 1] - b[o + 1]), Math.abs(a[o + 2] - b[o + 2]));
-    if (d < 10) identical++;
-    const al = 1 - d / 255;
-    alpha[i] = al;
-    if (al >= MIN_ALPHA) { mask[i] = 1; painted++; }
-  }
-
-  const label = new Int32Array(n);
-  const blobs = [];
-  const stack = new Int32Array(n);
-  for (let s = 0; s < n; s++) {
-    if (!mask[s] || label[s]) continue;
-    const id = blobs.length + 1;
-    let sp = 0; stack[sp++] = s; label[s] = id;
-    const blob = { id, area: 0, alphaSum: 0, minX: w, minY: h, maxX: 0, maxY: 0, zones: {} };
-    while (sp) {
-      const i = stack[--sp];
-      const x = i % w, y = (i - x) / w;
-      blob.area++; blob.alphaSum += alpha[i];
-      if (x < blob.minX) blob.minX = x; if (x > blob.maxX) blob.maxX = x;
-      if (y < blob.minY) blob.minY = y; if (y > blob.maxY) blob.maxY = y;
-      const fx = x / SCALE, fy = y / SCALE;
-      for (const pid of profilesAll) {
-        for (const t of zoneTests(zone(pid))) if (t.test(fx, fy)) blob.zones[`${pid}/${t.id}`] = (blob.zones[`${pid}/${t.id}`] ?? 0) + 1;
-      }
-      for (const t of bandTests) if (t.test(fx, fy)) blob.zones[`band/${t.id}`] = (blob.zones[`band/${t.id}`] ?? 0) + 1;
-      const nb = [i - 1, i + 1, i - w, i + w];
-      if (x === 0) nb[0] = -1; if (x === w - 1) nb[1] = -1;
-      for (const j of nb) if (j >= 0 && j < n && mask[j] && !label[j]) { label[j] = id; stack[sp++] = j; }
-    }
-    if (blob.area >= 4) blobs.push(blob);
-  }
-  const toFull = (v) => Math.round(v / SCALE);
-  const px2 = 1 / (SCALE * SCALE);
-  const report = blobs.map((bl) => ({
-    bbox: { x: toFull(bl.minX), y: toFull(bl.minY), w: toFull(bl.maxX - bl.minX + 1), h: toFull(bl.maxY - bl.minY + 1) },
-    areaPx2: Math.round(bl.area * px2),
-    alpha: +(bl.alphaSum / bl.area).toFixed(2),
-    zones: Object.fromEntries(Object.entries(bl.zones).map(([k, v]) => [k, Math.round(v * px2)])),
-  }));
-  return { paintedFraction: painted / n, identicalFraction: identical / n, blobs: report };
-}
 
 
 
@@ -148,34 +97,25 @@ async function runCheck({ compId, extraProps, times, enforced, outDir, keepPngs 
     const frames = [...new Set(times.map((t) => Math.min(compProbe.durationInFrames - 1, Math.max(0, Math.round(t * fps)))))];
     if (!frames.length) throw new ContractError('no frames to test — check --at / --step / --range against the composition duration');
     log(`safe-check ${compId}: ${frames.length} frames @${fps} fps, scale ${SCALE}, enforced ${enforced.join(',')}`);
-    const A = await renderProbe(compId, extraProps, PROBES[0], frames, browser);
-    const B = await renderProbe(compId, extraProps, PROBES[1], frames, browser);
+    const A = await renderProbe(compId, extraProps, PROBES[0], frames, browser, false);
+    const B = await renderProbe(compId, extraProps, PROBES[1], frames, browser, false);
+    const fullA = await renderProbe(compId, extraProps, PROBES[0], frames, browser, true);
+    const fullB = await renderProbe(compId, extraProps, PROBES[1], frames, browser, true);
     const results = [];
     let contract = null;
     for (const frame of frames.sort((x, y) => x - y)) {
       const a = A.out.get(frame), b = B.out.get(frame);
-      if (!a || !b) continue;
-      const r = analyse(a, b);
-      if (r.identicalFraction > 0.999 || r.paintedFraction > 0.9) {
-        contract = `frame ${frame}: ${r.identicalFraction > 0.999 ? 'both probe renders are identical' : `${(r.paintedFraction * 100).toFixed(0)} % of the frame counts as painted`} — the composition does not honour the probe contract (core/safe.tsx)`;
-      }
-      const violations = {};
-      for (const pid of profilesAll) {
-        const v = [];
-        for (const bl of r.blobs) {
-          for (const [k, areaPx2] of Object.entries(bl.zones)) {
-            const [p, zid] = k.split('/');
-            if (p === pid && areaPx2 >= MIN_AREA) v.push({ zone: zid, areaPx2, bbox: bl.bbox, alpha: bl.alpha });
-          }
-        }
-        violations[pid] = v;
-      }
+      const allA=fullA.out.get(frame),allB=fullB.out.get(frame);
+      if (!a || !b || !allA || !allB) throw new ContractError(`frame ${frame}: missing safe-check probe buffer`);
+      const r = analyseSafeFrame({allA,allB,contentA:a,contentB:b},{width:w,height:h,scale:SCALE,minAlpha:MIN_ALPHA,minArea:MIN_AREA,profiles:profilesAll,bandTests});
+      if(r.contractFailure)contract=`frame ${frame}: ${r.contractFailure} - the composition does not honour the probe contract (core/safe.tsx)`;
+      const violations=r.violations;
       const bands = [];
       for (const bl of r.blobs) for (const [k, areaPx2] of Object.entries(bl.zones)) if (k.startsWith('band/') && areaPx2 >= MIN_AREA) bands.push({ band: k.slice(5), areaPx2, bbox: bl.bbox, alpha: bl.alpha });
-      results.push({ frame, t: +(frame / fps).toFixed(3), paintedFraction: +r.paintedFraction.toFixed(4), blobs: r.blobs.length, violations, bands });
+      results.push({ frame, t: +(frame / fps).toFixed(3), paintedFraction: +r.paintedFraction.toFixed(4), blobs: r.blobs.length, violations, surfaces:r.surfaces, bands });
       const worst = enforced.map((pid) => `${pid}:${violations[pid].length}`).join(' ');
       log(`  t=${(frame / fps).toFixed(2)}s  blobs ${r.blobs.length}  ${worst}${violations['ig-reels-ads']?.length ? `  ads:${violations['ig-reels-ads'].length}` : ''}`);
-      if (keepPngs) await annotate(A.out.get(frame), frame, violations, outDir);
+      if (keepPngs) await annotate(fullA.out.get(frame), frame, violations, outDir);
     }
     if (contract) return { contract, results };
     const enforcedViolations = results.filter((r) => enforced.some((pid) => r.violations[pid].length));
@@ -183,7 +123,7 @@ async function runCheck({ compId, extraProps, times, enforced, outDir, keepPngs 
     const worstFrames = enforcedViolations
       .map((r) => ({ frame: r.frame, n: enforced.reduce((s, pid) => s + r.violations[pid].reduce((q, v) => q + v.areaPx2, 0), 0) }))
       .sort((x, y) => y.n - x.n).slice(0, 12);
-    for (const wf of worstFrames) await annotate(A.out.get(wf.frame), wf.frame, results.find((r) => r.frame === wf.frame).violations, outDir);
+    for (const wf of worstFrames) await annotate(fullA.out.get(wf.frame), wf.frame, results.find((r) => r.frame === wf.frame).violations, outDir);
     return { contract: null, results, enforcedViolations };
   } finally {
     await browser.close({ silent: true }).catch(() => {});
@@ -247,6 +187,7 @@ if (args['self-test']) {
 
 const compId = args.comp;
 delete extraProps.probe;
+delete extraProps.probeSurfaces;
 const propsHash = createHash('sha1').update(JSON.stringify(extraProps)).digest('hex').slice(0, 8);
 const enforced = args.profile
   ? args.profile === 'all' ? profilesAll : String(args.profile).split(',').map((s) => s.trim())
@@ -287,6 +228,7 @@ const perProfile = Object.fromEntries(profilesAll.map((pid) => [pid, run.results
 const report = {
   comp: compId, props: extraProps, engineHash, scale: SCALE, minAlpha: MIN_ALPHA, minAreaPx2: MIN_AREA,
   enforced, framesTested: run.results.length, framesWithViolations: perProfile,
+  surfacePolicy: 'Marked fills are background in this safe check only; text, marks, borders and media remain content. Head probes retain surfaces.',
   bands: bandFile.map((b) => b.id ?? b.label),
   results: run.results,
 };
@@ -309,12 +251,20 @@ if (bandHits.length) {
   for (const r of bandHits) for (const v of r.bands) lines.push(`| ${r.t} | ${v.band} | ${v.areaPx2} | ${v.bbox.x},${v.bbox.y},${v.bbox.w},${v.bbox.h} |`);
   lines.push('');
 }
+
+const surfaceHits=run.results.filter(r=>profilesAll.some(pid=>r.surfaces[pid].length));
+if(surfaceHits.length){
+ lines.push('## Design surfaces (informational; not violations)','','| t (s) | profile | zone | surface area px^2 |','|---|---|---|---|');
+ for(const r of surfaceHits)for(const pid of profilesAll)for(const surface of r.surfaces[pid])lines.push(`| ${r.t} | ${pid} | ${surface.zone} | ${surface.areaPx2} |`);
+ lines.push('');
+}
 await fs.writeFile(path.join(outDir, 'summary.md'), lines.join('\n'), 'utf8');
 
 const enforcedBad = run.results.filter((r) => enforced.some((pid) => r.violations[pid].length));
 console.log(JSON.stringify({
   ok: enforcedBad.length === 0, comp: compId, enforced, framesTested: run.results.length, framesWithViolations: perProfile,
   violations: enforcedBad.map((r) => ({ t: r.t, ...Object.fromEntries(enforced.filter((pid) => r.violations[pid].length).map((pid) => [pid, r.violations[pid].map((v) => `${v.zone}:${v.areaPx2}px²@${v.bbox.x},${v.bbox.y}`)])) })),
+  surfaceNotes:run.results.filter(r=>profilesAll.some(pid=>r.surfaces[pid].length)).map(r=>({t:r.t,surfaces:r.surfaces})),
   adsWarnings: enforced.includes('ig-reels-ads') ? undefined : run.results.filter((r) => r.violations['ig-reels-ads'].length).map((r) => r.t),
   outDir,
 }, null, 2));

@@ -4,6 +4,7 @@ import {createHash} from 'node:crypto';
 import {createRequire} from 'node:module';
 import {ROOT,checkedPath,digest} from './job-paths.mjs';
 import {projectScenePackSchema} from '../../engine/src/project-scenes/schema.ts';
+import {hasStyleSystem} from '../../engine/src/style-kit/system/zones.ts';
 const ENGINE=path.join(ROOT,'engine'),engineRequire=createRequire(path.join(ENGINE,'package.json'));
 const within=(parent,file)=>{const rel=path.relative(parent,file);return rel===''||(!rel.startsWith('..')&&!path.isAbsolute(rel));};
 const VIDEO_COMPONENTS=new Set(['OffthreadVideo','Video','Html5Video']);
@@ -79,6 +80,24 @@ export async function resolveProjectScenes(edit){
   if(digest(loaded)!==digest(edit.projectScenes))throw new Error('Scene pack contract changed. Reload projectScenePack and prepare the manifest again.');
   return loaded;
 }
+/** In a style with a design system, every project scene the edit uses must import that system (directly or through a helper). */
+export function assertStyleSystemImports(edit,metadata,metafile,entryFiles){
+  if(!hasStyleSystem(edit.style))return;
+  const systemDir=`engine/src/styles/${edit.style}/system/`;
+  const rel=file=>path.relative(ROOT,path.resolve(file)).split(path.sep).join('/');
+  const inputs=new Map(Object.entries(metafile.inputs).map(([key,value])=>[rel(key),value]));
+  const used=new Set(edit.scenes.filter(scene=>scene.family==='project-scene').map(scene=>scene.data.component));
+  metadata.scenes.forEach((scene,index)=>{
+    if(!used.has(scene.id))return;
+    const seen=new Set(),stack=[rel(entryFiles[index])];let found=false;
+    while(stack.length && !found){
+      const file=stack.pop();if(seen.has(file))continue;seen.add(file);
+      if(file.startsWith(systemDir)){found=true;break;}
+      for(const item of inputs.get(file)?.imports??[])if(!item.external)stack.push(rel(item.path));
+    }
+    if(!found)throw new Error(`Project scene ${scene.id} must draw with the ${edit.style} design system: import from "@reel-studio/styles/${edit.style}/system".`);
+  });
+}
 export async function projectSceneBuild(edit){
   const metadata=await resolveProjectScenes(edit);if(!metadata)return null;
   const projectRoot=path.join(ROOT,'Projects',edit.id),packDir=path.posix.dirname(metadata.pack);
@@ -102,6 +121,7 @@ export async function projectSceneBuild(edit){
       });
     }}]});
   const paths=[metadata.pack,...Object.keys(result.metafile.inputs).filter(file=>file!=='<stdin>').map(file=>path.relative(ROOT,path.resolve(file)).split(path.sep).join('/'))];
+  assertStyleSystemImports(edit,metadata,result.metafile,entryFiles);
   const files=[];
   for(const relative of [...new Set(paths)].sort()){
     const absolute=path.resolve(ROOT,relative);

@@ -4,6 +4,8 @@ The edit should make the idea easier to see. A style supplies its material, type
 
 ## Build the idea before choosing an effect
 
+In a style whose guide has a `## Design system`, decide each beat in this order: an approved family when it states the meaning exactly; otherwise a `compose` scene (the arrangement, the parts, and the spoken word that triggers each part); otherwise a project scene that imports the system. No beat may fall back to the old shared look: preparation lists such scenes in `undrawnScenes`.
+
 1. State what the viewer should understand after this beat. Identify its job: question, contrast, cause, process, scale, evidence, reveal, consequence or invitation.
 2. Describe the visual's initial state, its change, and its readable final state. For a process, an input should reach its output; for a contrast, retain the same object while its state changes. Use a title when a title explains the line, a diagram when the relationship matters, and real evidence when making a factual case.
 3. Give the dominant element a cue. In recordings use reviewed word starts and measured source timing. In graphics-only work author the reading and demonstration time. Enter, demonstrate, resolve and hold; adjust the action to the available duration instead of squeezing an eight-second mechanism into two seconds.

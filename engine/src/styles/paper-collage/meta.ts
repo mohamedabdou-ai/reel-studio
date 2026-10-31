@@ -11,7 +11,7 @@ export default defineStyle({
   pip: {allowed: true, basis: 'inference', evidence: 'See the style guide and review this layout with the creator.'},
   defaults: {font: 'Reem Kufi', captionsPresentation: 'pill', clauseCaptions: false, staticCaptions: false},
   fit: {purpose: {'case-study': 9, comparison: 10, story: 18}, tone: {energetic: 4, calm: 2, editorial: 2}, semanticBeats: ['evidence-wipe', 'message-board']},
-  familiesOff: [],
+  familiesOff: ['compose'],
   ownScenes: [],
   signatureTransition: 'paper-swap',
   since: '1.8.6',

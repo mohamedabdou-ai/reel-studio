@@ -4,6 +4,18 @@ import {promises as fs} from 'node:fs';
 import path from 'node:path';
 import {ROOT} from '../scripts/lib/project-paths.mjs';
 
+const magazineTests=['arabic-type-look','compose-adapters','compose-layout','compose-render','compose-schema','lane-e0-engine-prep','magazine-arabic-type-design','magazine-concepts-more','magazine-concepts-own','magazine-concepts-parts','magazine-concepts','magazine-coverage','magazine-creator-cta-design','magazine-design-ssr','magazine-kinetic-hook-design','magazine-kinetic-text-design','magazine-message-board-design','magazine-numerals','magazine-screen-focus-design','magazine-screen-recording-design','magazine-system-parity','magazine-task20-fixes','magazine-task21-fixes','magazine-task21-fixes2','magazine-task21-fixes3','magazine-task21-fixes4','style-system-rules','safe-surfaces'].map(name=>`tests/${name}.test.mjs`);
+
+test('both editor CI lists include every magazine-system test exactly once',async()=>{
+ const workflow=await fs.readFile(path.join(ROOT,'.github/workflows/publication-check.yml'),'utf8');
+ const verify=await fs.readFile(path.join(ROOT,'scripts/verify-clean-install.mjs'),'utf8');
+ const commands=[workflow.match(/run: node --test --test-concurrency=1 ([^\r\n]+)/)[1],verify.slice(verify.indexOf("await run('editor-tests'"),verify.indexOf("await run('doctor-quick'"))];
+ for(const file of magazineTests){
+  await fs.access(path.join(ROOT,file));
+  for(const command of commands)assert.equal(command.split(file).length-1,1,`${file} must occur once in each editor test list`);
+ }
+});
+
 async function fixture(t) {
   const parent = path.join(ROOT, 'state', 'tmp', 'clean-install-tests');
   await fs.mkdir(parent, {recursive: true});

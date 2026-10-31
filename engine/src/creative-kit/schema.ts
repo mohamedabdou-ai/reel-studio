@@ -89,6 +89,7 @@ export const creativeGallerySchema = z.object({
   comment: commentSchema,
   follow: followSchema,
   guides: z.union([z.boolean(), profile, z.array(profile)]).optional(),
+  probeSurfaces: z.boolean().optional(),
   probe: z
     .string()
     .regex(/^#[0-9a-fA-F]{6}$/)

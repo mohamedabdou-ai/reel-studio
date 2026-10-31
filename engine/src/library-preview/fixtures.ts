@@ -13,6 +13,8 @@ import {kineticSceneSchema, validateKineticTiming} from '../creative-kit/kinetic
 import {semanticSceneSchema, validateSemanticTiming} from '../creative-kit/semantic/schema.ts';
 import {proofScreenSceneSchema} from '../creative-kit/proof-screen/schema.ts';
 import {validateProofScreenTiming} from '../creative-kit/proof-screen/timing.ts';
+import {composeSceneSchema} from '../creative-kit/compose/schema.ts';
+import {validateComposeTiming} from '../creative-kit/compose/timing.ts';
 import {librarySceneSchema, validateLibraryTiming} from '../motion-library/schema.ts';
 import {styleSceneSchema, validateStyleSceneTiming, validateStyleSceneWords} from '../styles/scenes.ts';
 import {oneShotMinFrames} from '../styles/one-shot/scenes/math.ts';
@@ -63,6 +65,7 @@ const creativeData: Record<string, unknown> = {
 const labels: Record<string, string> = {
   verdict:'حكم بأرقام المبدع','claim-proof':'ادعاء وإيصال',
   'arabic-type': 'حركات الكتابة العربي', figures: 'أرقام ورسوم', 'chat-thread': 'شات وإشعارات',
+  'compose':'صفحة مركّبة من قطع الستايل',
   'proof-screen':'صفحة بتفصيلة واضحة',
   intro: 'افتتاحية', proof: 'عرض رقم موثق', process: 'خطوات', comparison: 'مقارنة', comment: 'طلب تعليق', follow: 'كارت متابعة',
   'kinetic-hook': 'عنوان بيتبدل', 'image-compare': 'مقارنة صور', checklist: 'قائمة مراجعة', count: 'عداد', screens: 'عرض شاشات', statement: 'جملة أساسية', outcome: 'نتيجة مختصرة', 'creator-cta': 'دعوة للتفاعل',
@@ -126,6 +129,7 @@ const cartoonEndingSample = {
 function sceneFixtures(): Array<{family: string; kind: string; data: unknown; layout?: string; duration?: number; words?: unknown[]}> {
   return [
     {family:'arabic-type',kind:'arabic-type',duration:240,data:{text:'الحقيقة',move:'decrypt'}},
+    {family:'compose',kind:'compose',data:{arrangement:'hero',parts:[{id:'kicker',kind:'kicker',at:{frame:0},text:'بالأرقام'},{id:'value',kind:'number',at:{frame:12},value:40,suffix:'%',label:'قيمة توضيحية',emphasis:true},{id:'source',kind:'line',at:{frame:40},text:'رقم توضيحي للعرض فقط'}]}},
     {family:'proof-screen',kind:'proof-screen',data:{page:'web',title:'صفحة توضيحية',url:'موقعك.com',blocks:[{kind:'heading',text:'فكرة واحدة في صفحة'},{kind:'text',text:'شرح مكتوب للتوضيح فقط'},{kind:'row',text:'تفصيلة تختارها من البريف'},{kind:'button',text:'راجع التفاصيل'}],focus:2,path:'focus'}},
     ...Object.entries(creativeData).map(([family, data]) => ({family, kind: 'creative', data})),
     {family: 'kinetic-hook', kind: 'kinetic', layout: 'presenter', data: {label: 'مثال عنوان', firstTitle: 'فكرة', secondTitle: 'صورة', swapFrame: 45, stamp: 'توضيح بصري', stampFrame: 80}},
@@ -222,7 +226,7 @@ export function previewDefinitions(): PreviewDefinition[] {
   const concepts = CATALOG.map(concept => define(`concept:${concept.id}`, {kind: 'concept', concept: concept.id, data: catalogDemo(concept.id)}, {
     labelEn: concept.title, durationInFrames: Math.max(concept.defaultFrames, concept.minFrames), scope: 'Existing concept component and its catalog sample configuration.'}));
   const scenes = sceneFixtures().map(item => define(`scene:${item.family}`, {kind: item.kind, scene: baseScene(item.family, item.data, item.layout, item.duration), ...(item.words ? {words: item.words} : {}), ...(item.family === 'kinetic-text' ? {authoredTiming: true} : {})}, {
-    style: ownSceneStyle(item.family) ?? (item.kind === 'semantic' && item.family !== 'motion-concept' ? 'paper-collage' : 'section-deck'), durationInFrames: item.duration ?? DURATION,
+    style: item.family==='compose' ? 'magazine-interview' : ownSceneStyle(item.family) ?? (item.kind === 'semantic' && item.family !== 'motion-concept' ? 'paper-collage' : 'section-deck'), durationInFrames: item.duration ?? DURATION,
     ...(item.layout === 'presenter' || item.layout === 'split' ? {notes: [SAMPLE, 'Neutral abstract placeholder; presenter, natural appearance and face protection are not verified.']} : {}),
     ...(item.family === 'kinetic-text' ? {scope: 'Renderer-only authored timing demonstration of the existing kinetic-text component.', notes: [SAMPLE, TIMING]} : {}),
     ...(item.family === 'screen-recording' ? {notes: [SAMPLE, 'Canonical screen-recording renderer on a silent video carrier made from an original synthetic illustration. No real software capture is claimed.']} : {}),
@@ -299,7 +303,8 @@ export function previewFixtureIssues(definition: PreviewDefinition): string[] {
     if (fixture.kind === 'arabic-type') return validateArabicTypeTiming(arabicTypeSceneSchema.parse(input),definition.fps);
     if (fixture.kind === 'semantic') return validateSemanticTiming(semanticSceneSchema.parse(input), definition.fps);
     if (fixture.kind === 'library') return validateLibraryTiming(librarySceneSchema.parse(input));
-    if (fixture.kind === 'proof-screen') return validateProofScreenTiming(proofScreenSceneSchema.parse(input),definition.fps);
+    if (fixture.kind === 'compose') return validateComposeTiming(composeSceneSchema.parse(input), definition.fps, []);
+  if (fixture.kind === 'proof-screen') return validateProofScreenTiming(proofScreenSceneSchema.parse(input),definition.fps);
     if (fixture.kind === 'style-scene') {
       const parsed = styleSceneSchema.parse(input);
       return [...validateStyleSceneTiming(parsed, definition.fps), ...(fixture.words ? validateStyleSceneWords(parsed, fixture.words, definition.fps) : [])];

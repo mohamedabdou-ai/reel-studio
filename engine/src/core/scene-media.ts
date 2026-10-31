@@ -1,3 +1,4 @@
+import {composeClipValues} from '../creative-kit/compose/media.ts';
 import {styleSceneVideoSources} from '../styles/media.ts';
 import {projectSceneClipValues} from '../project-scenes/schema.ts';
 
@@ -37,6 +38,7 @@ export function sceneMovingSources(scene: SceneLike, projectScenes?: ProjectScen
     for (const step of steps) if ((everyStep || step?.kind === 'video') && typeof step?.src === 'string') captures.push(step.src);
   }
   if(scene.family==='arabic-type'&&data?.move==='video-in-letters'&&typeof data.media==='string')captures.push(data.media);
+  if (scene.family === 'compose') for (const clip of composeClipValues({data: scene.data})) captures.push(clip.src);
   captures.push(...styleSceneVideoSources(scene));
   if (scene.family === 'project-scene' && projectScenes !== undefined) {
     for (const use of projectSceneClipValues({projectScenes, scenes: [scene as {family: string; data: unknown}]})) captures.push(use.clip.src);
@@ -67,6 +69,10 @@ export function sceneClipClaims(scene: SceneLike & {id?: string; durationInFrame
       claims.push({sceneId: scene.id ?? '', src: step.src as string, sha256: step.sha256 as string, width: step.width as number, height: step.height as number,
         trimBeforeFrame: step.trimBeforeFrame ?? 0, frames: Math.max(1, end - (step.atFrame ?? 0))});
     });
+  }
+  if (scene.family === 'compose' && typeof scene.durationInFrames === 'number') {
+    for (const clip of composeClipValues({data: scene.data})) claims.push({sceneId: scene.id ?? '', src: clip.src, sha256: clip.sha256, width: clip.width, height: clip.height,
+      trimBeforeFrame: clip.trimBeforeFrame ?? 0, frames: scene.durationInFrames});
   }
   if (scene.family === 'project-scene' && projectScenes !== undefined && typeof scene.durationInFrames === 'number') {
     for (const use of projectSceneClipValues({projectScenes, scenes: [scene as {id?: string; family: string; data: unknown}]})) {

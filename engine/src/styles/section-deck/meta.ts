@@ -11,7 +11,7 @@ export default defineStyle({
   pip: {allowed: false, basis: 'observed', evidence: 'See the style guide and review this layout with the creator.'},
   defaults: {font: 'Cairo', captionsPresentation: 'pill', clauseCaptions: true, staticCaptions: true},
   fit: {purpose: {explainer: 16, 'case-study': 12, tutorial: 16, comparison: 12}, tone: {calm: 4}, semanticBeats: []},
-  familiesOff: [],
+  familiesOff: ['compose'],
   ownScenes: [],
   mix: {slug: 'section-deck-split-explainer', lraMax: 2, source: 'instructions/STYLES.md#section-deck', section: 'Review the style audio range and preserve the recorded ending.'},
   signatureTransition: 'blinds',

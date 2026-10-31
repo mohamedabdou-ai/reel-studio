@@ -77,6 +77,7 @@ export const CreativeKitGallery: React.FC<CreativeGalleryProps> = (input) => {
     <SafeRoot
       guides={props.guides}
       probe={props.probe}
+      probeSurfaces={props.probeSurfaces}
       style={{ background: theme.background }}
     >
       {getSceneTimeline(props).map((slot, index) => (

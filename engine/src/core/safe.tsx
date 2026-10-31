@@ -64,6 +64,7 @@ export const COVER = spec.cover;
 
 
 const ProbeCtx = createContext<string | null>(null);
+const ProbeSurfacesCtx = createContext(true);
 
 
 export const useProbe = (): string | null => useContext(ProbeCtx);
@@ -73,6 +74,8 @@ export type SafeProps = {
   guides?: boolean | ProfileId | ProfileId[];
 
   probe?: string;
+  /** Internal safe-check content pass only. Head probes keep the default true. */
+  probeSurfaces?: boolean;
 
 
   plates?: string[];
@@ -86,16 +89,27 @@ export type SafeProps = {
 export const SafeRoot: React.FC<SafeProps & { style?: React.CSSProperties; children?: React.ReactNode }> = ({
   guides,
   probe,
+  probeSurfaces = true,
   style,
   children,
 }) => (
-  <ProbeCtx.Provider value={probe ?? null}>
+  <ProbeCtx.Provider value={probe ?? null}><ProbeSurfacesCtx.Provider value={probeSurfaces}>
     <AbsoluteFill style={{ ...style, ...(probe ? { background: probe } : null) }}>
       {children}
       <SafeGuides on={guides} />
     </AbsoluteFill>
-  </ProbeCtx.Provider>
+  </ProbeSurfacesCtx.Provider></ProbeCtx.Provider>
 );
+
+/** A text-free design fill. Only its paint changes in a safe content probe;
+ * children and borders remain measurable, and head/default probes retain it. */
+export const DesignSurface: React.FC<React.ComponentProps<'div'>> = ({style,...props}) => {
+  const probe=useProbe(),include=useContext(ProbeSurfacesCtx);
+  // A URL may be a logo or evidence. A surface annotation never exempts image pixels.
+  const image=/url\s*\(/i.test(String(style?.background??'')+' '+String(style?.backgroundImage??''));
+  const paint=probe!==null&&!include&&!image?{...style,background:probe,backgroundColor:undefined,backgroundImage:undefined,boxShadow:'none',backdropFilter:'none'}:style;
+  return <div {...props} style={paint}/>;
+};
 
 
 export const SafeExempt: React.FC<{ children?: React.ReactNode }> = ({ children }) => {

@@ -1,6 +1,7 @@
 import './lib/project-tmp.mjs';
 import {parseArgs} from './lib/media.mjs';
-import {initEditProject,loadEditProject,importEditCaptions,prepareEditProject} from './lib/edit-project.mjs';
+import {initEditProject,loadEditProject,importEditCaptions} from './lib/edit-project.mjs';
+import {prepareEditProject} from './lib/prepare-report.mjs';
 import {attachPreparedMouth} from './lib/mouth-table.mjs';
 
 try{

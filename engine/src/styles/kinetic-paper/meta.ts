@@ -11,7 +11,7 @@ export default defineStyle({
   pip: {allowed: true, basis: 'inference', evidence: 'See the style guide and review this layout with the creator.'},
   defaults: {font: 'Lalezar', captionsPresentation: 'pill', clauseCaptions: false, staticCaptions: false},
   fit: {purpose: {explainer: 12, tutorial: 12, opinion: 10, story: 13}, tone: {energetic: 6}, semanticBeats: ['kinetic-text', 'ticket-offer', 'comment-stack']},
-  familiesOff: [],
+  familiesOff: ['compose'],
   ownScenes: [],
   signatureTransition: 'ink-slab',
   since: '1.8.6',

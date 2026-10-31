@@ -21,7 +21,7 @@ export default defineStyle({
     tone: {calm: 2},
     semanticBeats: GLIDE_FAMILIES,
   },
-  familiesOff: [],
+  familiesOff: ['compose'],
   ownScenes: GLIDE_FAMILIES,
   since: '2.5.0',
 });

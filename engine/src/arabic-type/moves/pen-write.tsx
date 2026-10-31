@@ -28,6 +28,6 @@ const draw:DrawMove=(ctx,t,p)=>{
     (assigned.get(b)??[]).sort((a,c)=>c.cx-a.cx).forEach((m,j)=>{const tm=end+.04+.05*j;if(t<tm)return;const f=E.cubOut(P(t,tm,.12)),scale=1.4-.4*f;
       drawBlob(ctx,r,m,135,by,{alpha:clamp(2*f)*(1-ac),sx:scale,sy:scale});if(ac>0)drawBlob(ctx,r,accent[m.id],135,by,{alpha:clamp(2*f)*ac,sx:scale,sy:scale});});
   });
-  if(pen&&t<at+.04){const nib=pen as {x:number;y:number};ctx.save();ctx.translate(nib.x,nib.y);ctx.rotate(20*Math.PI/180);ctx.fillStyle=p.accent;ctx.shadowColor='#00000040';ctx.shadowBlur=3;ctx.fillRect(-1.6,-6,3.2,12);ctx.restore();}
+  if(pen&&t<at+.04){const nib=pen as {x:number;y:number};ctx.save();ctx.translate(nib.x,nib.y);if(p.look?.nibShadow!==false)ctx.rotate(20*Math.PI/180);ctx.fillStyle=p.accent;if(p.look?.nibShadow!==false){ctx.shadowColor='#00000040';ctx.shadowBlur=3;}ctx.fillRect(-1.6,-6,3.2,12);ctx.restore();}
 };
 export const PenWrite:React.FC<ArabicMoveProps>=props=><MoveCanvas {...props} move="pen-write" draw={draw}/>;

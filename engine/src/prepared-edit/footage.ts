@@ -53,6 +53,18 @@ export function activeLayoutTransition(list:readonly LayoutTransition[]|undefine
   return null;
 }
 
+/** Magazine fallback: no measured moving-head envelope is available to captions.
+ * Suppress speech graphics during window travel, then restore them at their resting position in six frames. */
+export function layoutCaptionOpacity(list:readonly LayoutTransition[]|undefined,frame:number):number{
+  if(activeLayoutTransition(list,frame))return 0;
+  let opacity=1;
+  for(const t of list??[]){
+    const end=t.atFrame+t.durationInFrames;
+    if(frame>=end && frame<end+6)opacity=Math.min(opacity,(frame-end+1)/6);
+  }
+  return opacity;
+}
+
 export function layoutTransitionState(t:LayoutTransition,frame:number,geos:{presenter:Geo;split:Geo},probe:boolean):LayoutTransitionState{
   const end=t.atFrame+t.durationInFrames;
   if(t.kind==='curtain'){

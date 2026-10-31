@@ -10,6 +10,7 @@ const api=await bundleEngine(`
  import React from 'react';import {renderToStaticMarkup} from 'react-dom/server';
  import {FAMILY_DESIGNS} from './engine/src/styles/family-designs';
  import {TypographyProvider} from './engine/src/creative-kit/chapter-theme';
+ import {PreparedPlateProvider} from './engine/src/screen-recording/ScreenRecordingScene';
  import {sceneTiming,countTiming,ownSceneCopy,displayWeight} from './engine/src/style-kit/design-safety';
  import {boardSlots} from './engine/src/styles/paper-collage/designs/message-board';
  import {tokGeo,tokLens} from './engine/src/styles/liquid-glass/designs/token-lens';
@@ -17,7 +18,7 @@ const api=await bundleEngine(`
  import {TEMPLATE_DATA} from './engine/src/review-editor/ops/demo';
  import {getSceneGeometry} from './engine/src/creative-kit/primitives';
  export {FAMILY_DESIGNS,sceneTiming,countTiming,ownSceneCopy,displayWeight,boardSlots,tokGeo,tokLens,planHeadline,TEMPLATE_DATA,getSceneGeometry};
- export const render=(style,scene,font=null,headBox=null)=>{const Design=FAMILY_DESIGNS[style][scene.family];return renderToStaticMarkup(<TypographyProvider fontFamily={font}><Design scene={scene} style={style} headBox={headBox} seam={{'kinetic-paper':1056,'magazine-interview':1080,'liquid-glass':1080,'calligraphic-receipts':1000,'paper-collage':1030}[style]} sectionIndex={2} geometry={{windowTop:1056,windowHeight:864,videoWidth:1080,videoLeft:0,videoTop:0}} aspect={1}/></TypographyProvider>);};
+ export const render=(style,scene,font=null,headBox=null)=>{const Design=FAMILY_DESIGNS[style][scene.family];const node=<Design scene={scene} style={style} headBox={headBox} seam={{'kinetic-paper':1056,'magazine-interview':1080,'liquid-glass':1080,'calligraphic-receipts':1000,'paper-collage':1030}[style]} sectionIndex={2} geometry={{windowTop:1056,windowHeight:864,videoWidth:1080,videoLeft:0,videoTop:0}} aspect={1}/>;return renderToStaticMarkup(<TypographyProvider fontFamily={font}>{scene.family==='screen-recording'?<PreparedPlateProvider plate={{src:'examples/evidence-before.svg',width:1920,height:1080}}>{node}</PreparedPlateProvider>:node}</TypographyProvider>);};
 `,{ssr:true,media:true});
 const fixture=family=>structuredClone(ARABIC_SCENES.find(s=>s.family===family)??getPreviewDefinition('scene:'+family).fixture.scene);
 const at=(style,scene,frame)=>{setSsrFrame(frame);return api.render(style,scene);};
@@ -88,8 +89,8 @@ test('long lens groups fit the lens diagonal and its badge reports the actual fa
  const d={...fixture('token-lens').data,font:'Cairo',copy:api.ownSceneCopy({title:'رتب العناصر'}),groups:[{label:'مثال',text:'رتب العناصر',atFrame:20}],lens:{groupIndex:0,tokenIndex:0,atFrame:30}};
   const g=api.tokGeo(d),lens=api.tokLens(100,d);assert.ok(lens.zoom*Math.hypot(g.pos[0].w,g.pos[0].h)<=lens.r*2*.86+.01);assert.ok(lens.zoom>=1.25);
 });
-test('first strong main character decides direction, including mixed Arabic and English',()=>{
- assert.equal(api.ownSceneCopy({title:'From idea to a clear story.',caption:'شرح عربي',lang:'ar'}).dir,'ltr');assert.equal(api.ownSceneCopy({title:'خمسة Skills',caption:'English'}).dir,'rtl');
+test('primary copy decides direction independently of side captions; explicit lang wins',()=>{
+ assert.equal(api.ownSceneCopy({title:'From idea to a clear story.',caption:'شرح عربي',lang:'ar'}).dir,'rtl');assert.equal(api.ownSceneCopy({title:'خمسة Skills',caption:'English'}).dir,'rtl');
  for(const style of styles)for(const title of ['From idea to a clear story.','خمسة Skills']){const scene=fixture('intro');scene.data={...scene.data,title,caption:'شرح عربي'};const html=at(style,scene,100);assert.match(html,title.startsWith('From')?/direction:ltr/:/direction:rtl/);for(const w of title.split(' '))assert.ok(text(html).includes(w));}
 });
 test('creator display weights match shipped Cairo 900 and Tajawal 800',()=>{assert.equal(api.displayWeight('Cairo','Lalezar',400),900);assert.equal(api.displayWeight('Tajawal','Lalezar',400),800);assert.equal(api.displayWeight('Lalezar','Lalezar',400),400);});

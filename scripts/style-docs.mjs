@@ -1,14 +1,22 @@
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
+import {hasStyleSystem} from '../engine/src/style-kit/system/zones.ts';
 
 export const HUB = 'instructions/STYLES.md';
 export const REGISTRY = 'engine/src/styles/registry.ts';
 export const TABLE_START = '<!-- styles:table:start -->';
 export const TABLE_END = '<!-- styles:table:end -->';
-/** The fixed per-style guide template, in order (instructions/styles/<id>.md). */
-export const GUIDE_HEADINGS = ['Look', 'Best for', 'Layouts and footage', 'Palette and brand', 'Recipe', 'Style-owned scenes', 'Avoid'];
+/** The per-style guide template, in order; Design system applies only to system styles. */
+export const GUIDE_HEADINGS = ['Look', 'Best for', 'Layouts and footage', 'Palette and brand', 'Recipe', 'Design system', 'Style-owned scenes', 'Avoid'];
 export const RECIPE_BULLETS = ['Decision', 'Composition/material', 'Timing/action', 'Transition/sound', 'Application/review'];
+
+export function assertGuideHeadings(style, headings) {
+  const expected = GUIDE_HEADINGS.filter(title => title !== 'Design system' || hasStyleSystem(style));
+  if (headings.length !== expected.length || headings.some((title, index) => title !== expected[index])) {
+    throw new Error(`instructions/styles/${style}.md must have exactly these sections, in order: ${expected.join(', ')}.`);
+  }
+}
 
 const cell = value => String(value).replace(/\|/g, '\\|');
 
@@ -54,6 +62,10 @@ if (invoked) {
     const args = process.argv.slice(2);
     if (args.some(arg => arg !== '--check')) throw new Error('Usage: node scripts/style-docs.mjs [--check]');
     const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+    for (const meta of await loadMetas(root)) {
+      const guide = await fs.readFile(path.join(root, 'instructions', 'styles', `${meta.id}.md`), 'utf8');
+      assertGuideHeadings(meta.id, [...guide.matchAll(/^## (.+)$/gm)].map(match => match[1].trim()));
+    }
     const result = await syncStyleDocs(root, {check: args.includes('--check')});
     process.stdout.write(JSON.stringify(result) + '\n');
     if (!result.ok) process.exitCode = 1;

@@ -11,7 +11,7 @@ export default defineStyle({
   pip: {allowed: false, basis: 'inference', evidence: 'Use the split presenter window; glass detail panels reserve the takeover canvas.'},
   defaults: {font: 'Grid Sans', captionsPresentation: 'pill', clauseCaptions: false, staticCaptions: false},
   fit: {purpose: {}, tone: {}, semanticBeats: ['token-lens', 'meter-receipt']},
-  familiesOff: [],
+  familiesOff: ['compose'],
   ownScenes: [],
   signatureTransition: 'lens-zoom',
   since: '2.0.0',

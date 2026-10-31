@@ -62,7 +62,7 @@
         },
         {
           "path": "instructions/MOTION-CHOICES.md",
-          "sha256": "84d046f97c7ee0d52264e2a311c2f414c4011f984a0533b3f00dadae9789908c"
+          "sha256": "9a68eda0ef5d57c4f0b676817b84b0c6660ffac54a083e52bf676325b31df2e2"
         },
         {
           "path": "engine/src/motion-concepts/button-to-window/schema.ts",
@@ -145,7 +145,7 @@
         },
         {
           "path": "instructions/MOTION-CHOICES.md",
-          "sha256": "84d046f97c7ee0d52264e2a311c2f414c4011f984a0533b3f00dadae9789908c"
+          "sha256": "9a68eda0ef5d57c4f0b676817b84b0c6660ffac54a083e52bf676325b31df2e2"
         },
         {
           "path": "engine/src/motion-concepts/prompt-to-results/schema.ts",
@@ -229,7 +229,7 @@
         },
         {
           "path": "instructions/MOTION-CHOICES.md",
-          "sha256": "84d046f97c7ee0d52264e2a311c2f414c4011f984a0533b3f00dadae9789908c"
+          "sha256": "9a68eda0ef5d57c4f0b676817b84b0c6660ffac54a083e52bf676325b31df2e2"
         },
         {
           "path": "engine/src/motion-concepts/brief-to-workspace/schema.ts",
@@ -312,7 +312,7 @@
         },
         {
           "path": "instructions/MOTION-CHOICES.md",
-          "sha256": "84d046f97c7ee0d52264e2a311c2f414c4011f984a0533b3f00dadae9789908c"
+          "sha256": "9a68eda0ef5d57c4f0b676817b84b0c6660ffac54a083e52bf676325b31df2e2"
         },
         {
           "path": "engine/src/motion-concepts/department-tabs/schema.ts",
@@ -402,7 +402,7 @@
         },
         {
           "path": "instructions/MOTION-CHOICES.md",
-          "sha256": "84d046f97c7ee0d52264e2a311c2f414c4011f984a0533b3f00dadae9789908c"
+          "sha256": "9a68eda0ef5d57c4f0b676817b84b0c6660ffac54a083e52bf676325b31df2e2"
         },
         {
           "path": "engine/src/motion-concepts/data-morph/schema.ts",
@@ -490,7 +490,7 @@
         },
         {
           "path": "instructions/MOTION-CHOICES.md",
-          "sha256": "84d046f97c7ee0d52264e2a311c2f414c4011f984a0533b3f00dadae9789908c"
+          "sha256": "9a68eda0ef5d57c4f0b676817b84b0c6660ffac54a083e52bf676325b31df2e2"
         },
         {
           "path": "engine/src/motion-concepts/kpi-zoom/schema.ts",
@@ -574,7 +574,7 @@
         },
         {
           "path": "instructions/MOTION-CHOICES.md",
-          "sha256": "84d046f97c7ee0d52264e2a311c2f414c4011f984a0533b3f00dadae9789908c"
+          "sha256": "9a68eda0ef5d57c4f0b676817b84b0c6660ffac54a083e52bf676325b31df2e2"
         },
         {
           "path": "engine/src/motion-concepts/tool-stack-spread/schema.ts",
@@ -658,7 +658,7 @@
         },
         {
           "path": "instructions/MOTION-CHOICES.md",
-          "sha256": "84d046f97c7ee0d52264e2a311c2f414c4011f984a0533b3f00dadae9789908c"
+          "sha256": "9a68eda0ef5d57c4f0b676817b84b0c6660ffac54a083e52bf676325b31df2e2"
         },
         {
           "path": "engine/src/motion-concepts/magnetic-dock/schema.ts",
@@ -743,7 +743,7 @@
         },
         {
           "path": "instructions/MOTION-CHOICES.md",
-          "sha256": "84d046f97c7ee0d52264e2a311c2f414c4011f984a0533b3f00dadae9789908c"
+          "sha256": "9a68eda0ef5d57c4f0b676817b84b0c6660ffac54a083e52bf676325b31df2e2"
         },
         {
           "path": "engine/src/motion-concepts/keyword-reveal/schema.ts",
@@ -755,7 +755,7 @@
         },
         {
           "path": "engine/src/motion-concepts/keyword-reveal/scene.tsx",
-          "sha256": "6e5a04fbc26f51867cc80e57d259126192e6b6f279722ec0df5cea217041ab4f"
+          "sha256": "f10ee5cbe1cbc8b4c3067c6fac322e577eb3397a0f44ff7704d44b9de6e247ab"
         },
         {
           "path": "engine/src/motion-concepts/fields.ts",
@@ -827,7 +827,7 @@
         },
         {
           "path": "instructions/MOTION-CHOICES.md",
-          "sha256": "84d046f97c7ee0d52264e2a311c2f414c4011f984a0533b3f00dadae9789908c"
+          "sha256": "9a68eda0ef5d57c4f0b676817b84b0c6660ffac54a083e52bf676325b31df2e2"
         },
         {
           "path": "engine/src/motion-concepts/headline-to-system/schema.ts",
@@ -912,7 +912,7 @@
         },
         {
           "path": "instructions/MOTION-CHOICES.md",
-          "sha256": "84d046f97c7ee0d52264e2a311c2f414c4011f984a0533b3f00dadae9789908c"
+          "sha256": "9a68eda0ef5d57c4f0b676817b84b0c6660ffac54a083e52bf676325b31df2e2"
         },
         {
           "path": "engine/src/motion-concepts/panel-reveal/schema.ts",
@@ -996,7 +996,7 @@
         },
         {
           "path": "instructions/MOTION-CHOICES.md",
-          "sha256": "84d046f97c7ee0d52264e2a311c2f414c4011f984a0533b3f00dadae9789908c"
+          "sha256": "9a68eda0ef5d57c4f0b676817b84b0c6660ffac54a083e52bf676325b31df2e2"
         },
         {
           "path": "engine/src/motion-concepts/system-layers/schema.ts",
@@ -1084,7 +1084,7 @@
         },
         {
           "path": "instructions/MOTION-CHOICES.md",
-          "sha256": "84d046f97c7ee0d52264e2a311c2f414c4011f984a0533b3f00dadae9789908c"
+          "sha256": "9a68eda0ef5d57c4f0b676817b84b0c6660ffac54a083e52bf676325b31df2e2"
         },
         {
           "path": "engine/src/motion-concepts/glass-lens/schema.ts",
@@ -1168,7 +1168,7 @@
         },
         {
           "path": "instructions/MOTION-CHOICES.md",
-          "sha256": "84d046f97c7ee0d52264e2a311c2f414c4011f984a0533b3f00dadae9789908c"
+          "sha256": "9a68eda0ef5d57c4f0b676817b84b0c6660ffac54a083e52bf676325b31df2e2"
         },
         {
           "path": "engine/src/motion-concepts/automation-flow/schema.ts",
@@ -1254,7 +1254,7 @@
         },
         {
           "path": "instructions/MOTION-CHOICES.md",
-          "sha256": "84d046f97c7ee0d52264e2a311c2f414c4011f984a0533b3f00dadae9789908c"
+          "sha256": "9a68eda0ef5d57c4f0b676817b84b0c6660ffac54a083e52bf676325b31df2e2"
         },
         {
           "path": "engine/src/motion-concepts/chaos-to-brand/schema.ts",
@@ -1266,7 +1266,7 @@
         },
         {
           "path": "engine/src/motion-concepts/chaos-to-brand/scene.tsx",
-          "sha256": "e1aac62c1e605bb886dc418de5bfb41011179da2c60ea87b198b6e1388e2c247"
+          "sha256": "065820fe10a0f4c9287702684ca1520e621e9b66758a23a1dc1779a850460f76"
         },
         {
           "path": "engine/src/motion-concepts/fields.ts",
@@ -1362,7 +1362,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/motion-concepts/conditional-branching/index.ts",
@@ -1467,7 +1467,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/motion-concepts/identity-filtering/index.ts",

@@ -22,7 +22,8 @@ export const magazinePictureMasks = (local:number,duration:number,width=1080) =>
 export const MagazineFlip:React.FC<TransitionProps> = props => {
   const frame = useCurrentFrame(),probe = useProbe();
   const t = clamp01((frame-props.atFrame)/Math.max(1,props.durationInFrames)+.5);
-  if(probe !== null)return <>{props.children}</>;
+  // Probe decoration is skipped, but the outgoing child still has a finite lifetime.
+  if(probe !== null)return t<1?<>{props.children}</>:null;
   const box = props.box ?? {x:0,y:0,width:1080,height:1920};
   const g = magazineFlipGeometry(t,box.width);
   return <div data-transition="magazine-flip" style={{position:'absolute',left:box.x,top:box.y,width:box.width,height:box.height,pointerEvents:'none'}}>

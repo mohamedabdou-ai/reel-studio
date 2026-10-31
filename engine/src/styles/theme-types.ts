@@ -42,5 +42,10 @@ export type StyleThemeModule = {
   theme: Omit<SceneTheme, "grammar">;
   layout: StyleLayout;
   galleryCut: GalleryCut;
-  caption?: {takeoverCenter:number; design?:'ink'|'magazine'};
+  caption?: {
+    takeoverCenter:number;
+    design?:'ink'|'magazine';
+    /** Hide during moving-window/page handovers, then restore over six landing frames. */
+    hideDuringTransitions?:boolean;
+  };
 };

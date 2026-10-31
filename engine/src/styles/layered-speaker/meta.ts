@@ -21,7 +21,7 @@ export default defineStyle({
     tone: {energetic: 3},
     semanticBeats: LAYERED_FAMILIES,
   },
-  familiesOff: [],
+  familiesOff: ['compose'],
   ownScenes: LAYERED_FAMILIES,
   since: '4.0.0',
 });

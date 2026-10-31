@@ -25,11 +25,11 @@ import {IntroScene, ProofScene, ProcessScene, ComparisonScene, CommentGateScene,
 import {editManifestSchema, type EditManifest, type EditScene} from "./schema.ts";
 import {sceneDrawingWindows,drawingClock} from './drawing-timeline.ts';
 import {mergeTheme} from '../core/chapters.ts';
-import {TRANSITION_RULES} from './graphics-transitions.ts';
+import {TRANSITION_RULES,sceneCaptionOpacity} from './graphics-transitions.ts';
 import {compileEdit} from "./timeline.ts";
 import {fittingCaptionCue} from './caption-fit.ts';
 import {isLegacyStyle} from '../styles/registry.ts';
-import {footageFrameState,type LayoutTransition,type SceneLayoutName} from "./footage.ts";
+import {layoutCaptionOpacity,footageFrameState,type LayoutTransition,type SceneLayoutName} from "./footage.ts";
 import {CAPTION_STRETCH_TATWEELS,captionEmphasisInk,emphasisBySource,popScale,stretchCaptionAmount,stretchCaptionWord,underlineMetrics} from "./caption-emphasis.ts";
 import {stretchRoom,stretchWidths} from '../creative-kit/kinetic-words-logic.ts';
 import {stretchWord} from '../arabic/kashida.ts';
@@ -245,7 +245,8 @@ export const PreparedEdit:React.FC<PreparedEditProps> = (props)=>{
   const frame=useCurrentFrame();
   const edit=React.useMemo(()=>props.edit?editManifestSchema.parse(props.edit):null,[props.edit]);
   const compiled=React.useMemo(()=>edit?compileEdit(edit):null,[edit]);
-  const drawingWindows=React.useMemo(()=>edit?sceneDrawingWindows(edit.scenes,edit.transitions):[],[edit]);
+  // The probe measures nominal scene coverage, not the retained leaf of a page turn.
+  const drawingWindows=React.useMemo(()=>edit?sceneDrawingWindows(edit.scenes,props.probe?(edit.transitions??[]).filter(t=>t.kind!=='magazine-flip'):edit.transitions):[],[edit,props.probe]);
   const sectionIndices=React.useMemo(()=>{
     let sectionIndex=0;
     return edit?.scenes.map(scene=>scene.layout==='takeover'?++sectionIndex:undefined)??[];
@@ -265,19 +266,22 @@ export const PreparedEdit:React.FC<PreparedEditProps> = (props)=>{
   });
   const handover=handoverIndex>=0?drawingWindows[handoverIndex].incoming:undefined;
   const outgoingScene=handover?edit.scenes[handoverIndex-1]:undefined;
-  const layoutFrame=handover?Math.min(frame,handover.atFrame-1):frame;
+  // A takeover has no footage to retain. Reveal the incoming split window beneath its turning sheet.
+  const incomingWindow=Boolean(handover && outgoingScene?.layout==='takeover' && edit.scenes[handoverIndex].layout==='split');
+  const layoutFrame=handover?(incomingWindow?Math.max(frame,handover.atFrame):Math.min(frame,handover.atFrame-1)):frame;
   const nominalState=footageFrameState(edit,frame,{aspect,canvasHeight:geometry.canvasHeight,probe});
   const state=handover?footageFrameState(edit,frame,{aspect,canvasHeight:geometry.canvasHeight,probe,layoutFrame}):nominalState;
   const seam=state.seam;
   const active=edit.scenes.find(s=>frame>=s.fromFrame&&frame<s.fromFrame+s.durationInFrames);
   const captionCenterFor=(layout:SceneLayoutName,scene=active)=>layout==='presenter'?PRESENTER_CAPTION_CENTER:layout==='takeover'&&getStyleCaption(edit.style)?getStyleCaption(edit.style)!.takeoverCenter:edit.footage?(layout==='split'?seam:PRESENTER_CAPTION_CENTER):layout==='takeover'&&captionLoweredByScene(scene)?PRESENTER_CAPTION_CENTER:getSceneGeometry(edit.style,layout).captionCenter;
+  const captionOpacity=getStyleCaption(edit.style)?.hideDuringTransitions?Math.min(layoutCaptionOpacity(edit.layoutTransitions,frame),edit.presenter===false?1:sceneCaptionOpacity(edit.transitions,edit.scenes,frame)):1;
   const usesPictureMasks=(edit.transitions??[]).some(t=>TRANSITIONS[t.kind].pictureMasks);
   const pip=edit.footage?.pip;
   return <SafeRoot {...props}><ChapterThemeProvider chapter={edit.brand??null}><TypographyProvider fontFamily={edit.fontFamily??aliasFontOverride(edit.style,edit.styleAlias)??null}><DigitsProvider digits={edit.digits??null}><PreparedPlateProvider plate={plate}><CreativeFonts>
     <PictureStack><LookLayer look={edit.look}>
     <CanvasFill background={theme.background}/>
     {                                                                                  }
-    {usesPictureMasks?<div data-drawing-plate={outgoingScene?.layout} style={{position:'absolute',inset:0}}><ContinuousWindowPlate src={plate.src} geo={state.geo} sourceAspect={aspect} visible={footageVisibility(edit,layoutFrame,props.__editorSkipHiddenVideo!==false)}/></div>
+    {usesPictureMasks?<div data-drawing-plate={incomingWindow?'split':outgoingScene?.layout} style={{position:'absolute',inset:0}}><ContinuousWindowPlate src={plate.src} geo={state.geo} sourceAspect={aspect} visible={footageVisibility(edit,layoutFrame,props.__editorSkipHiddenVideo!==false)}/></div>
       :<ContinuousWindowPlate src={plate.src} geo={state.geo} sourceAspect={aspect} visible={footageVisibility(edit,frame,props.__editorSkipHiddenVideo!==false)}/>}
     {edit.scenes.map((scene,index)=>{
       const window=drawingWindows[index];
@@ -285,7 +289,8 @@ export const PreparedEdit:React.FC<PreparedEditProps> = (props)=>{
       const incoming=window.incoming, policy=incoming && TRANSITIONS[incoming.kind];
       const previous=edit.scenes[index-1], previousWindow=drawingWindows[index-1];
       let outgoing:React.ReactNode, outgoingProps:Partial<import('./transition-registry').TransitionProps>|undefined;
-      if(policy?.needsOutgoing && previous){
+      const outgoingEnd=incoming?incoming.atFrame+(policy?.centred?Math.ceil(incoming.durationInFrames/2):incoming.durationInFrames):0;
+      if(policy?.needsOutgoing && previous && frame<outgoingEnd){
         const clock=drawingClock(previous,previousWindow.lead,frame,policy.freezeOutgoing);
         const heldFrame=policy.freezeOutgoing?Math.min(frame,scene.fromFrame-1):frame;
         const held=footageFrameState(edit,heldFrame,{aspect,canvasHeight:geometry.canvasHeight,probe,layoutFrame:Math.min(heldFrame,scene.fromFrame-1)});
@@ -319,7 +324,7 @@ export const PreparedEdit:React.FC<PreparedEditProps> = (props)=>{
     </PictureStack>
     {/* Speech follows the manifest cut, independently of picture masks, retained layouts and overlays. */}
     <div data-caption-layer="" style={{position:'absolute',inset:0,isolation:'isolate',pointerEvents:'none'}}>
-      <CaptionTrack edit={edit} compiled={compiled} center={captionCenterFor(nominalState.layout)}/>
+      {captionOpacity===0?null:captionOpacity<1?<div data-layout-caption-fade="" style={{opacity:captionOpacity}}><CaptionTrack edit={edit} compiled={compiled} center={captionCenterFor(nominalState.layout)}/></div>:<CaptionTrack edit={edit} compiled={compiled} center={captionCenterFor(nominalState.layout)}/>}
     </div>
   </CreativeFonts></PreparedPlateProvider></DigitsProvider></TypographyProvider></ChapterThemeProvider></SafeRoot>;
 };

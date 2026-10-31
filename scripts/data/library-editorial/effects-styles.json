@@ -268,11 +268,11 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/footage.ts",
-          "sha256": "625bbf88af5e419cef2df03b86c0536e699f51529eb62508d07706c51255c54c"
+          "sha256": "71839199b9fa42dbc64827663958899147eb2378a6d515fe48d11bbb94ffcc0a"
         }
       ]
     },
@@ -331,11 +331,11 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/footage.ts",
-          "sha256": "625bbf88af5e419cef2df03b86c0536e699f51529eb62508d07706c51255c54c"
+          "sha256": "71839199b9fa42dbc64827663958899147eb2378a6d515fe48d11bbb94ffcc0a"
         }
       ]
     },
@@ -392,11 +392,11 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/footage.ts",
-          "sha256": "625bbf88af5e419cef2df03b86c0536e699f51529eb62508d07706c51255c54c"
+          "sha256": "71839199b9fa42dbc64827663958899147eb2378a6d515fe48d11bbb94ffcc0a"
         }
       ]
     },
@@ -462,7 +462,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         }
       ]
     },
@@ -526,7 +526,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         }
       ]
     },
@@ -592,7 +592,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         }
       ]
     },
@@ -657,7 +657,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         }
       ]
     },
@@ -715,11 +715,11 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/styles/registry.ts",
@@ -780,11 +780,11 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/styles/registry.ts",
@@ -846,11 +846,11 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/styles/registry.ts",
@@ -907,15 +907,15 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/core/mask.tsx",
@@ -972,15 +972,15 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/creative-kit/chapter-theme.tsx",
@@ -1036,15 +1036,15 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/core/transitions-dir.tsx",
@@ -1100,15 +1100,15 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/core/transitions-dir.tsx",
@@ -1181,7 +1181,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         }
       ]
     },
@@ -1250,7 +1250,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         }
       ]
     },
@@ -1320,7 +1320,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         }
       ]
     },
@@ -1394,7 +1394,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         }
       ]
     },
@@ -1465,7 +1465,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         }
       ]
     },
@@ -1535,7 +1535,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         }
       ]
     },
@@ -1589,11 +1589,11 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/footage.ts",
-          "sha256": "625bbf88af5e419cef2df03b86c0536e699f51529eb62508d07706c51255c54c"
+          "sha256": "71839199b9fa42dbc64827663958899147eb2378a6d515fe48d11bbb94ffcc0a"
         },
         {
           "path": "engine/src/core/window-geo.ts",
@@ -1652,11 +1652,11 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/footage.ts",
-          "sha256": "625bbf88af5e419cef2df03b86c0536e699f51529eb62508d07706c51255c54c"
+          "sha256": "71839199b9fa42dbc64827663958899147eb2378a6d515fe48d11bbb94ffcc0a"
         },
         {
           "path": "engine/src/core/window-geo.ts",
@@ -1737,11 +1737,11 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         }
       ]
     },
@@ -1821,11 +1821,11 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         }
       ]
     },
@@ -1901,11 +1901,11 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         }
       ]
     },
@@ -1981,11 +1981,11 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         }
       ]
     },
@@ -2036,15 +2036,15 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/core/transitions.tsx",
@@ -2099,15 +2099,15 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/core/transitions.tsx",
@@ -2163,15 +2163,15 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/core/transitions.tsx",
@@ -2214,7 +2214,7 @@
       "requirements": [
         "Use transitions kind: whiteout without dir; manifest duration is 1-120 frames.",
         "The bell begins half its duration before atFrame; allow time on both sides and finish before signoff.",
-        "It overlays the whole canvas after captions and graphics; do not flash over a speaking presenter or important evidence.",
+        "It overlays the whole graphics canvas below captions; do not flash over a speaking presenter or important evidence.",
         "A flash is dressing, not a claim, result or explanatory scene."
       ],
       "display": {
@@ -2225,15 +2225,15 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/core/transitions.tsx",
@@ -2290,7 +2290,7 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/creative-kit/primitives.tsx",
@@ -2347,7 +2347,7 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/creative-kit/primitives.tsx",
@@ -2403,7 +2403,7 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/creative-kit/primitives.tsx",
@@ -2450,8 +2450,8 @@
       ],
       "requires": [],
       "requirements": [
-        "Noto Naskh Arabic is the declared default; profile brand colours are not automatic.",
-        "The style supplies no proof or data and owns no family.",
+        "Aref Ruqaa is the declared default; profile brand colours are not automatic.",
+        "The style supplies no proof or data and owns the family claim-proof.",
         "Shared scene layout rules and evidence provenance still apply; inferred PiP needs review."
       ],
       "display": {
@@ -2462,7 +2462,7 @@
       "evidence": [
         {
           "path": "engine/src/styles/calligraphic-receipts/meta.ts",
-          "sha256": "d369c5c504f080558e94160f284f93fa66ad5461a5b10d99847857e810199d07"
+          "sha256": "52e2fb1ea806967216e6d8e89903aca2b3494fb578b0dcb4156a10c9057bc5ca"
         },
         {
           "path": "engine/src/styles/calligraphic-receipts/theme.ts",
@@ -2545,7 +2545,7 @@
       "evidence": [
         {
           "path": "engine/src/styles/grid-glide/meta.ts",
-          "sha256": "b90c962417bb856abb22417fc70b800b55d84ef3aebb8ad4e4a9da17cdc63f48"
+          "sha256": "2f0d19e46d03f36b7d45b17809f11d1992209b2b3e87b38fb326c9940ebe52b8"
         },
         {
           "path": "engine/src/styles/grid-glide/theme.ts",
@@ -2621,7 +2621,7 @@
       "requires": [],
       "requirements": [
         "It owns no family; kinetic-text remains a separate literal-recorded-word mechanism.",
-        "The default font is Plex Display; the style uses its own palette rather than automatic profile colours.",
+        "The default font is Lalezar; the style uses its own palette rather than automatic profile colours.",
         "PiP policy is inferred, so verify real geometry and creator fit rather than treating it as approval."
       ],
       "display": {
@@ -2632,7 +2632,7 @@
       "evidence": [
         {
           "path": "engine/src/styles/kinetic-paper/meta.ts",
-          "sha256": "67c885167db04f265903f738e852e3820c910a441ebf2ac81833b908e053db5d"
+          "sha256": "84894bd68e519b66af4e377a534a6f732b08daf8989c7e005c744816269d7385"
         },
         {
           "path": "engine/src/styles/kinetic-paper/theme.ts",
@@ -2700,7 +2700,7 @@
       "requires": [],
       "requirements": [
         "Grammar is not an inspection engine; lens scenes must point to supplied content.",
-        "Use the style own dark palette and Cairo default, not automatic profile colours.",
+        "Use the style own dark palette and Grid Sans default, not automatic profile colours.",
         "PiP is not allowed; use split only where the selected family supports it.",
         "Review actual glass-panel contrast and do not imply verified analysis from decorative magnification."
       ],
@@ -2712,7 +2712,7 @@
       "evidence": [
         {
           "path": "engine/src/styles/liquid-glass/meta.ts",
-          "sha256": "8de67fac6fd8f35450514e3b3bb73164c9e843b293efacb1d546e949b48763dc"
+          "sha256": "3dec3bd68c32ce693e5f79f362c81950b5197424bd3c5a12ba21963723bbc843"
         },
         {
           "path": "engine/src/styles/liquid-glass/theme.ts",
@@ -2780,7 +2780,7 @@
       "requires": [],
       "requirements": [
         "Grammar supplies no quote or identity; chapter-quote needs reviewed wording and supported attribution.",
-        "Use its own palette, Cairo default and minimal captions; profile colours are not automatic.",
+        "Use its own palette, Alexandria default and minimal captions; profile colours are not automatic.",
         "PiP is not allowed; use split with clear attribution where the selected family permits it.",
         "Optional cover foreground requires the separate supplied transparent PNG contract; style selection does not mask a subject."
       ],
@@ -2796,7 +2796,7 @@
         },
         {
           "path": "engine/src/styles/magazine-interview/theme.ts",
-          "sha256": "c0f8e61646dc90e4402d66f4cd6dc4ca5392761b3fc7b4819208c462df9e2e02"
+          "sha256": "f3f62ee3904de62764260c29ffe55067367ca8a94fd9e123ac5739fc350c051e"
         },
         {
           "path": "engine/src/styles/registry.ts",
@@ -2816,7 +2816,7 @@
         },
         {
           "path": "engine/src/styles/magazine-interview/designs/index.ts",
-          "sha256": "90dbbf076c4d65249c3455cd2fbb409aa7162c14970fa3c2a7d05972a19eec2a"
+          "sha256": "d52b01261270f9260224858dbf0df2607f688b1496fc8869279980517abb3e8e"
         }
       ]
     },
@@ -2874,7 +2874,7 @@
       "evidence": [
         {
           "path": "engine/src/styles/one-shot/meta.ts",
-          "sha256": "aea5b7840f914bdba7c0b73b61b02472a0b3576999dc5a4f8e9d0ac56a3e120c"
+          "sha256": "d113c19da9fdf8e62f8994fbc836e49f13b4ca25bacc96efa17f7c596ab71a15"
         },
         {
           "path": "engine/src/styles/one-shot/theme.ts",
@@ -2964,7 +2964,7 @@
       "evidence": [
         {
           "path": "engine/src/styles/cartoon/meta.ts",
-          "sha256": "23fab67c3ff9955fb3ba1cc6b557e8f08c50a2f84bcea616a7151d9618d2b6dd"
+          "sha256": "1592e64fd5de9f6f5ce4c45e058054c1b602d51cff4fb63d884f963b9cac8127"
         },
         {
           "path": "engine/src/styles/cartoon/theme.ts",
@@ -3038,7 +3038,7 @@
       "requires": [],
       "requirements": [
         "This is grammar, not an assembly mechanism; message-board or a suitable authored scene supplies actual continuity.",
-        "brand:false and the Tajawal default preserve the style own palette/material rather than automatic profile colours.",
+        "brand:false and the Reem Kufi default preserve the style own palette/material rather than automatic profile colours.",
         "Split/takeover support depends on the chosen family; inferred PiP needs real face/layout review.",
         "Keep paper texture on graphics and tie sparse paper sounds to visible action."
       ],
@@ -3050,7 +3050,7 @@
       "evidence": [
         {
           "path": "engine/src/styles/paper-collage/meta.ts",
-          "sha256": "f558d2da9c290f7a6dd3e2c026a8a0ed6795c4bbd50799e4e4a0200b8cabf8da"
+          "sha256": "d678e4711436984cb8f2472d996f650d6850d8149dd2f6ffe7abb4e0774f8391"
         },
         {
           "path": "engine/src/styles/paper-collage/theme.ts",
@@ -3134,7 +3134,7 @@
       "evidence": [
         {
           "path": "engine/src/styles/section-deck/meta.ts",
-          "sha256": "79d675d8d41c3acff825f407db2980b49dc5717505cf22129d5872b45315bd2d"
+          "sha256": "eb2763e17f43a7b5ed2eb01480ad859043bd5727e75408208ee5e3caa2ee1245"
         },
         {
           "path": "engine/src/styles/section-deck/theme.ts",
@@ -3224,7 +3224,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         }
       ]
     },
@@ -3294,7 +3294,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         }
       ]
     },
@@ -3365,7 +3365,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         }
       ]
     },
@@ -3418,7 +3418,7 @@
       "evidence": [
         {
           "path": "engine/src/styles/documentary/meta.ts",
-          "sha256": "4ed1e7f3aa9389d93cc9d7a558a9589f42cdbf8ba270f96c2b689c75c0bff722"
+          "sha256": "59800b1220960bef207f9bde0d2e16854b26fc4b547fdca6691eddd4d0191387"
         },
         {
           "path": "engine/src/styles/documentary/theme.ts",
@@ -3512,15 +3512,15 @@
         },
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/core/mask.tsx",
@@ -3602,15 +3602,15 @@
         },
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/core/mask.tsx",
@@ -3692,15 +3692,15 @@
         },
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         }
       ]
     },
@@ -3774,15 +3774,15 @@
         },
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/core/mask.tsx",
@@ -3864,15 +3864,15 @@
         },
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         }
       ]
     },
@@ -3936,15 +3936,15 @@
         },
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         }
       ]
     },
@@ -4008,15 +4008,15 @@
         },
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         }
       ]
     },
@@ -4080,15 +4080,15 @@
         },
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         }
       ]
     },
@@ -4133,7 +4133,7 @@
         "atFrame is the covered cut centre; half the duration follows it and must finish before signoff. The default is 24 frames (12 build, 12 dissolve); the editor accepts 1 to 120.",
         "The curtain colour is the style theme background, handed in by PreparedEdit as the paper prop; it is one Solid with the pixel-dissolve effect (about 45 pixel cells on the 1080 x 1920 frame, seeded so the same cells go first), never an effect on the scenes under it.",
         "At atFrame nothing has dissolved: the whole frame is the curtain colour (the node carries data-cut-cover=\"full\" on that frame).",
-        "It also covers the captions for the covered frames, like every overlay; do not place it on a spoken word the creator needs to hear and read.",
+        "Captions stay above the curtain; graphics under it are covered. Do not place it over important evidence the viewer needs to read.",
         "Costs about 0.01 s extra per live frame (24 frames in all, measured). Deterministic and silent by itself: the generic transition sound cue lands on atFrame like any transition (a soft landing, never a sweep). Nothing is drawn under the safe-zone probe.",
         "Renders pin the software GL backend (scripts/lib/render-gl.mjs)."
       ],
@@ -4161,15 +4161,15 @@
         },
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         }
       ]
     },
@@ -4224,11 +4224,11 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/prepared-edit/caption-skins.tsx",
@@ -4287,11 +4287,11 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/prepared-edit/caption-skins.tsx",
@@ -4350,11 +4350,11 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/prepared-edit/caption-skins.tsx",
@@ -4413,11 +4413,11 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/prepared-edit/caption-skins.tsx",
@@ -4476,11 +4476,11 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/prepared-edit/caption-skins.tsx",
@@ -4539,11 +4539,11 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/prepared-edit/caption-skins.tsx",
@@ -4602,11 +4602,11 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/prepared-edit/caption-skins.tsx",
@@ -4665,11 +4665,11 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/prepared-edit/caption-skins.tsx",
@@ -4729,11 +4729,11 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+          "sha256": "92160c7a90740a0e44594a3751833d8bd9015c3fd6c7c6f82c747784c7855e41"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         },
         {
           "path": "engine/src/prepared-edit/caption-emphasis.ts",
@@ -4794,7 +4794,7 @@
       "evidence": [
         {
           "path": "engine/src/styles/layered-speaker/meta.ts",
-          "sha256": "8680a3f63f2ae203448d6e28ee40af6877dc66e165484670a5f0c943b1618f91"
+          "sha256": "f3bea866b191ba0659b72a3ab8e145e87ae8943718d47cd578ef18a825c36a93"
         },
         {
           "path": "engine/src/styles/layered-speaker/theme.ts",
@@ -4879,7 +4879,7 @@
         },
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/drawing-timeline.ts",
@@ -4887,7 +4887,7 @@
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         }
       ]
     },
@@ -4936,11 +4936,11 @@
       "evidence": [
         {
           "path": "engine/src/core/transitions-v4/magazine-flip.tsx",
-          "sha256": "f15052bb0d76da8812c7167752d5447b00dd3daa3064d99aa240e7d423775034"
+          "sha256": "a8f5d5af615a5e6b74e2a84007bfcbd962fae6615d8e28cea13e353379227cd9"
         },
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/drawing-timeline.ts",
@@ -4948,7 +4948,7 @@
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         }
       ]
     },
@@ -5001,7 +5001,7 @@
         },
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/drawing-timeline.ts",
@@ -5009,7 +5009,7 @@
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         }
       ]
     },
@@ -5062,7 +5062,7 @@
         },
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/drawing-timeline.ts",
@@ -5070,7 +5070,7 @@
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         }
       ]
     },
@@ -5123,7 +5123,7 @@
         },
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+          "sha256": "0fcc853190e1a931abbb144a8eac83ecfbb50a672e6ddd38e85df8f91875c885"
         },
         {
           "path": "engine/src/prepared-edit/drawing-timeline.ts",
@@ -5131,7 +5131,7 @@
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+          "sha256": "3615881c92ccedd27c4f808c870a9b38bf37335569e19707616bbd715787b282"
         }
       ]
     }

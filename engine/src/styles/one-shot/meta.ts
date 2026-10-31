@@ -21,7 +21,7 @@ export default defineStyle({
     tone: {energetic: 1},
     semanticBeats: ONE_SHOT_FAMILIES,
   },
-  familiesOff: [],
+  familiesOff: ['compose'],
   ownScenes: ONE_SHOT_FAMILIES,
   since: '3.0.0',
 });

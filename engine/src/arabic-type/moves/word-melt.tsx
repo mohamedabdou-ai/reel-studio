@@ -5,7 +5,7 @@ import type {ArabicMoveProps,DrawMove} from '../types';
 const rgb=(s:string)=>[1,3,5].map(i=>parseInt(s.slice(i,i+2),16));
 const layers=new Map<string,HTMLCanvasElement>();
 const draw:DrawMove=(ctx,t,p)=>{
-  const to=p.to!,size=Math.min(fit(ctx,p.text,p.font,80,220),fit(ctx,to,p.font,80,220));
+  const to=p.to!,size=Math.min(fit(ctx,p.text,p.font,80,220,p.fitFloor),fit(ctx,to,p.font,80,220,p.fitFloor));
   const end=p.durationInFrames/p.fps,returnAt=Math.max(2.9,end-1.3);
   const k=t<1?0:t<1.8?E.sinIO(P(t,1,.8)):t<returnAt?1:1-E.sinIO(P(t,returnAt,.8));
   if(k===0||k===1){text(ctx,k===0?p.text:to,135,262,p.font,size,k===0?p.ink:p.accent);return;}

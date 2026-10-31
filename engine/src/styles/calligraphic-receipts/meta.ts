@@ -11,7 +11,7 @@ export default defineStyle({
   pip: {allowed: true, basis: 'inference', evidence: 'See the style guide and review this layout with the creator.'},
   defaults: {font: 'Aref Ruqaa', captionsPresentation: 'pill', clauseCaptions: false, staticCaptions: false},
   fit: {purpose: {'case-study': 18, tutorial: 8, opinion: 8, story: 10}, tone: {calm: 3, editorial: 4}, semanticBeats: ['meter-receipt', 'claim-proof']},
-  familiesOff: [],
+  familiesOff: ['compose'],
   ownScenes: ['claim-proof'],
   signatureTransition: 'paper-pull',
   since: '1.8.6',

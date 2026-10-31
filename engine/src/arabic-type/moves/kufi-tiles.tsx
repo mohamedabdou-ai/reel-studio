@@ -14,7 +14,7 @@ function tiles(r:ReturnType<typeof raster>){
   }return {rows,cols,cell,gx0,y0,cells,g:Math.min(220/(cols*cell),190/(rows*cell)),last:.3+.018*(cols-1)+.03+.22};
 }
 const draw:DrawMove=(ctx,t,p)=>{
-  const r=raster(p.text,p.font,fit(ctx,p.text,p.font,110,225));let grid=cache.get(r);if(!grid){grid=tiles(r);cache.set(r,grid);}
+  const r=raster(p.text,p.font,fit(ctx,p.text,p.font,110,225,p.fitFloor));let grid=cache.get(r);if(!grid){grid=tiles(r);cache.set(r,grid);}
   const {rows,cols,cell,g,gx0,y0,cells,last}=grid,gw=cols*cell*g,gh=rows*cell*g,cs=cell*g,X0=135-gw/2,Y0=190-gh/2;
   const exit=E.cubIn(P(t,p.durationInFrames/p.fps-.5,.4)),gl=E.cubOut(P(t,0,.3)),gf=1-P(t,.3+.018*cols,.4);ctx.globalAlpha=1-exit;
   if(gf>0){ctx.save();ctx.globalAlpha=(1-exit)*.3*gf;ctx.strokeStyle=p.ink;ctx.lineWidth=.6;ctx.beginPath();

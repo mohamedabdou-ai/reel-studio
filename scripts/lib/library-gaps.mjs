@@ -16,7 +16,8 @@ const OBSERVATIONS = {
     'automationFlowSchema accepts input, exactly four step labels and output. It has no condition, route choice, queue, service rate or return-edge data.'],
   semantic: ['5886a10b0ecc16df6726e2efb45e6f4fa1687d45959abb7c8fd23d4c1718c8ac',
     'route-stops accepts 2-4 ordered stops; message-board preserves unique IDs while gathering/focusing; token-lens groups supplied tokens. These families do not evaluate predicates. The takeover motion-concept wrapper selects its exact registered config schema, including the new branch/filter concepts.'],
-  creative: ['90e542aa6b469cdc6e6e02fa7efcf1a965bab5a486083f32a622ac2b6b8ebec1',
+  // Re-reviewed after the optional Gallery probeSurfaces flag; process/comparison contracts are unchanged.
+  creative: ['0b60920c4810e90770c122cbff8f717c81a22d9dfbc99bf3f66b5a7653be2c37',
     'processSchema supplies exactly three title/detail steps; comparisonSchema supplies before/after titles and details. These already cover linear steps and contrast.'],
   library: ['2ea24013fd590c3755d0f0281b97260ba743e0f2ca98e5659e43d1e9b4f8baaf',
     'data-story exposes authored metric or bars with ordered atFrame reveals and a source note; screen-focus requires supplied local screen assets. Neither tracks queue arrivals/departures.'],

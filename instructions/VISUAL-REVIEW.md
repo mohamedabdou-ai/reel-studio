@@ -26,6 +26,8 @@ Review the arc from opening to resolution and the complete ending. Check that an
 
 The final review uses the exported MP4. You cannot hear it: its sound is judged by the creator playing the passage you name. Probe/encode/decode, plate cadence, safe zones, presenter/head checks, motion and audio checks still run through the delivery pipeline. Fix a failed gate; do not bypass it because a still looked good.
 
+A marked design surface may extend into the side margins when it carries no information there. Safe-check reports that background coverage as an informational zone/area note; text, glyphs, marks, logos, icons and media remain enforced content. Review the note against the actual frame. This does not exempt a band from head clearance: head checks still see its fill.
+
 Record the practical scope honestly: schema-only, rendered stills, sampled video/audio review, uninterrupted playback, and creator acceptance are different evidence. If only samples were inspected, say so. A clean test suite, HTTP success or a generated demonstration is not creative acceptance. A request to produce the final authorizes production; the creator's acceptance belongs to the reviewed result.
 
 ## Reusable examples

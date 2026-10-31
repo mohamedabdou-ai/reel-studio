@@ -97,7 +97,7 @@ export async function buildPreparedHeadGuide(edit,{log=()=>{}}={}){
     if(stale)throw new Error(`a cached envelope exists but could not be rebuilt: ${built.errors.join('; ')}`);
   }
   const guide=reduceHeadGuide(edit,envelope,{aspect:edit.source.height/edit.source.width,splitCanvasHeight:splitFor(edit)});
-  const warning=envelope?null:`no head envelope (${built.errors.join('; ')}); head-aware titles keep their authored position and head-check will not PASS`;
+  const warning=envelope?null:`no head envelope (${built.errors.join('; ')}); head-aware titles use their style fallback; head-check will not PASS`;
   if(warning)log(`⚠ head guide: ${warning}`);
   return {guide,summary:{method:guide.method,envelope:built.file?path.relative(ROOT,built.file).split(path.sep).join('/'):null,cached:built.cached,errors:built.errors,
     every:envelope && envelope.samples.length>1?envelope.samples[1].frame-envelope.samples[0].frame:null,

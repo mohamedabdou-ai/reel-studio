@@ -37,12 +37,12 @@ export function countTiming(d:any,t:ReturnType<typeof sceneTiming>,pilot:{roll:n
   const roll=t.frame(d.rollFrame,pilot.roll), duration=t.duration(d.rollDuration,pilot.duration,roll), end=roll+duration;
   return {roll,duration,end,unit:t.frame(d.unitFrame,end+pilot.unit-pilot.roll-pilot.duration),badge:t.frame(d.badgeFrame,d.unitFrame!==undefined?d.unitFrame+pilot.badge-pilot.unit:end+pilot.badge-pilot.roll-pilot.duration)};
 }
-/** Use the first strong letter of primary copy, independent of captions, assets or saved edit language. */
+/** Explicit language wins; otherwise Arabic anywhere in primary copy makes it RTL. Side captions and assets do not decide. */
 export function ownSceneCopy(data:any) {
+  if(data?.lang==='ar'||data?.lang==='en')return sceneCopy({lang:data.lang});
   const main = data?.title ?? data?.question ?? data?.claim?.join(' ') ?? data?.boardTitle ?? data?.label ?? data?.keyword ?? data?.message ?? data?.text ?? data?.handle ?? data?.groups?.[0]?.tokens?.join(' ') ?? data?.messages?.map((m:any)=>m.text).join(' ') ?? data?.blocks?.map((b:any)=>b.text ?? '').join(' ') ?? data?.bars?.map((b:any)=>b.label).join(' ') ?? data?.unit ?? '';
-  const letter = String(main).match(/\p{L}/u)?.[0] ?? '';
-  if(!letter)return sceneCopy({...data,lang:data?.lang ?? 'ar'});
-  return sceneCopy({...data,lang:/\p{Script=Arabic}/u.test(letter)?'ar':'en'});
+  if(!/\p{L}/u.test(String(main)))return sceneCopy({...data,lang:'ar'});
+  return sceneCopy({text:String(main)});
 }
 export const displayWeight = (family:string,pilot:string,weight:number) => {
   if(family===pilot)return weight;
@@ -62,15 +62,24 @@ export function statementBand(height:number,head:FamilyDesignProps['headBox'],up
   if(lower && head && top<head.y+head.height+24)designWarning(style,{statement:'Lower band intersects supplied head; no complete safe vertical band',top,head});
   return {lower,top,bottom:top+height*scale,scale,width:lower?788:950};
 }
+const sourceRelativeFrameKeys = new Set([
+  'trimBeforeFrame', // Offset inside a clip/video/matte file, independent of scene length.
+  'sourceFromFrame', // Original-footage origin of a foreground matte, independent of scene length.
+]);
 export function boundedData(data:any,t:ReturnType<typeof sceneTiming>):any {
   if(Array.isArray(data))return data.map(d=>boundedData(d,t));
   if(!data || typeof data!=='object')return data;
-  return Object.fromEntries(Object.entries(data).map(([k,v])=>[k,/Frame$/.test(k)?t.frame(v,0):/Duration(Frames)?$/.test(k)||k==='rollDuration'?t.duration(v,1,0):boundedData(v,t)]));
+  return Object.fromEntries(Object.entries(data).map(([k,v])=>[k,sourceRelativeFrameKeys.has(k)?(typeof v==='number'&&Number.isFinite(v)&&v>=0?v:t.frame(v,0)):/Frame$/.test(k)?t.frame(v,0):/Duration(Frames)?$/.test(k)||k==='rollDuration'?t.duration(v,1,0):boundedData(v,t)]));
 }
-export function designSet(designs:Partial<Record<string,React.FC<FamilyDesignProps>>>) {
+export const DesignScope:React.FC<{data:unknown;layout:string;seam:number;durationInFrames:number;style:string;children?:React.ReactNode}>=({data,layout,seam,durationInFrames,style,children})=>
+  <DesignDigitsScope data={data}><FitEnabled.Provider value={layout==='takeover'}><Bounds.Provider value={layout==='split'?Math.min(1150,seam-88):1150}><Timing.Provider value={sceneTiming(durationInFrames,style)}>{children}</Timing.Provider></Bounds.Provider></FitEnabled.Provider></DesignDigitsScope>;
+
+export function designSet(designs:Partial<Record<string,React.FC<FamilyDesignProps>>>,options:{system?:string}={}) {
   return Object.fromEntries(Object.entries(designs).map(([family,Design])=>[family,((p:FamilyDesignProps)=>{
     const data=useDesignData(p.scene.data);
     const scene={...p.scene,data:boundedData(data,sceneTiming(p.scene.durationInFrames,p.style))} as FamilyDesignProps['scene'];
-    return <DesignDigitsScope data={p.scene.data}><FitEnabled.Provider value={scene.layout==='takeover'}><Bounds.Provider value={scene.layout==='split'?Math.min(1150,p.seam-88):1150}><Timing.Provider value={sceneTiming(scene.durationInFrames,p.style)}>{Design?<Design {...p} scene={scene}/>:null}</Timing.Provider></Bounds.Provider></FitEnabled.Provider></DesignDigitsScope>;
+    return <DesignScope data={p.scene.data} layout={scene.layout} seam={p.seam} durationInFrames={scene.durationInFrames} style={p.style}>
+      {options.system?<><span hidden data-style-system={options.system}/>{Design?<Design {...p} scene={scene}/>:null}</>:Design?<Design {...p} scene={scene}/>:null}
+    </DesignScope>;
   }) as React.FC<FamilyDesignProps>]));
 }

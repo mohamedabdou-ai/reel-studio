@@ -318,7 +318,7 @@ const Plate: React.FC<{d: ProofScreenData}> = ({d}) => {
     <div style={{position: 'absolute', inset: 0, transform: `translate(${cam.x}px,${cam.y}px) rotateX(${cam.rotateX}deg) rotateY(${cam.rotateY}deg) scale(${cam.scale / (d.path === 'focus' ? 1.04 : 1)})`, transformOrigin: `${PL + PW / 2}px ${ringCY}px`}}>
       {/* the sheet */}
       <div style={{position: 'absolute', left: PL, top: plateTop, width: PW, height: plateH, background: th.ground, boxShadow: '0 34px 70px rgba(0,0,0,0.55)', opacity: clamp01(ramp(f, 0, 14) * 1.6)}}>
-        <div style={{position: 'absolute', inset: 0, overflow: 'hidden'}}><div style={{position: 'absolute', left: -PL, top: -plateTop}}><Ground th={th}/></div></div>
+        <div style={{position: 'absolute', inset: 0, overflow: 'hidden'}}><div style={{position: 'absolute', left: -PL, top: -plateTop}}><Ground th={th} surface="object"/></div></div>
         <svg width={PW} height={plateH} style={{position: 'absolute', inset: 0, overflow: 'visible'}}>
           <rect x={FI} y={FI} width={PW - 2 * FI} height={plateH - 2 * FI} fill="none" stroke={th.gold} strokeWidth={1.8} pathLength={1} strokeDasharray={1} strokeDashoffset={1 - frameK}/>
           <rect x={FI + 8} y={FI + 8} width={PW - 2 * FI - 16} height={plateH - 2 * FI - 16} fill="none" stroke={th.gold} strokeOpacity={0.35} strokeWidth={1} pathLength={1} strokeDasharray={1} strokeDashoffset={1 - frameK}/>

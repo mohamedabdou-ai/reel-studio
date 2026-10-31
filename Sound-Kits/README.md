@@ -71,6 +71,7 @@ Sounds can land on the frames an edit's scenes already declare instead of only a
 | `layered-speaker` | the big word's `atFrame` -> `reveal`, each hand-drawn mark's `atFrame` -> `swap`; words beside the head and the bar growing add no cue. The scene-start `transition` is silent in this style's palette: the speaker is already on screen |
 | `kinetic-hook` | `swapFrame` -> `swap`, `stampFrame` -> `stamp` |
 | `kinetic-text` | its first frame -> `type`; the scene-start `transition` sits on the same frame with a higher priority, so this `type` cue always loses (`density`) whenever the palette has a transition recipe |
+| `compose` | each part entrance -> `reveal`; steps use each row's `offsetFrames`, lists use `i * (staggerFrames ?? 10)`; word anchors resolve through `resolveComposeAt` and compiled words. A frame-0 reveal is covered by the scene-start transition |
 | `checklist` | `items[].atFrame` -> `reveal` |
 | `count` | `rollFrame` -> `count`, `unitFrame` -> `reveal`, badge -> `stamp` (`badgeFrame`, else `unitFrame`) |
 | `creator-cta` | `followFrame` -> `reveal`, `clickedFrame` -> `click` |

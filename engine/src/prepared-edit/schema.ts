@@ -28,6 +28,9 @@ import {projectSceneVariant,projectScenesMetadataSchema,projectSceneIssues} from
 import {SCENE_CAMERA_MOVES,SCENE_CAMERA_STRENGTHS,sceneCameraIssues} from '../core/camera.ts';
 import {proofScreenSceneVariants,proofScreenSceneSchema} from '../creative-kit/proof-screen/schema.ts';
 import {validateProofScreenTiming} from '../creative-kit/proof-screen/timing.ts';
+import {composeSceneVariants,composeSceneSchema} from '../creative-kit/compose/schema.ts';
+import {validateComposeTiming} from '../creative-kit/compose/timing.ts';
+import {validateComposeBudget} from '../creative-kit/compose/budget.ts';
 import {lookSchema} from '../looks/index.ts';
 
 const frame = z.number().int().min(0).max(4320000);
@@ -71,6 +74,7 @@ const sceneUnion = z.discriminatedUnion("family",[
   ...chatThreadSceneVariants,
   ...styleSceneVariants,
   ...proofScreenSceneVariants,
+  ...composeSceneVariants,
   projectSceneVariant,
 ]);
 
@@ -181,6 +185,13 @@ const manifestSchema = z.object({
     if(chatThread.success)for(const message of validateChatThreadTiming(chatThread.data,m.source.fps))issue(message);
     const proofScreen=proofScreenSceneSchema.safeParse(s);
     if(proofScreen.success)for(const message of validateProofScreenTiming(proofScreen.data,m.source.fps))issue(message);
+    const compose=composeSceneSchema.safeParse(s);
+    if(compose.success){
+      let words:ReturnType<typeof compileEdit>['words']|null=null;
+      if(compose.data.data.parts.some(part=>'word' in part.at)){try{words=compileEdit(m as EditManifest).words;}catch{words=null;}}
+      for(const message of validateComposeTiming(compose.data,m.source.fps,words))issue(message);
+      for(const message of validateComposeBudget(compose.data,m.style))issue(message);
+    }
     const semantic=semanticSceneSchema.safeParse(s);
     if(semantic.success){
       for(const message of validateSemanticTiming(semantic.data,m.source.fps))issue(message);

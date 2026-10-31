@@ -21,7 +21,7 @@ export default defineStyle({
     tone: {energetic: 2},
     semanticBeats: CARTOON_FAMILIES,
   },
-  familiesOff: [],
+  familiesOff: ['compose'],
   ownScenes: CARTOON_FAMILIES,
   since: '3.0.0',
 });

@@ -5,7 +5,7 @@ import {promises as fs} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {STYLE_METAS} from '../engine/src/styles/registry.ts';
-import {GUIDE_HEADINGS, RECIPE_BULLETS, TABLE_START, TABLE_END, renderStyleTable, syncStyleDocs} from '../scripts/style-docs.mjs';
+import {GUIDE_HEADINGS, RECIPE_BULLETS, TABLE_START, TABLE_END, assertGuideHeadings, renderStyleTable, syncStyleDocs} from '../scripts/style-docs.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = file => readFileSync(path.join(ROOT, file), 'utf8').replace(/\r\n/g, '\n');
@@ -50,8 +50,25 @@ async function sandbox(t) {
 }
 
 test('the guide template matches the approved section list', () => {
-  assert.deepEqual(GUIDE_HEADINGS, ['Look', 'Best for', 'Layouts and footage', 'Palette and brand', 'Recipe', 'Style-owned scenes', 'Avoid']);
+  assert.deepEqual(GUIDE_HEADINGS, ['Look', 'Best for', 'Layouts and footage', 'Palette and brand', 'Recipe', 'Design system', 'Style-owned scenes', 'Avoid']);
   assert.deepEqual(RECIPE_BULLETS, ['Decision', 'Composition/material', 'Timing/action', 'Transition/sound', 'Application/review']);
+});
+
+test('system styles require Design system immediately after Recipe', () => {
+  assert.doesNotThrow(() => assertGuideHeadings('magazine-interview', GUIDE_HEADINGS));
+  assert.throws(() => assertGuideHeadings('magazine-interview', GUIDE_HEADINGS.filter(title => title !== 'Design system')), /Design system/);
+  for (let index = 0; index < GUIDE_HEADINGS.length; index++) {
+    if (index === GUIDE_HEADINGS.indexOf('Design system')) continue;
+    const misplaced = GUIDE_HEADINGS.filter(title => title !== 'Design system');
+    misplaced.splice(index, 0, 'Design system');
+    assert.throws(() => assertGuideHeadings('magazine-interview', misplaced), /sections, in order/);
+  }
+  assert.throws(() => assertGuideHeadings('magazine-interview', [...GUIDE_HEADINGS, 'Design system']), /sections, in order/);
+});
+
+test('styles without a design system must omit Design system', () => {
+  assert.doesNotThrow(() => assertGuideHeadings('section-deck', GUIDE_HEADINGS.filter(title => title !== 'Design system')));
+  assert.throws(() => assertGuideHeadings('section-deck', GUIDE_HEADINGS), /sections, in order/);
 });
 
 test('the generated style table is current and lists every registered style in registry order', async () => {
@@ -102,7 +119,7 @@ test('every registered style has a guide with the complete template', () => {
     const text = read(file);
     assert.ok(text.startsWith(`# ${meta.id}\n`), `${file} must start with "# ${meta.id}".`);
     const sections = sectionsOf(text);
-    assert.deepEqual(sections.map(section => section.title), GUIDE_HEADINGS, `${file} must have exactly these sections, in order.`);
+    assertGuideHeadings(meta.id, sections.map(section => section.title));
     for (const section of sections) assert.ok(section.body.length > 0, `${file}: the "${section.title}" section is empty.`);
     const recipe = sections.find(section => section.title === 'Recipe').body;
     assert.deepEqual([...recipe.matchAll(/^- \*\*([^:]+):\*\*/gm)].map(match => match[1]), RECIPE_BULLETS, `${file}: the Recipe needs the five decision bullets, in order.`);

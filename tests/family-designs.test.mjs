@@ -45,7 +45,7 @@ test('section-deck and the five redesigned styles register designs; unported sty
   assert.deepEqual(Object.keys(api.FAMILY_DESIGNS['section-deck']).sort(),['chat-thread','checklist','comment','comparison','count','figures','follow','intro','process','proof','proof-screen','statement']);
   assert.equal(api.familyDesign('grid-glide','proof'),null);
   for(const style of ['kinetic-paper','magazine-interview','liquid-glass','calligraphic-receipts','paper-collage'])assert.equal(typeof api.familyDesign(style,'proof'),'function');
-  for(const meta of api.STYLE_METAS)assert.deepEqual(meta.familiesOff,[]);
+  for(const meta of api.STYLE_METAS)assert.deepEqual(meta.familiesOff,meta.id==='magazine-interview'?[]:['compose'],`${meta.id}: only magazine-interview has a design system for composed pages`);
   setSsrFrame(90);
   assert.equal(api.render({...props,style:'grid-glide'}),api.shared(scene,'grid-glide'));
   assert.notEqual(api.render(props),api.shared(scene,'section-deck'));
@@ -146,7 +146,7 @@ test('registry load rejects unknown family opt-outs and overlap with owned scene
   const file=path.join(folder,'engine/src/styles/grid-glide/meta.ts');
   const original=await fs.readFile(file,'utf8');
   for(const [family,reason] of [['not-a-family','unknown family'],['glide-card','overlaps ownScenes']]) {
-    const changed=original.replace('familiesOff: []','familiesOff: ["'+family+'"]');
+    const changed=original.replace("familiesOff: ['compose']",'familiesOff: ["'+family+'"]');
     assert.notEqual(changed,original);await fs.writeFile(file,changed);
     const result=load();assert.notEqual(result.status,0);assert.ok(result.stderr.includes(reason),result.stderr);
   }

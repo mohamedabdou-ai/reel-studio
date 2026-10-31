@@ -9,6 +9,6 @@ export default defineStyle({
   pip: {allowed: false, basis: 'inference', evidence: 'Map labels and photo cards reserve the safe content area; a presenter window has not been verified on footage.'},
   defaults: {font: 'Tajawal', captionsPresentation: 'pill', clauseCaptions: true, staticCaptions: true},
   fit: {purpose: {explainer: 6, 'case-study': 6, story: 6}, tone: {editorial: 2, calm: 1}, semanticBeats: [...DOCUMENTARY_FAMILIES, 'route-stops']},
-  familiesOff: [],
+  familiesOff: ['compose'],
   ownScenes: DOCUMENTARY_FAMILIES, since: '4.0.0',
 });

@@ -28,10 +28,10 @@ const BLACK = "rgb(0, 0, 0)";
 
 const BLEED = 48;
 
-type Fitted = { fit: ReturnType<typeof fitTextLayout>; metrics: KeywordMetrics };
+export type Fitted = { fit: ReturnType<typeof fitTextLayout>; metrics: KeywordMetrics };
 
 
-const measureInk = (lines: readonly string[], fontFamily: string, fontSize: number, fontWeight: number | string): { ascent: number; descent: number } | null => {
+export const measureInk = (lines: readonly string[], fontFamily: string, fontSize: number, fontWeight: number | string): { ascent: number; descent: number } | null => {
   if (typeof document === "undefined") return null;
   const ctx = document.createElement("canvas").getContext("2d");
   if (!ctx) return null;
@@ -57,7 +57,7 @@ const sane = (ink: { ascent: number; descent: number } | null, fontSize: number)
 
 
 
-const fitKeyword = (text: string, theme: SceneTheme, box: ConceptBox): Fitted => {
+export const fitKeyword = (text: string, theme: SceneTheme, box: ConceptBox): Fitted => {
   const width = keywordMaxWidth(box);
   const budget = maxInkHeight(box);
   let size = KEYWORD_MAX_SIZE;

@@ -10,6 +10,7 @@ import {semanticSceneVariants} from '../../creative-kit/semantic/schema.ts';
 import {screenRecordingVariants} from '../../screen-recording/schema.ts';
 import {styleSceneVariants} from '../../styles/scenes.ts';
 import {proofScreenSceneVariants} from '../../creative-kit/proof-screen/schema.ts';
+import {composeSceneVariants} from '../../creative-kit/compose/schema.ts';
 import { getIn, type Path } from "../ops/paths.ts";
 import { explainEnglish } from "../ops/explain.ts";
 import {PROJECT_SCENES} from '../../project-scenes/registry.ts';
@@ -25,7 +26,7 @@ const FAMILY_DATA: Record<string, z.ZodType> = {
   comment: commentSchema,
   follow: followSchema,
 };
-for (const variant of [...kineticSceneVariants, ...librarySceneVariants,...semanticSceneVariants,...arabicTypeSceneVariants,...figuresSceneVariants,...chatThreadSceneVariants,...screenRecordingVariants,...styleSceneVariants,...proofScreenSceneVariants]) {
+for (const variant of [...kineticSceneVariants, ...librarySceneVariants,...semanticSceneVariants,...arabicTypeSceneVariants,...figuresSceneVariants,...chatThreadSceneVariants,...screenRecordingVariants,...styleSceneVariants,...proofScreenSceneVariants,...composeSceneVariants]) {
   const shape = (variant as any).shape;
   FAMILY_DATA[shape.family.value as string] = shape.data as z.ZodType;
 }
@@ -39,6 +40,10 @@ export const formFamilies = (): string[] => Object.keys(FAMILY_DATA);
 
 
 const LABELS: Record<string, string> = {
+  author: "اسم صاحب الرسالة",
+  body: "نص الكارت",
+  before: "الصورة قبل", after: "الصورة بعد",
+  paper:"لون الورق",section:"اسم القسم",arrangement:"ترتيب الصفحة",parts:"القطع",emphasis:"القطعة الأساسية",rollFrames:"مدة العدّ",staggerFrames:"فاصل الظهور",pressFrame:"لحظة الضغط",offsetFrames:"بعد كام فريم",revealFrames:"مدة الكشف",speaker:"المتحدث",
   question:'السؤال', rows:'البنود', outOf:'الدرجة الكاملة', verdict:'الحكم', verdictFrame:'فريم ظهور الحكم',
   claim:'كلمات الادعاء',keyIndex:'رقم الكلمة المميزة',diff:'الفرق',claimFrame:'بداية كتابة الادعاء',receiptFrame:'بداية طباعة الإيصال',totalFrame:'بداية عد المجموع',
   move: "حركة الكتابة", font: "خط الكتابة", backdrop: "الخلفية",

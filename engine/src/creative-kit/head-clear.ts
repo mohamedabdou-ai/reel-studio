@@ -68,7 +68,7 @@ export const LIFT_TRAVEL={land:36,stagger:36,quiet:12} as const;
 
 export const LIFT_RISE={land:0,stagger:2,quiet:0} as const;
 
-export const HEAD_GUIDE_FAMILIES:readonly string[]=Object.freeze(['statement','creator-cta','layered-speaker']);
+export const HEAD_GUIDE_FAMILIES:readonly string[]=Object.freeze(['statement','creator-cta','layered-speaker','kinetic-hook']);
 
 export type LiftMotion=keyof typeof LIFT_TRAVEL;
 

@@ -22,6 +22,6 @@ export default {
     onAccent: "#081321",
   },
   layout: { kind: "adapted", seam: 1080, caption: MAGAZINE_CAPTION.takeoverCenter, title: 148, body: 218, titleTop: 40 },
-  caption: {takeoverCenter:1345, design:'magazine'},
+  caption: {takeoverCenter:1345, design:'magazine', hideDuringTransitions:true},
   galleryCut: "none",
 } satisfies StyleThemeModule;

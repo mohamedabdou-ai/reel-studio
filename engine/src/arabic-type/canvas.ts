@@ -5,6 +5,7 @@ import React,{useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {continueRender,delayRender,cancelRender} from 'remotion';
 import {useProbe} from '../core/safe';
 import type {ArabicMoveProps,CanvasEnvironment,DrawMove} from './types';
+import {designWarning} from '../style-kit/design-safety';
 
 export const fontAt=(family:string,size:number)=>`${/Aref|Amiri/.test(family)?700:900} ${size}px "${family}", "Cairo"`;
 export const context=(canvas:HTMLCanvasElement)=>{
@@ -28,9 +29,12 @@ export function useTypeFonts(font:string,text:string):boolean {
   },[font,text,handle]);
   return ready;
 }
-export function fit(ctx:CanvasRenderingContext2D,text:string,font:string,start=64,max=226):number {
-  let size=start;ctx.font=fontAt(font,size);
-  while(size>1&&ctx.measureText(text).width>max){size--;ctx.font=fontAt(font,size);}return size;
+export function fit(ctx:CanvasRenderingContext2D,text:string,font:string,start=64,max=226,floor=1):number {
+  floor=Number.isFinite(floor)?Math.max(1,floor):1;
+  let size=Math.max(floor,start);ctx.font=fontAt(font,size);
+  while(size>floor&&ctx.measureText(text).width>max){size=Math.max(floor,size-1);ctx.font=fontAt(font,size);}
+  if(size===floor&&(start>floor||ctx.measureText(text).width>max))designWarning('arabic-type',{text,font,size,width:max,floor});
+  return size;
 }
 export function text(ctx:CanvasRenderingContext2D,value:string,x:number,y:number,font:string,size:number,color:string,stroke=false):void {
   ctx.font=fontAt(font,size);ctx.direction='rtl';ctx.textAlign='center';ctx.textBaseline='alphabetic';
@@ -64,13 +68,13 @@ export const MoveCanvas:React.FC<ArabicMoveProps & {move:string;draw:DrawMove}>=
     if(!ready||!ref.current)return;
     const ctx=context(ref.current);ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,props.width,props.height);
     ctx.setTransform(props.width/270,0,0,props.height/480,0,0);ctx.save();
-    const size=fit(ctx,props.text,props.font);
+    const size=fit(ctx,props.text,props.font,64,226,props.fitFloor);
     const env:CanvasEnvironment={...props,size,ink:props.ink??'#F5F2E8',probe:!!probe};
     // A resting real-text probe includes meaningful ink; decorations are skipped by each draw function.
     if(probe){
       text(ctx,props.text,135,255,props.font,size,env.ink);
-      if(props.to)text(ctx,props.to,135,255,props.font,fit(ctx,props.to,props.font),env.ink);
-      if(props.stamp)text(ctx,props.stamp,146,325,props.font,fit(ctx,props.stamp,props.font,26,62),env.ink);
+      if(props.to)text(ctx,props.to,135,255,props.font,fit(ctx,props.to,props.font,64,226,props.fitFloor),env.ink);
+      if(props.stamp)text(ctx,props.stamp,146,325,props.font,fit(ctx,props.stamp,props.font,26,62,props.fitFloor),env.ink);
     }
     else props.draw(ctx,props.frame/props.fps,env);
     ctx.restore();

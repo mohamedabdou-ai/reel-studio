@@ -127,3 +127,24 @@ export function transitionDrawingTail(t:TransitionEntry):number {
   const rule=TRANSITION_RULES[t.kind];
   return rule.tail===undefined?0:Math.max(rule.tail,rule.centred?Math.ceil(t.durationInFrames/2):t.durationInFrames);
 }
+
+/** Speech must clear a presenter revealed on either side of a scene transition.
+ * Use the real effect interval, including the pre-cut half of centred overlays. */
+export function sceneCaptionOpacity(transitions:readonly TransitionEntry[]|undefined,scenes:readonly TransitionScene[],frame:number):number{
+  let opacity=1;
+  for(const t of transitions??[]){
+    const centred=TRANSITION_RULES[t.kind].centred;
+    const start=t.atFrame-(centred?Math.floor(t.durationInFrames/2):0);
+    const end=t.atFrame+(centred?Math.ceil(t.durationInFrames/2):t.durationInFrames);
+    const during=scenes.filter(s=>s.fromFrame<end&&s.fromFrame+s.durationInFrames>start);
+    let covered=start;
+    const allTakeover=during.every(s=>{
+      if(s.layout!=='takeover'||s.fromFrame>covered)return false;
+      covered=Math.max(covered,s.fromFrame+s.durationInFrames);return true;
+    });
+    if(allTakeover&&covered>=end)continue;
+    if(frame>=start&&frame<end)return 0;
+    if(frame>=end&&frame<end+6)opacity=Math.min(opacity,(frame-end+1)/6);
+  }
+  return opacity;
+}

@@ -70,6 +70,21 @@ The entry exports one default React component. It receives `values`, `style`, `l
 
 Import `react` and `remotion` normally. Shared authoring modules are available through `@reel-studio/`, for example `@reel-studio/core/motion` and `@reel-studio/core/safe`. Use literal imports, including literal `import("./helper")`, so the bundle can verify and fingerprint every dependency. Variable module names, Node-only modules and imports outside the project, shared engine source or installed engine dependencies are rejected. Project scenes are locally authored code; inspect third-party code before using it.
 
+In a style with a design system (see the style guide's `## Design system`; today `magazine-interview`), every project scene the edit uses must import that system, directly or through a helper, or the build refuses it. Wrap the drawing in `SystemScope` and use the system's tokens, zones and parts, so the scene reads as the same magazine:
+
+```tsx
+import {SystemScope, NAVY, AR, HEAVY, magazineZones} from '@reel-studio/styles/magazine-interview/system';
+
+export default function Idea({values, layout, seam, durationInFrames}) {
+  const zone = magazineZones(seam)[layout];
+  return <SystemScope data={values} layout={layout} seam={seam} durationInFrames={durationInFrames}>
+    <div style={{position: 'absolute', left: zone.x, top: zone.y, width: zone.width, color: NAVY.ink, fontFamily: AR, fontWeight: HEAVY}}>{values.title}</div>
+  </SystemScope>;
+}
+```
+
+Project scenes do not receive the transcript words. Write each cue as a scene-local frame in the declared values, as the editable contract above requires.
+
 Keep meaningful content in the active platform safe zone. A split scene uses the supplied seam and head box to avoid the presenter. Use the established CanvasFill/SafeExempt/probe contract for decorative backgrounds, keep critical text visible in probes, and preserve source facts, natural faces and recorded words. The shipped sample demonstrates the contract with locally drawn SVG objects.
 
 ## Review changes and deliver

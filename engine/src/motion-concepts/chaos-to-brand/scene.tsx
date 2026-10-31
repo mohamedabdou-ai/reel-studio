@@ -14,7 +14,7 @@ import { parseViewBox, type ChaosMark, type ChaosToBrandData, type ViewBox } fro
 const RASTER_PX = 220;
 const RASTER_PAD = 24;
 
-type TextRaster = {
+export type TextRaster = {
   shape: MarkShape;
 
   ink: Rect;
@@ -36,7 +36,7 @@ const markFace = (text: string, theme: SceneTheme): { family: string; weight: nu
   return { family: arabic ? theme.ar : theme.display, weight: adapted ? (arabic && theme.ar === FAMILY.cairo ? 900 : 700) : 800 };
 };
 
-const rasterize = (text: string, theme: SceneTheme): TextRaster => {
+export const rasterize = (text: string, theme: SceneTheme): TextRaster => {
   assertFontsReady();
   const face = markFace(text, theme);
   const family = cssFamily(face.family);
@@ -78,11 +78,11 @@ const rasterize = (text: string, theme: SceneTheme): TextRaster => {
   return raster;
 };
 
-type Geometry =
+export type Geometry =
   | { kind: "path"; d: string; filled: boolean; shape: MarkShape; parts: readonly Subpath[]; vb: ViewBox }
   | { kind: "text"; text: string; shape: MarkShape; raster: TextRaster };
 
-const buildGeometry = (mark: ChaosMark, theme: SceneTheme): Geometry => {
+export const buildGeometry = (mark: ChaosMark, theme: SceneTheme): Geometry => {
   if (mark.kind === "text") {
     const raster = rasterize(mark.text, theme);
     return { kind: "text", text: mark.text, shape: raster.shape, raster };

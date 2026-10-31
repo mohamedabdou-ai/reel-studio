@@ -19,7 +19,8 @@ import {ownSceneStyle, familySupported, normalizeStyleId, STYLE_ALIASES} from '.
 import {editManifestSchema, editSceneSchema} from '../../engine/src/prepared-edit/schema.ts';
 import {compileEdit} from '../../engine/src/prepared-edit/timeline.ts';
 import {ROOT, atomicJson, checkedPath, ensureOutput, readJson, relativePath, slug, object, finite, digest, fileSnapshot, withFileLock} from './job-paths.mjs';
-import {inspectEditSource, importEditCaptions, loadEditProject, prepareEditProject} from './edit-project.mjs';
+import {inspectEditSource, importEditCaptions, loadEditProject} from './edit-project.mjs';
+import {prepareEditProject} from './prepare-report.mjs';
 import {attachPreparedMouth} from './mouth-table.mjs';
 import {CARTOON_FAMILIES, CARTOON_SOURCE_KIND} from '../../engine/src/styles/cartoon/scenes/math.ts';
 import {DOCUMENTARY_FAMILIES} from '../../engine/src/styles/documentary/scenes/schema.ts';
@@ -43,6 +44,7 @@ import {loadProjectScenePack} from './project-scenes.mjs';
 import {captionOnlySincePlan,editHash,nonCaptionEditHash,readEditSnapshot,untouchedSincePlan} from './edit-safety.mjs';
 import {createManifestStore} from './review-editor-jobs.mjs';
 import {projectSceneDataSchema,projectScenesMetadataSchema} from '../../engine/src/project-scenes/schema.ts';
+import {undrawnScenes} from '../../engine/src/styles/design-coverage.ts';
 
 const EMPHASIS_DEFAULTS = Object.freeze({holdSec: 1.5});
 import {emphasisPunch, composeTrack, toManifestKeys, PUNCH_KINDS, PUNCH_CAPS} from '../../engine/src/core/camera.ts';
@@ -57,7 +59,8 @@ export const EDITOR_TONES = Object.freeze(['energetic','calm','editorial']);
 export const EDITOR_SOUND_MODES = Object.freeze(['auto','recipes','none']);
 export const DEFAULT_SOUND_MODE='auto';
 import {proofScreenSceneVariants} from '../../engine/src/creative-kit/proof-screen/schema.ts';
-const KINETIC_SCHEMAS=Object.fromEntries([...kineticSceneVariants,...librarySceneVariants,...screenRecordingVariants,...semanticSceneVariants,...figuresSceneVariants,...chatThreadSceneVariants,...styleSceneVariants,...arabicTypeSceneVariants,...proofScreenSceneVariants].map(schema=>[schema.shape.family.value,schema]));
+import {composeSceneVariants} from '../../engine/src/creative-kit/compose/schema.ts';
+const KINETIC_SCHEMAS=Object.fromEntries([...kineticSceneVariants,...librarySceneVariants,...screenRecordingVariants,...semanticSceneVariants,...figuresSceneVariants,...chatThreadSceneVariants,...styleSceneVariants,...arabicTypeSceneVariants,...proofScreenSceneVariants,...composeSceneVariants].map(schema=>[schema.shape.family.value,schema]));
 export const BEAT_FAMILIES = Object.freeze({hook:'intro',intro:'intro',evidence:'proof',proof:'proof',steps:'process',process:'process',
   comparison:'comparison',comment:'comment','comment-cta':'comment',follow:'follow','follow-cta':'follow','project-scene':'project-scene',
   ...Object.fromEntries(Object.keys(KINETIC_SCHEMAS).map(family=>[family,family]))});
@@ -121,7 +124,7 @@ export function validateEditorBrief(raw) {
   raw = {...raw, ...(raw?.style === undefined ? {} : {style: normalizeStyleId(raw.style)}),
     ...(raw?.recentStyles === undefined ? {} : {recentStyles: Array.isArray(raw.recentStyles) ? raw.recentStyles.map(id=>normalizeStyleId(id)) : raw.recentStyles}),
     ...(raw?.preferences === undefined ? {} : {preferences: normalizePreferences(raw.preferences)})};
-  object(raw,['version','id','source','sourceKind','transcript','creator','brand','purpose','tone','style','styleAlias','preferences','fontFamily','digits','look','captionsGrouping','captionsPresentation','captionsSkin','captionsVisible','writingStyle','recentStyles','captionsReviewedBy','captionsMode','signoffFromSec','endAtSec','beats','footage','transitions','sound','sweeps','segments','emphasisFile','emphasisApprovedBy','projectScenePack','projectScenes','watermark'],'editor brief');
+  object(raw,['version','id','source','sourceKind','transcript','creator','brand','purpose','tone','style','styleAlias','preferences','fontFamily','digits','look','captionsGrouping','captionsPresentation','captionsSkin','captionsVisible','writingStyle','recentStyles','captionsReviewedBy','captionsMode','signoffFromSec','endAtSec','beats','footage','transitions','layoutTransitions','sound','sweeps','segments','emphasisFile','emphasisApprovedBy','projectScenePack','projectScenes','watermark'],'editor brief');
   if(raw.version!==1) throw new Error('Editor brief version must be 1.');
   slug(raw.id); const creator=normalizeCreatorProfile(raw.creator);
   if(raw.projectScenePack!==undefined){relativePath(raw.projectScenePack);if(!raw.projectScenePack.startsWith(`Projects/${raw.id}/`))throw new Error('Project scene pack must belong to its project');}
@@ -185,6 +188,7 @@ export function validateEditorBrief(raw) {
   return {...raw,creator,brand,beats,
     ...(raw.footage===undefined?{}:{footage:editManifestSchema.shape.footage.parse(raw.footage)}),
     ...(raw.transitions===undefined?{}:{transitions:editManifestSchema.shape.transitions.parse(raw.transitions)}),
+    ...(raw.layoutTransitions===undefined?{}:{layoutTransitions:editManifestSchema.shape.layoutTransitions.parse(raw.layoutTransitions)}),
     ...(raw.captionsMode===undefined?{}:{captionsMode:editManifestSchema.shape.captions.shape.mode.parse(raw.captionsMode)})};
 }
 
@@ -295,12 +299,13 @@ export function buildEditorPlan(raw,source,captions,{delivery=false,emphasis}={}
       ...(brief.captionsMode===undefined?{}:{mode:brief.captionsMode}),
       ...(brief.captionsReviewedBy?{reviewer:brief.captionsReviewedBy}:{}),words},scenes:branded.scenes,sounds:[],camera,
     ...(signoffFromFrame===undefined?{}:{signoffFromFrame}),...(noPresenter(brief.sourceKind)?{presenter:false}:{}),
-    ...(brief.footage===undefined?{}:{footage:brief.footage}),...(brief.transitions===undefined?{}:{transitions:brief.transitions})});
+    ...(brief.footage===undefined?{}:{footage:brief.footage}),...(brief.transitions===undefined?{}:{transitions:brief.transitions}),
+    ...(brief.layoutTransitions===undefined?{}:{layoutTransitions:brief.layoutTransitions})});
   if(delivery) assertDeliveryReady(manifest);
   const decision={version:1,method:selection.method,contentPurpose:brief.purpose,tone:brief.tone,selection,
     preferences:{...preferences,...(preferences.writingStyle?{writingGuide:WRITING_GUIDES[preferences.writingStyle]}:{})},
     claims:'Supplied beat data only; transcript words are not used to invent claims.',
-    authoredOverrides:{footage:manifest.footage??null,transitions:manifest.transitions??[]},
+    authoredOverrides:{footage:manifest.footage??null,transitions:manifest.transitions??[],...(manifest.layoutTransitions?{layoutTransitions:manifest.layoutTransitions}:{})},
     timeline:{segments:manifest.segments,durationInFrames:editFrames,endAtSec:brief.endAtSec??null},
     source:{path:source.path,sha256:source.sha256,frames:source.totalFrames,fps:source.fps},
     transcript:{path:brief.transcript,status:manifest.captions.status,reviewer:manifest.captions.reviewer??null,words:words.length,mode:manifest.captions.mode??null},
@@ -546,9 +551,10 @@ export async function planEditorBrief(briefPath,{out,delivery=false,replace=fals
     await placeBriefSounds(plan,brief,{totalFrames:info.source.totalFrames});
 
     const staging=`${base}/import-edit.json`;
-    // The staging copy only turns the transcript into captions. Cartoon scenes are word-anchored and cannot be checked before the
-    // words exist, so they stay out of it; the final manifest below is validated whole, with the imported words.
-    await atomicJson(staging,{...plan.manifest,purpose:'test',scenes:plan.manifest.scenes.filter(scene=>!CARTOON_FAMILIES.includes(scene.family)),captions:{status:'draft',words:[]}},opts);
+    // buildEditorPlan already imported and validated these words. Keep the scene
+    // starts and word anchors intact so authored graphics/layout transitions can
+    // validate during caption import as well as in the final manifest.
+    await atomicJson(staging,{...plan.manifest,purpose:'test',captions:{status:'draft',words:plan.manifest.captions.words}},opts);
     await importEditCaptions(staging,brief.transcript);
     const imported=await readJson(staging);
     let manifest=editManifestSchema.parse({...plan.manifest,captions:{...imported.captions,
@@ -691,7 +697,7 @@ export async function validateEditorInput(file,{delivery=false}={}) {
   if(delivery) assertDeliveryReady(data);
   const {manifest,compiled}=await loadEditProject(file);
   return {ok:true,kind:'edit',id:manifest.id,purpose:manifest.purpose,style:manifest.style,captionStatus:manifest.captions.status,
-    scenes:manifest.scenes.length,frames:compiled.durationInFrames,captionIssues:compiled.issues,deliveryReady:delivery};
+    scenes:manifest.scenes.length,frames:compiled.durationInFrames,captionIssues:compiled.issues,undrawnScenes:undrawnScenes(manifest),deliveryReady:delivery};
 }
 
 export async function prepareEditorManifest(file,{noProxy=false,onProgress=()=>{}}={}) {

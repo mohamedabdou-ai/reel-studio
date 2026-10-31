@@ -13,12 +13,13 @@ export const decryptState=(value:string,t:number)=>{
   }).join('');
   return {output,ratio:settled/Math.max(1,a.filter(ch=>!/\s/.test(ch)).length),last:.35+.16*(a.length-1)};
 };
-export const decryptLayout=(ctx:CanvasRenderingContext2D,value:string,font:string,start:number,t:number)=>{
-  const state=decryptState(value,t);return {...state,size:fit(ctx,state.output,font,start)};
+export const decryptLayout=(ctx:CanvasRenderingContext2D,value:string,font:string,start:number,t:number,floor=1)=>{
+  const state=decryptState(value,t);return {...state,size:fit(ctx,state.output,font,start,226,floor)};
 };
 const draw:DrawMove=(ctx,t,p)=>{
-  const state=decryptLayout(ctx,p.text,p.font,p.size,t),end=p.durationInFrames/p.fps,exit=P(t,end-.4,.3);
-  ctx.globalAlpha=1-exit;ctx.save();ctx.translate(135,250);ctx.scale(1+.04*Math.sin(Math.PI*P(t,state.last,.3)),1);
+  const state=decryptLayout(ctx,p.text,p.font,p.size,t,p.fitFloor),end=p.durationInFrames/p.fps,exit=P(t,end-.4,.3);
+  ctx.globalAlpha=1-exit;ctx.save();ctx.translate(135,250);
+  const pulse=p.look?.pulse??.04;if(pulse!==0)ctx.scale(1+pulse*Math.sin(Math.PI*P(t,state.last,.3)),1);
   text(ctx,state.output,0,0,p.font,state.size,t>=state.last?p.accent:p.ink);ctx.restore();
   ctx.fillStyle=p.ink;ctx.globalAlpha=(1-exit)*.25;ctx.fillRect(60,285,150,1.5);ctx.globalAlpha=1-exit;
   ctx.fillStyle=p.accent;ctx.fillRect(210-150*state.ratio,285,150*state.ratio,1.5);
