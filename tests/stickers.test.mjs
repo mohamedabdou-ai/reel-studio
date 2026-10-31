@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {existsSync, readFileSync, statSync} from 'node:fs';
+import {existsSync, readFileSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {bundleEngine, setSsrFps, setSsrFrame} from './helpers/engine-bundle.mjs';
@@ -12,6 +12,15 @@ const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const read = (relative) => readFileSync(path.join(ROOT, relative), 'utf8');
 const bytesOf = (list) => list.reduce((sum, item) => sum + item.bytes, 0);
 const where = (predicate) => STICKERS.filter(predicate);
+
+// A Windows checkout with core.autocrlf writes these text files with CRLF; the table stores the upstream LF size.
+const lfByteLength = (bytes) => {
+  let size = bytes.length;
+  for (let i = 1; i < bytes.length; i++) {
+    if (bytes[i - 1] === 13 && bytes[i] === 10) size -= 1;
+  }
+  return size;
+};
 
 test('the curated set respects the owner counts and the 4 MB budget', () => {
   const icons = where((s) => s.kind === 'lottie');
@@ -93,7 +102,7 @@ test('files already put in place match the table: size, and Lottie shape (skippe
     const file = path.join(ROOT, 'engine', 'public', ...stickerFile(sticker).split('/'));
     if (!existsSync(file)) continue;
     present += 1;
-    assert.equal(statSync(file).size, sticker.bytes, `${sticker.id}: ${stickerFile(sticker)} keeps the upstream size`);
+    assert.equal(lfByteLength(readFileSync(file)), sticker.bytes, `${sticker.id}: ${stickerFile(sticker)} keeps the upstream size`);
     if (sticker.format === 'lottie') {
       const data = normalizeLottie(JSON.parse(readFileSync(file, 'utf8')), stickerFile(sticker));
       assert.ok(data.op > 0 && data.w > 0 && data.h > 0 && data.fr > 0, sticker.id);
