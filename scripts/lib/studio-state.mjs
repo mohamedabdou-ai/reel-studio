@@ -1,5 +1,6 @@
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
+import {setupFailureHint} from './setup-failure.mjs';
 
 export const STEP_LABELS = Object.freeze({
   folders: 'بجهّز فولدرات الشغل',
@@ -63,14 +64,14 @@ export function describeSetup(state, {alive}) {
   const index = state.step ? STEP_IDS.indexOf(state.step) + 1 : 0;
   const label = state.step ? STEP_LABELS[state.step] ?? state.step : 'البداية';
   const done = Object.fromEntries(STEP_IDS.map((id) => [id, state.steps?.[id]?.ok === true]));
-  const json = {ok: true, status: state.status, step: state.step ?? null, index, total, done, error: state.error ?? null, log: LOG_FILE, next: null};
+  const json = {ok: true, status: state.status, step: state.step ?? null, index, total, done, error: state.error ?? null, reason: state.reason ?? null, log: LOG_FILE, next: null};
   if (state.status === 'done' && STEP_IDS.every((id) => done[id])) {
 
     const next = state.next ?? DOCTOR_NEXT;
     const line = next.endsWith('--quick') ? 'التجهيز خلص ✓ — الخطوة الجاية: الفحص السريع (doctor --quick).' : 'التجهيز خلص ✓ — الخطوة الجاية: فيديو التجربة (doctor).';
     return {line, json: {...json, next}};
   }
-  if (state.status === 'failed') return {line: `التجهيز وقف عند «${label}»: ${state.error}. شغّل setup تاني وهيكمّل من مكانه.`, json: {...json, ok: false, next: 'node scripts/studio.mjs setup'}};
+  if (state.status === 'failed') return {line: `التجهيز وقف عند «${label}»: ${setupFailureHint(state)}`, json: {...json, ok: false, next: 'node scripts/studio.mjs setup'}};
   // A state an older studio left done is incomplete while a newer required step is not done.
   if (state.status === 'incomplete' || state.status === 'done') return {line: 'خلصت الخطوات اللي اتطلبت، بس لسه فيه خطوات ناقصة — شغّل setup من غير --steps.', json: {...json, status: 'incomplete', next: 'node scripts/studio.mjs setup'}};
   if (state.status === 'running' && alive) {

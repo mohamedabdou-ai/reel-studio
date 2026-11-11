@@ -51,6 +51,23 @@ The user pasted: «نزّل Reel Studio في الفولدر ده من https://gi
 
 ## Troubleshooting
 
-Keep the setup server/worker alive and report changed stages rather than repeatedly narrating unchanged polls. Resume a stalled step once; if the host stops its background worker again, use the documented foreground fallback. A failed tool/model/browser stage needs its actual error resolved before calling the studio ready. If the transcription step reports the missing Microsoft Visual C++ Redistributable, ask the user to install Microsoft's official x64 package from https://aka.ms/vs/17/release/vc_redist.x64.exe themselves (it is a system install that needs their approval), then run `node scripts/studio.mjs setup` again. Use `node scripts/studio.mjs doctor --quick` for non-rendering checks; `doctor` checks a real test export.
+Keep the setup server/worker alive and report changed stages rather than repeatedly narrating unchanged polls. Resume a stalled step once; if the host stops its background worker again, use the documented foreground fallback. A failed stage needs its actual error resolved before calling the studio ready. The status JSON names the cause in `reason`; the full output is in `state/setup.log`:
+
+| `reason` | What to do |
+|---|---|
+| `network` | Rerun setup; finished bytes are kept and the download resumes. If it repeats, check the connection, VPN or proxy. |
+| `timeout` | Rerun setup; it resumes. A very slow line may need a quieter time. |
+| `disk-full` | Tell the user how much space the line names; free space or move the studio folder to another drive, then rerun. |
+| `file-locked` | Antivirus or OneDrive is holding a file: ask the user to exclude the studio folder from scanning or stop syncing it, then rerun. |
+| `path` | Follow the line: move the studio to a short local path with no `package.json` above it, and no junctions inside `engine`. |
+| `hash` | A proxy or security tool may have changed the download: rerun once; if it repeats, report the line and the log tail. |
+| `unavailable` | The pinned file is missing at its source: try later; if it persists, report it so the pin can be updated. |
+| `missing-runtime` | Ask the user to install Microsoft's official x64 Visual C++ Redistributable from https://aka.ms/vs/17/release/vc_redist.x64.exe themselves (a system install that needs their approval), then rerun. |
+| `extract` | Rerun once; if it repeats, read the 7zr or ffmpeg lines in `state/setup.log` and report them. |
+| `unknown` | Read `state/setup.log` and resolve the actual error. |
+
+Rerun means `node scripts/studio.mjs setup`.
+
+Use `node scripts/studio.mjs doctor --quick` for non-rendering checks; `doctor` checks a real test export.
 
 During normal editing keep tracked studio files intact so updates remain safe. Requested studio maintenance is a separate authorized task. Never run global installers or delete state while a setup worker is running. Do not replace dependencies ad hoc with `npm install`; use the pinned setup/update workflow.

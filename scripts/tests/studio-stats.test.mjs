@@ -467,3 +467,26 @@ test('unknown event names send nothing and create no statistics state', async t 
   assert.equal(events.length, 0);
   await assert.rejects(fs.stat(path.join(root, 'state/studio-stats.json')), {code: 'ENOENT'});
 });
+
+test('a stopped setup sends its step and its reason word, once per step and day', async t => {
+  const {root, events, options} = await fixture(t);
+  const record = (step, reason) => recordStudioEvent(root, 'setup_failed', {...options, detail: {step, reason}});
+  await record('ffmpeg', 'extract'); await record('ffmpeg', 'network'); await record('packages', 'C:\\Users\\me'); await record('browser', undefined);
+  assert.deepEqual(events.map(row => [row.value.step, row.value.reason]), [['ffmpeg', 'extract'], ['packages', undefined], ['browser', undefined]]);
+  assert.deepEqual(Object.keys(events[0].value).sort(), ['event', 'installationId', 'occurredAt', 'reason', 'schema', 'step', 'version']);
+  assert.deepEqual(Object.keys(events[1].value).sort(), ['event', 'installationId', 'occurredAt', 'schema', 'step', 'version']);
+});
+
+test('queued stop events keep a listed reason and drop an unlisted one', async t => {
+  let offline = true;
+  const {root, events, options} = await fixture(t, (_req, res) => {res.writeHead(offline ? 503 : 202); res.end('{}');});
+  await recordStudioEvent(root, 'installed', options);
+  const file = path.join(root, 'state/studio-stats.json');
+  const state = JSON.parse(await fs.readFile(file, 'utf8'));
+  const base = {schema: 1, installationId: state.installationId, version: '2.3.0', occurredAt: '2026-10-13T07:00:00.000Z', event: 'setup_failed'};
+  state.outbox.push({...base, step: 'fonts', reason: 'nope'}, {...base, step: 'models', reason: 'network'}, {...base, step: 'browser'}, {...base, reason: 'network'});
+  await fs.writeFile(file, JSON.stringify(state));
+  offline = false; events.length = 0;
+  await flushStudioEvents(root, options);
+  assert.deepEqual(events.map(row => [row.value.step ?? row.value.event, row.value.reason]), [['installed', undefined], ['models', 'network'], ['browser', undefined]]);
+});

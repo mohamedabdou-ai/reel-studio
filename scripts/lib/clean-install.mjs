@@ -82,6 +82,8 @@ export async function seedPinnedArtifacts(cacheRoot, target, lock) {
       copied.push(`state/cache/downloads/${archive}`); break;
     }
   }
+  const sevenZip = `state/cache/tools/7zr-${lock.ffmpeg.extractor.version}.exe`;
+  if (await copyVerified(at(cacheRoot, sevenZip), at(target, sevenZip), lock.ffmpeg.extractor.sha256)) copied.push(sevenZip);
   const npmCache = at(cacheRoot, 'state/cache/npm/_cacache');
   if (await fs.stat(npmCache).catch(() => null)) {
     await assertNoLinks(npmCache);

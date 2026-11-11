@@ -32,6 +32,11 @@ export function validateLock(lock) {
     checkDownload(problems, name, lock[name]);
     checkSource(problems, name, lock[name]);
   }
+  const extractor = lock.ffmpeg?.extractor;
+  if (extractor?.name !== '7zr') problems.push('ffmpeg.extractor.name must be 7zr');
+  if (!text(extractor?.version)) problems.push('ffmpeg.extractor.version is missing');
+  checkDownload(problems, 'ffmpeg.extractor', extractor);
+  checkSource(problems, 'ffmpeg.extractor', extractor);
   const browser = lock.browser;
   if (!text(browser?.version)) problems.push('browser.version is missing');
   if (!SEMVER.test(browser?.remotion ?? '')) problems.push('browser.remotion must be the Remotion version');

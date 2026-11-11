@@ -5,6 +5,22 @@ import path from 'node:path';
 import {resolveNpmCommand} from './npm-command.mjs';
 import {downloadVerified, sha256File} from './studio-download.mjs';
 import {checkEngineDependencies, dependencyProblem, moduleDirectoryProblem} from './engine-dependencies.mjs';
+import {classifySetupError} from './setup-failure.mjs';
+import {assertFreeSpace} from './setup-space.mjs';
+
+export const PACKAGES_TIMEOUT_MS = 60 * 60 * 1000;
+export const BROWSER_RETRY_DELAYS_MS = Object.freeze([5000, 20000, 60000]);
+export const NPM_RETRY_ARGS = Object.freeze(['--fetch-retries=5', '--fetch-retry-mintimeout=10000', '--fetch-retry-maxtimeout=120000']);
+const NPM_RERUN_REASONS = Object.freeze(['network', 'file-locked', 'timeout']);
+// Step sizes are rounded up, and each file also takes one cluster (see setup-space.mjs).
+export const STEP_NEEDS = Object.freeze({
+  packages: {bytes: 900_000_000, files: 28_000},
+  browser: {bytes: 750_000_000, files: 600},
+  ffmpeg: {bytes: 700_000_000, files: 4},
+  transcription: {bytes: 1_600_000_000, files: 30},
+});
+const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+const tagged = (message, reason) => Object.assign(new Error(message), {reason});
 
 
 
@@ -33,22 +49,28 @@ export function browserHomeProblem(root) {
   return `فيه package.json في ${owner} فوق فولدر الاستوديو، فالرندر هيدوّر على المتصفح برّه الفولدر. انقل فولدر الاستوديو لمكان مفيهوش package.json فوقه (مثلًا D:\\ReelStudio) وبعدين شغّل setup تاني.`;
 }
 
-export function runProcess(command, args, {cwd, timeoutMs = STEP_TIMEOUT_MS}) {
+export function runProcess(command, args, {cwd, timeoutMs = STEP_TIMEOUT_MS, spawnImpl = spawn}) {
   return new Promise((resolve, reject) => {
     const name = path.basename(args[0] === '-e' ? command : args[0] ?? command);
-    const child = spawn(command, args, {cwd, stdio: 'inherit', windowsHide: true, shell: false, env: process.env});
+    const child = spawnImpl(command, args, {cwd, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true, shell: false, env: process.env});
+    // Output still reaches the setup log through this process's own streams; the last 4 KB also explain a failure.
+    let tail = '';
+    const keep = (chunk, stream) => { stream.write(chunk); tail = (tail + chunk.toString('utf8')).slice(-4096); };
+    child.stdout.on('data', chunk => keep(chunk, process.stdout));
+    child.stderr.on('data', chunk => keep(chunk, process.stderr));
+    const fail = error => reject(Object.assign(error, {outputTail: tail}));
     const timer = setTimeout(() => {
       child.kill();
-      reject(new Error(`${name} did not finish within ${Math.round(timeoutMs / 1000)} s and was stopped`));
+      fail(Object.assign(new Error(`${name} did not finish within ${Math.round(timeoutMs / 1000)} s and was stopped`), {reason: 'timeout'}));
     }, timeoutMs);
     child.once('error', (error) => {
       clearTimeout(timer);
-      reject(error);
+      fail(error);
     });
     child.once('close', (code) => {
       clearTimeout(timer);
       if (code === 0) resolve();
-      else reject(new Error(`${name} exited with code ${code}`));
+      else fail(new Error(`${name} exited with code ${code}`));
     });
   });
 }
@@ -68,16 +90,16 @@ export async function linkTree(source, target) {
   }
 }
 
-export function setupSteps(root, lock) {
+export function setupSteps(root, lock, {run = runProcess, sleep = wait, statfs, installFfmpeg = async (...args) => (await import('./ffmpeg-install.mjs')).installPinnedFfmpeg(...args)} = {}) {
   const at = (relative) => path.join(root, ...relative.split('/'));
-  const ffmpegArchive = at(`state/cache/downloads/ffmpeg-${lock.ffmpeg.version}-full_build.7z`);
+  const space = (id) => assertFreeSpace(root, STEP_NEEDS[id], statfs ? {statfs} : {});
   const engine = at('engine');
   const browserOk = async (home) => (await sha256File(at(`${BROWSER_HOMES[home]}/${lock.browser.exe}`))) === lock.browser.exeSha256;
   const browserDir = (home) => at(`${BROWSER_HOMES[home]}/chrome-headless-shell`);
   const writeOnce = (file, text) => fs.writeFile(file, text, {encoding: 'utf8', flag: 'wx'}).catch((error) => { if (error.code !== 'EEXIST') throw error; });
   const assertPackagesLocal = async () => {
     const problem = await moduleDirectoryProblem(root);
-    if (problem) throw new Error(problem.error);
+    if (problem) throw tagged(problem.error, 'path');
   };
   return [
     {
@@ -99,9 +121,19 @@ export function setupSteps(root, lock) {
       verify: async () => (await exists(at('engine/node_modules/.package-lock.json'))) && (await checkEngineDependencies(root)).ok,
       run: async (log) => {
         await assertPackagesLocal();
-        const npm = resolveNpmCommand(['ci', '--ignore-scripts', '--no-audit', '--no-fund']);
+        await space('packages');
+        const install = (extra = []) => {
+          const npm = resolveNpmCommand(['ci', '--ignore-scripts', '--no-audit', '--no-fund', ...NPM_RETRY_ARGS, ...extra]);
+          return run(npm.command, npm.args, {cwd: engine, timeoutMs: PACKAGES_TIMEOUT_MS});
+        };
         log('npm ci --ignore-scripts (engine/)');
-        await runProcess(npm.command, npm.args, {cwd: engine});
+        try {
+          await install();
+        } catch (error) {
+          if (!NPM_RERUN_REASONS.includes(classifySetupError(error))) throw error;
+          log(`npm ci failed (${error.message}); running it once more from the local package cache`);
+          await install(['--prefer-offline']);
+        }
         const checked = await checkEngineDependencies(root);
         if (!checked.ok) throw new Error(dependencyProblem(checked));
       },
@@ -112,18 +144,29 @@ export function setupSteps(root, lock) {
       verify: async () => browserHomeProblem(root) === null && (await browserOk('engine')) && (await browserOk('root')),
       run: async (log) => {
         const problem = browserHomeProblem(root);
-        if (problem) throw new Error(problem);
+        if (problem) throw Object.assign(new Error(problem), {reason: 'path', hint: problem});
         if (!(await browserOk('engine')) && (await browserOk('root'))) {
           log('browser: reusing the verified copy in .remotion/');
           await linkTree(browserDir('root'), browserDir('engine'));
         }
         if (!(await browserOk('engine'))) {
-          log('browser: Remotion ensureBrowser in engine/');
-          await runProcess(process.execPath, ['-e', ENSURE_BROWSER], {cwd: engine});
+          await space('browser');
+          for (let failures = 0; ; failures += 1) {
+            log('browser: Remotion ensureBrowser in engine/');
+            try {
+              await run(process.execPath, ['-e', ENSURE_BROWSER], {cwd: engine});
+              break;
+            } catch (error) {
+              if (failures >= BROWSER_RETRY_DELAYS_MS.length) throw error;
+              const delay = BROWSER_RETRY_DELAYS_MS[failures];
+              log(`browser: download failed (${error.message}); retry ${failures + 1} of ${BROWSER_RETRY_DELAYS_MS.length} in ${delay / 1000} s`);
+              await sleep(delay);
+            }
+          }
         }
         if (!(await browserOk('engine'))) {
           await fs.rm(browserDir('engine'), {recursive: true, force: true});
-          throw new Error(`The render browser does not match its pinned SHA-256 (${lock.browser.version}); it was removed.`);
+          throw tagged(`The render browser does not match its pinned SHA-256 (${lock.browser.version}); it was removed.`, 'hash');
         }
         if (!(await browserOk('root'))) await linkTree(browserDir('engine'), browserDir('root'));
       },
@@ -137,12 +180,8 @@ export function setupSteps(root, lock) {
           && (await exists(at('Tools/bin/ffmpeg.exe'))) && (await exists(at('Tools/bin/ffprobe.exe')));
       },
       run: async (log) => {
-
-
-        await downloadVerified({url: lock.ffmpeg.url, sha256: lock.ffmpeg.sha256, bytes: lock.ffmpeg.bytes, target: ffmpegArchive});
-        log('ffmpeg: archive verified, extracting');
-        await runProcess(process.execPath, [at('scripts/install-ffmpeg.mjs')], {cwd: root});
-        await fs.rm(ffmpegArchive, {force: true});
+        await space('ffmpeg');
+        await installFfmpeg(lock.ffmpeg, {root, log});
       },
     },
     {
@@ -154,7 +193,7 @@ export function setupSteps(root, lock) {
         return true;
       },
       run: async (log) => {
-        for (const font of lock.fonts) await downloadVerified({url: font.url, sha256: font.sha256, bytes: font.bytes, target: at(`engine/public/fonts/${font.file}`)});
+        for (const font of lock.fonts) await downloadVerified({url: font.url, sha256: font.sha256, bytes: font.bytes, target: at(`engine/public/fonts/${font.file}`), log});
         const manifest = lock.fonts.map(({url, ...entry}) => ({...entry, sourceUrl: url})).sort((a, b) => a.file.localeCompare(b.file, 'en'));
         await fs.writeFile(at('engine/public/fonts/manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
         log(`fonts: ${lock.fonts.length} files verified`);
@@ -167,8 +206,8 @@ export function setupSteps(root, lock) {
         for (const model of lock.models) if ((await sha256File(at(model.path))) !== model.sha256) return false;
         return true;
       },
-      run: async () => {
-        for (const model of lock.models) await downloadVerified({url: model.url, sha256: model.sha256, bytes: model.bytes, target: at(model.path)});
+      run: async (log) => {
+        for (const model of lock.models) await downloadVerified({url: model.url, sha256: model.sha256, bytes: model.bytes, target: at(model.path), log});
       },
     },
     {
@@ -176,7 +215,7 @@ export function setupSteps(root, lock) {
       id: 'transcription',
       key: async () => hashOf(JSON.stringify(lock.transcription)),
       verify: async () => (await import('./transcription-install.mjs')).verifyPinnedWhisper(lock.transcription, {root}),
-      run: async (log) => { await (await import('./transcription-install.mjs')).installPinnedWhisper(lock.transcription, {root, log}); },
+      run: async (log) => { await space('transcription'); await (await import('./transcription-install.mjs')).installPinnedWhisper(lock.transcription, {root, log}); },
     },
   ];
 }
@@ -184,7 +223,7 @@ export function setupSteps(root, lock) {
 export async function runSetup({steps, state, save, log = () => {}, requiredIds = steps.map((step) => step.id)}) {
   const now = () => new Date().toISOString();
   state.steps ??= {};
-  Object.assign(state, {status: 'running', error: null});
+  Object.assign(state, {status: 'running', error: null, reason: null, hint: null});
   await save(state);
   for (const step of steps) {
     state.step = step.id;
@@ -201,10 +240,13 @@ export async function runSetup({steps, state, save, log = () => {}, requiredIds 
       await step.run(log);
       if (!(await step.verify())) throw new Error(`${step.id} finished but its result could not be verified`);
     } catch (error) {
-      state.steps[step.id] = {ok: false, key, at: now(), error: error.message};
-      Object.assign(state, {status: 'failed', error: error.message});
+      const reason = classifySetupError(error);
+      const message = String(error?.message ?? error).split(/\r?\n/)[0].slice(0, 300);
+      const hint = typeof error?.hint === 'string' && error.hint ? error.hint : null;
+      state.steps[step.id] = {ok: false, key, at: now(), error: message, reason};
+      Object.assign(state, {status: 'failed', error: message, reason, hint});
       await save(state);
-      log(`${step.id}: failed: ${error.message}`);
+      log(`${step.id}: failed (${reason}): ${error?.message ?? error}`);
       return state;
     }
     state.steps[step.id] = {ok: true, key, at: now()};

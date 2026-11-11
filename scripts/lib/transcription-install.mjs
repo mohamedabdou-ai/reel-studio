@@ -183,14 +183,14 @@ export async function installPinnedWhisper(pins, { root = ROOT, download = downl
   const paths = pinnedWhisperPaths(pins, root);
   if (!fs.existsSync(path.join(paths.directory, 'install.json'))) {
     log(`transcription: whisper.cpp ${runtime.release}`);
-    await download({ url: runtime.url, sha256: runtime.sha256, bytes: runtime.bytes, target: paths.archive });
+    await download({ url: runtime.url, sha256: runtime.sha256, bytes: runtime.bytes, target: paths.archive, log });
     await extract({ archive: paths.archive, directory: paths.directory, record: { releaseTag: runtime.release, releaseUrl: `https://github.com/ggml-org/whisper.cpp/releases/tag/${runtime.release}`, releaseCommit: null, archiveSha256: runtime.sha256, archiveUrl: runtime.url } });
   }
   const installed = await inspect(paths.directory);
   const saved = JSON.parse(await fsp.readFile(path.join(paths.directory, 'install.json'), 'utf8'));
   log(`transcription: ${model.name} model (${Math.round(model.bytes / 1e6)} MB) and VAD`);
-  const modelResult = await download({ url: model.url, sha256: model.sha256, bytes: model.bytes, target: paths.model });
-  const vadResult = await download({ url: vad.url, sha256: vad.sha256, bytes: vad.bytes, target: paths.vad });
+  const modelResult = await download({ url: model.url, sha256: model.sha256, bytes: model.bytes, target: paths.model, log });
+  const vadResult = await download({ url: vad.url, sha256: vad.sha256, bytes: vad.bytes, target: paths.vad, log });
   const previous = await fsp.readFile(paths.runtimeFile, 'utf8').then(JSON.parse).catch(() => null);
   const evidence = previous && JSON.stringify(previous.binaryFiles) === JSON.stringify(installed.binaryFiles) ? previous.capabilities : {};
   const record = {

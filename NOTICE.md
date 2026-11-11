@@ -9,6 +9,7 @@ Reel Studio's own code is released under the MIT License (see `LICENSE`). The to
 | Node.js (portable, only when no suitable Node is installed) | 22.20.0 | MIT | https://nodejs.org |
 | Git for Windows MinGit (only when Git is missing) | 2.55.0.5 | GPL-2.0 | https://gitforwindows.org |
 | FFmpeg full build by gyan.dev | 8.1.2 | GPL-3.0 | https://www.gyan.dev/ffmpeg/builds/ |
+| 7-Zip `7zr.exe` (unpacks the FFmpeg archive during setup) | 26.06 | LGPL-2.1-or-later | https://www.7-zip.org/ |
 | Chrome Headless Shell (used by Remotion to render) | 149.0.7790.0 | BSD-3-Clause (Chromium) and bundled third-party licenses | https://developer.chrome.com/blog/chrome-headless-shell |
 | MediaPipe face detector model `blazeface-short-range-float16-v1` | - | Apache-2.0 | https://ai.google.dev/edge/mediapipe/solutions/vision/face_detector |
 | MediaPipe face detector model `blazeface-full-range-float16-v1` | - | Apache-2.0 | https://ai.google.dev/edge/mediapipe/solutions/vision/face_detector |

@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "edition": "4.0.1",
+  "edition": "4.0.2",
   "engine": "1.5.0",
   "node": {
     "version": "22.20.0",
@@ -24,7 +24,16 @@
     "sha256": "0fff188997a499b5382e0f66e845d4556c48c54f0113ebed4853d556dbdd7059",
     "bytes": 166721853,
     "license": "GPL-3.0",
-    "homepage": "https://www.gyan.dev/ffmpeg/builds/"
+    "homepage": "https://www.gyan.dev/ffmpeg/builds/",
+    "extractor": {
+      "name": "7zr",
+      "version": "26.06",
+      "url": "https://github.com/ip7z/7zip/releases/download/26.06/7zr.exe",
+      "sha256": "e80db2dad715a6c5adabe292d31ed54e11f4e9b99ca349827b50573b175891bc",
+      "bytes": 600064,
+      "license": "LGPL-2.1-or-later",
+      "homepage": "https://www.7-zip.org/"
+    }
   },
   "browser": {
     "version": "149.0.7790.0",

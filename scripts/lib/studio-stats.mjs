@@ -1,7 +1,8 @@
 // Counts successful installs (a new version counts once), daily use per version, finished videos and stopped installs so the
 // maintainer can see that updates arrive and work. Each event carries only schema, installationId (a random UUID created here,
-// not derived from the user or the machine), event, version and occurredAt. A stopped install adds `step` (one of STEP_IDS) and a
-// finished video adds `style` (a style id, or "other"); never names, handles, media, files or paths. The key that stops one
+// not derived from the user or the machine), event, version and occurredAt. A stopped install adds `step` (one of STEP_IDS) and,
+// when known, `reason` (one of SETUP_FAILURE_REASONS); a finished video adds `style` (a style id, or "other"); never names,
+// handles, media, files, paths or error text. The key that stops one
 // finished file from counting twice is a local hash kept in state/studio-stats.json and is never sent.
 // README (privacy) and the thank-you line at the end of setup tell the user. Network or local-state failures never affect the studio.
 // REEL_STUDIO_STATS accepts off, 0, false or no (trimmed, case-insensitive) to disable recording and sending completely.
@@ -10,6 +11,7 @@ import {createHash, randomUUID} from 'node:crypto';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
 import {STEP_IDS} from './studio-state.mjs';
+import {SETUP_FAILURE_REASONS} from './setup-failure.mjs';
 
 const ENDPOINT = 'https://store.pyraai.cloud/wp-json/reel-studio-stats/v1/events';
 const MAX_AGE = 30 * 86400000;
@@ -18,31 +20,37 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{1
 const VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
 const SLUG = /^[a-z][a-z0-9-]{0,39}$/;
 const BASE_KEYS = ['schema', 'installationId', 'event', 'version', 'occurredAt'];
-// The one extra key each event may carry.
-const DETAIL_KEY = {installed: null, studio_used: null, setup_failed: 'step', reel_delivered: 'style'};
+// The detail keys each event may carry: the first is required, `reason` is optional.
+const DETAIL_KEYS = {installed: [], studio_used: [], setup_failed: ['step', 'reason'], reel_delivered: ['style']};
+const OPTIONAL = new Set(['reason']);
 const enabled = options => !['off', '0', 'false', 'no'].includes(process.env.REEL_STUDIO_STATS?.trim().toLowerCase()) && (options.endpoint || !(process.env.CI || process.env.NODE_TEST_CONTEXT));
 const nowOf = options => options.now ? options.now() : new Date();
 const keyOf = event => `${event.event}:${event.version}:${event.occurredAt}:${event.step ?? event.style ?? ''}`;
 const fileOf = root => path.join(root, 'state/studio-stats.json');
 const readJson = async(file) => JSON.parse(await fs.readFile(file, 'utf8'));
-const isKind = event => typeof event === 'string' && Object.hasOwn(DETAIL_KEY, event);
+const isKind = event => typeof event === 'string' && Object.hasOwn(DETAIL_KEYS, event);
 
 function detailFits(event) {
-  const field = DETAIL_KEY[event.event];
+  const allowed = DETAIL_KEYS[event.event];
   const extra = Object.keys(event).filter(key => !BASE_KEYS.includes(key));
-  if (field === null) return extra.length === 0;
-  return extra.length === 1 && extra[0] === field && typeof event[field] === 'string' && SLUG.test(event[field])
-    && (field !== 'step' || STEP_IDS.includes(event[field]));
+  if (!allowed.every(key => OPTIONAL.has(key) || extra.includes(key))) return false;
+  return extra.every(key => allowed.includes(key) && typeof event[key] === 'string' && SLUG.test(event[key]))
+    && (event.step === undefined || STEP_IDS.includes(event.step))
+    && (event.reason === undefined || SETUP_FAILURE_REASONS.includes(event.reason));
 }
 
+const detailFields = (kind, detail) => Object.fromEntries(DETAIL_KEYS[kind].filter(key => typeof detail?.[key] === 'string').map(key => [key, detail[key]]));
+
 function payloadOf(event) {
-  const field = DETAIL_KEY[event.event];
-  return {schema: 1, installationId: event.installationId, event: event.event, version: event.version, occurredAt: event.occurredAt, ...(field ? {[field]: event[field]} : {})};
+  return {schema: 1, installationId: event.installationId, event: event.event, version: event.version, occurredAt: event.occurredAt, ...detailFields(event.event, event)};
 }
 
 // What an event needs before it is queued, or null when it must not be recorded at all.
 function detailOf(event, detail) {
-  if (event === 'setup_failed') return typeof detail?.step === 'string' && STEP_IDS.includes(detail.step) ? {step: detail.step} : null;
+  if (event === 'setup_failed') {
+    if (typeof detail?.step !== 'string' || !STEP_IDS.includes(detail.step)) return null;
+    return SETUP_FAILURE_REASONS.includes(detail.reason) ? {step: detail.step, reason: detail.reason} : {step: detail.step};
+  }
   if (event !== 'reel_delivered') return {};
   if (typeof detail?.output !== 'string' || detail.output === '') return null;
   const resolved = path.resolve(detail.output);
@@ -128,8 +136,7 @@ export async function recordStudioEvent(root, event, options = {}) {
         const [markers, key] = markerOf(state, kind, version, day, detail);
         if (markers[key]) continue;
         const occurredAt = now.toISOString(); markers[key] = occurredAt;
-        const field = DETAIL_KEY[kind];
-        state.outbox.push({schema: 1, installationId: state.installationId, event: kind, version, occurredAt, ...(field ? {[field]: detail[field]} : {})});
+        state.outbox.push({schema: 1, installationId: state.installationId, event: kind, version, occurredAt, ...detailFields(kind, detail)});
       }
       retainOutbox(state, state.outbox.slice(-64));
     });
