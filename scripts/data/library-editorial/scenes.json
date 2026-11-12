@@ -745,7 +745,7 @@
         },
         {
           "path": "engine/src/creative-kit/compare.tsx",
-          "sha256": "edd2a9bf3780bae8022728ba040104519755daa7ce9b9c247a17f8fb8728d589"
+          "sha256": "e5ce1009dacec70c258ff0fd8926bf1f9d8c6cd4a05732fc5bdc5607a92ffacd"
         },
         {
           "path": "engine/src/styles/paper-collage/designs/evidence-wipe.tsx",

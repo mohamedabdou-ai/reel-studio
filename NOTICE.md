@@ -1,6 +1,16 @@
-# Third-party notices
+# Notices
 
-Reel Studio's own code is released under the MIT License (see `LICENSE`). The tools below are not part of this repository: `node scripts/studio.mjs setup` downloads them into this folder from their official sources, each pinned to a SHA-256 in `versions.lock.json`. Each keeps its own license.
+## Reel Studio
+
+Reel Studio
+Copyright 2026 Mohamed Abdou (محمد عبده / Engmohammedabdo)
+https://github.com/mohamedabdou-ai/reel-studio
+
+This file is the NOTICE file of Reel Studio in the sense of section 4(d) of the Apache License, Version 2.0 (see `LICENSE`). Keep these notice lines in every copy or derivative work you distribute. The license grants no right to use the name "Reel Studio", its logo or its banners as the name of a derivative work (section 6).
+
+## Third-party notices
+
+Reel Studio's own code is released under the Apache License, Version 2.0 (see `LICENSE`). The tools below are not part of this repository: `node scripts/studio.mjs setup` downloads them into this folder from their official sources, each pinned to a SHA-256 in `versions.lock.json`. Each keeps its own license.
 
 ## Downloaded by setup
 

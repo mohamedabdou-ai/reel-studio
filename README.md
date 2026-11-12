@@ -44,7 +44,7 @@
 
 **أعجبك أسلوب فيديو؟ سمِّه فقط:** يتعلّم المساعد إيقاعه وحركته وكابشنه وشكله، ويطبّقها على فيديوك أنت.
 
-كود Reel Studio مجاني بترخيص MIT، ويعمل على Windows 64-bit مع Claude Code أو Codex. استخدام المساعد وتراخيص الأدوات الخارجية منفصلان؛ التفاصيل في [تراخيص الأدوات](NOTICE.md).
+كود Reel Studio مجاني بترخيص Apache 2.0، ويعمل على Windows 64-bit مع Claude Code أو Codex. استخدام المساعد وتراخيص الأدوات الخارجية منفصلان؛ التفاصيل في [تراخيص الأدوات](NOTICE.md).
 
 <a id="whats-new"></a>
 
@@ -580,6 +580,6 @@
   <a href="https://www.youtube.com/@mohamedabdou-ai"><img src="docs/images/readme/follow-youtube.png" alt="تابع صانع الاستوديو على يوتيوب" width="190"></a>
 </p>
 
-[احجز جلستك الاستشارية اليوم](https://store.pyraai.cloud/product/reel-studio/) · [رخصة MIT](LICENSE) · [تراخيص الأدوات الخارجية](NOTICE.md)
+[احجز جلستك الاستشارية اليوم](https://store.pyraai.cloud/product/reel-studio/) · [رخصة Apache 2.0](LICENSE) · [تراخيص الأدوات الخارجية](NOTICE.md)
 
 </div>

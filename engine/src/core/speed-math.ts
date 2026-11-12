@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: Apache-2.0
 // Reusable primitive from the original Reel Studio editing engine.
 export type RampSegment = { fromF: number; toF: number; rate: number };
 export type FreezeSpec = { atFrame: number; durF: number };

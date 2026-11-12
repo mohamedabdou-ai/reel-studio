@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: Apache-2.0
 // Reusable primitive from the original Reel Studio editing engine.
 import type { MappedWord } from "../prepared-edit/timeline.ts";
 import { EASE, clamp01, toFrame } from "../core/motion.ts";

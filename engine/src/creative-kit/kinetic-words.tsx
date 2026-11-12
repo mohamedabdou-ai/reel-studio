@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: Apache-2.0
 // Reusable primitive from the original Reel Studio editing engine.
 import React from "react";
 import { assertFontsReady, FAMILY } from "../core/fonts";
