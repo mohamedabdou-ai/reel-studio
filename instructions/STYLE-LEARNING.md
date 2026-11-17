@@ -8,7 +8,7 @@ The result is project-local evidence and a usable decision system, called `proje
 
 1. Record the exact named files or supplied accessible links and their role: style reference, evidence, source footage or reusable asset. A style reference is not automatically licensed footage for the new video. Preserve the originals and do not scan unrelated media folders.
 2. For local videos, record SHA-256, duration, dimensions, fps, audio presence and the inspected coverage. Store the reference ledger and analyses under `Projects/<slug>/style-analysis/`. Use the original reference timeline for evidence timecodes, independently of the new recording's source/edit time.
-3. Inspect the opening, middle, important idea transitions and ending. Inspect motion frame by frame; contact sheets locate moments but do not establish easing, audio cues or sequence. You cannot hear the reference: ask the creator what the sound does at the moments that matter, or record the sound as unknown. If only part of a reference is available, state that limitation.
+3. Run the breakdown first (the `reel-breakdown` worker, [agents/breakdown.md](agents/breakdown.md)): `node scripts/breakdown.mjs run "<reference>" --project <slug>`, then `review` and `apply-review` for what the frames can settle, then `dna`. It measures shots, cuts, panel switches, camera, on-screen text, overlays, presenter share, look, music bed, tempo and effects, and labels each item `measured`, `seen`, `heard` or `inferred`. Sound claims come from this measurement; ask the creator only about the items still marked `needs-confirmation`, by their ids, and record unmeasured sound as unknown. Inspect the opening, middle, important idea transitions and ending in the report's stills and frame strips before relying on a claim. Inspect motion frame by frame; contact sheets and stills locate moments but do not establish easing, audio cues or sequence. If only part of a reference is available, or a measurement did not run (a `null` presenter share is unknown, not zero), state that limitation.
 4. Compare observed composition and pacing separately. A cut detector suggests candidate cuts, not their editorial purpose. Check the frames around a candidate before calling it a cut, punch-in, mask or transition.
 
 The bundled helpers support named-file analysis. Create the project directories first and replace the example filename and time samples with the selected reference:
@@ -24,6 +24,22 @@ node scripts/frames.mjs "Reference/reference-a.mp4" --at 2.88,3.12 --out Project
 ```
 
 These commands create derivatives/caches; run them only within an authorized analysis scope. Probe, scenes and audio return their own cached evidence; record the returned artifact paths. Read the contact sheet and frame files, including the sheet's timecode sidecar. Use exact reviewed transition times for the next samples. Local analysis needs no paid generator.
+
+When the breakdown add-on is not installed, `node scripts/breakdown.mjs inspect` says so; installing it downloads files and needs the creator's yes. Until then use the helpers above.
+
+## Optional: let the listener hear the reference
+
+After `review` and `apply-review` and before `dna`, when sound items are still `needs-confirmation`, the manager (never the worker) may offer the listener: `node scripts/breakdown.mjs listen`, which sends this one reference to Gemini and writes what it heard into the breakdown. It is optional, and the measured result stays whatever the listener says or does.
+
+- **Plan first.** Run `listen` without consent. It sends nothing and prints the plan: the file name, its size, the model, `estimateUsd` and `dataUse`.
+- **Tell the creator, in their language,** that this exact reference goes to Google, the approximate cost, that on a free key Google may use it to improve its products and on a paid key it does not, and that the studio deletes the upload after the answer.
+- **Ask for a yes for this reference.** A yes for one reference is not a yes for another.
+- **The key is the creator's.** If `keyPresent` is false, ask the creator to run `node scripts/breakdown.mjs listener-key` in their own terminal, or set `GEMINI_API_KEY`. Never ask for the key in chat and never type it for them.
+- **After the yes,** run `node scripts/breakdown.mjs listen --consent yes`.
+- **A failure keeps the local result.** Report the reason in plain words; the measured numbers are unchanged.
+- **Sound items that remain** need the creator's own ears. Run `review` again (a listen changes the breakdown, so older tasks are stale), then ask the creator to listen at the named times. Record their words as an ears answers file (from `review-ears.template.json`) and apply it with `node scripts/breakdown.mjs apply-review --heard-by creator --answers <file>`. Never fill a sound answer from images or from your own guess.
+
+What the listener heard is `heard` but a `needs-confirmation` heard item is still not a rule, and a font it guessed is a guess, not an applied font. The listener never receives the creator's own recordings: only a named reference.
 
 ## Give every claim an evidence record
 
@@ -59,6 +75,8 @@ Keep these sections in both the readable DNA and its JSON companion:
 | `antiPatterns` | Changes that erase this grammar or obstruct meaning, with reasons |
 | `limitations` | What the evidence cannot establish and unsupported mechanisms |
 | `sampleReview` | Exact output/revision, inspected range, technical findings, creative feedback and actual acceptance status |
+
+`node scripts/breakdown.mjs dna --project <slug> --ref <id>[,<id>...]` writes the draft: `STYLE_DNA.json` / `STYLE_DNA.md` with `status: "draft"`, `baseStyle: null` and a `suggestedBaseStyle`, plus one evidence file per reference in `style-analysis/<reference-id>.md`. It fills references, invariants, adaptive variables, uncertain traits, limitations and the evidence rows; application logic, anti-patterns and the sample review stay for the editorial worker and the review. It never overwrites reviewed or edited DNA: the new draft lands in `STYLE_DNA.proposal.json` / `.md` for the manager to merge. When a proposal or evidence file was itself edited by hand, or its origin is unknown, the command stops before writing anything; the manager settles that file and runs it again. The studio recipe (`style-analysis/<id>/studio-recipe.md`) lists the nearest style, scene families, caption look, sound band and an `--under` start: suggestions, never decisions.
 
 Use `draft` or `awaiting-review` until review occurs; a bundled style's availability does not approve this customer's application. A JSON note does not make the runtime implement a behavior. If code is needed, follow the declared fields and preview contract in [PROJECT-SCENES.md](PROJECT-SCENES.md).
 

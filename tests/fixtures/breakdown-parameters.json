@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "reels": [{
+    "name": "parameter-smoke", "durationSec": 2, "fps": 30, "width": 160, "height": 288,
+    "bpm": 127, "beatPhaseSec": 0.05, "mode": "dry",
+    "gains": {"kick": 0.15, "hat": 0.02, "snare": 0.03, "sfx": 0.25},
+    "drumPattern": {"kind": "kit", "syncopation": true},
+    "effects": [
+      {"type": "ding", "timeSec": 1.25, "placement": "off-beat"},
+      {"type": "click", "timeSec": 0.65, "placement": "on-beat"}
+    ],
+    "picture": {"background": "#18202c", "box": [0.15, 0.15, 0.5, 0.4], "color": "#d15838"},
+    "pictureSwaps": [{"timeSec": 1, "box": [0.2, 0.15, 0.5, 0.4], "color": "#326fbd"}],
+    "captions": [
+      {"startSec": 0, "endSec": 0.5, "text": "FIRST", "zone": "bottom"},
+      {"startSec": 0.5, "endSec": 1.5, "text": "SECOND", "zone": "bottom"}
+    ]
+  }]
+}

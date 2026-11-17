@@ -68,6 +68,36 @@ Small curated files in `engine/public/stickers/`, played by `engine/src/core/lot
 | Arabic wav2vec2 alignment model | Apache-2.0 | https://huggingface.co/jonatasgrosman/wav2vec2-large-xlsr-53-arabic |
 | English wav2vec2 alignment model | Apache-2.0 | https://huggingface.co/facebook/wav2vec2-base-960h |
 
+## Optional reference breakdown
+
+`node scripts/breakdown.mjs install` installs a project-local CPU runtime only when requested. The packages and models keep their own licenses; they are downloaded at install time, verified against the checksums in `scripts/data/breakdown-pins.json`, and never committed or redistributed here. The breakdown runner and installation code in this repository are Reel Studio code.
+
+| Component | License | Source |
+|---|---|---|
+| coloredlogs 15.0.1 | MIT | https://pypi.org/project/coloredlogs/15.0.1/ |
+| flatbuffers 25.12.19 | Apache-2.0 | https://pypi.org/project/flatbuffers/25.12.19/ |
+| humanfriendly 10.0 | MIT | https://pypi.org/project/humanfriendly/10.0/ |
+| mpmath 1.3.0 | BSD-3-Clause | https://pypi.org/project/mpmath/1.3.0/ |
+| NumPy 2.2.6 | BSD-3-Clause | https://pypi.org/project/numpy/2.2.6/ |
+| ONNX Runtime 1.23.2 | MIT | https://pypi.org/project/onnxruntime/1.23.2/ |
+| OpenCV (opencv-python-headless) 4.12.0.88 | Apache-2.0 | https://pypi.org/project/opencv-python-headless/4.12.0.88/ |
+| packaging 26.3 | Apache-2.0 OR BSD-2-Clause | https://pypi.org/project/packaging/26.3/ |
+| protobuf 7.36.2 | BSD-3-Clause | https://pypi.org/project/protobuf/7.36.2/ |
+| pyreadline3 3.5.6 | BSD-3-Clause | https://pypi.org/project/pyreadline3/3.5.6/ |
+| SciPy 1.15.3 | BSD-3-Clause | https://pypi.org/project/scipy/1.15.3/ |
+| SymPy 1.14.0 | BSD-3-Clause | https://pypi.org/project/sympy/1.14.0/ |
+| PaddleOCR text detection model (PP-OCRv5 mobile, ONNX) | Apache-2.0 | https://github.com/RapidAI/RapidOCR |
+| PaddleOCR Arabic text recognition model (PP-OCRv4, ONNX) | Apache-2.0 | https://github.com/RapidAI/RapidOCR |
+| FFmpeg inside the OpenCV wheel | LGPL-2.1-or-later | https://ffmpeg.org |
+| Intel IPP ICV inside the OpenCV wheel | LicenseRef-Intel-Simplified-Software-License (the Intel Simplified Software License) | https://pypi.org/project/opencv-python-headless/4.12.0.88/ |
+| Eigen inside the ONNX Runtime wheel | MPL-2.0 | https://eigen.tuxfamily.org |
+| libdivide inside the NumPy wheel | Zlib | https://github.com/ridiculousfish/libdivide |
+| LAPACK inside the NumPy and SciPy wheels | BSD-3-Clause-Attribution | https://github.com/Reference-LAPACK/lapack |
+| OpenBLAS inside the SciPy wheel | BSD-3-Clause-Attribution | https://github.com/OpenMathLib/OpenBLAS |
+| GCC runtime library inside the NumPy and SciPy wheels | GPL-3.0-or-later WITH GCC-exception-3.1 (the GCC Runtime Library Exception) | https://gcc.gnu.org |
+
+The named components inside the wheels are used only as they ship in the unmodified official PyPI wheels. The optional listener is a network service (Google Gemini) used only with the creator's own key and an explicit yes for each run; nothing from it is bundled, and only the reel the creator names is sent.
+
 ## Adapted motion components
 
 Adapted source lives under `engine/src/motion-library/`; pinned upstream revisions, checksums and full license texts are in `third-party/motion-kits/`.

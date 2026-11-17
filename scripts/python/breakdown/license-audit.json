@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "status": "approved",
+  "checkedAt": "2026-11-15T16:56:01.866390+00:00",
+  "blockers": [],
+  "eigenDecision": {
+    "approvedOn": "2026-11-15",
+    "package": "onnxruntime",
+    "version": "1.23.2",
+    "name": "Eigen",
+    "license": "MPL-2.0",
+    "binary": "onnxruntime/capi/onnxruntime.dll",
+    "scope": "Inside the unmodified official PyPI wheel, downloaded at add-on install time; never committed or redistributed.",
+    "statement": "Approved Eigen MPL-2.0 in the audited unmodified official ONNX Runtime 1.23.2 Windows wheel only."
+  },
+  "removed": "RapidOCR and every sole dependency excluded from the selected closure; transient downloads are discarded after verified installation, while hashes and provenance remain in pins.",
+  "intelFinding": {
+    "finding": "MKL notice is generic for this CPU wheel: no MKL/oneDNN import and binary explicitly says oneDNN is disabled.",
+    "limitation": "This does not prove absence of every statically linked Intel-authored instruction; no additional Intel Simplified licence entitlement is assumed."
+  },
+  "optionalYamnet": "Not downloaded: exact official artifact/licence not verified; local spectral rules remain available.",
+  "pins": "scripts/data/breakdown-pins.json",
+  "wheelsVerified": 12,
+  "modelsVerified": 2,
+  "installed": false,
+  "ownerNamedExceptionsApplied": [
+    {
+      "package": "numpy",
+      "name": "libdivide",
+      "license": "Zlib",
+      "approval": {
+        "date": "2026-11-15",
+        "statement": "Approved libdivide under Zlib in unmodified official NumPy wheels only."
+      }
+    },
+    {
+      "package": "numpy",
+      "name": "LAPACK",
+      "license": "BSD-3-Clause-Attribution",
+      "approval": {
+        "date": "2026-11-15",
+        "statement": "Approved LAPACK BSD-3-Clause-Attribution in unmodified official NumPy and SciPy wheels only."
+      }
+    },
+    {
+      "package": "numpy",
+      "name": "GCC runtime library",
+      "license": "GPL-3.0-or-later WITH GCC-exception-3.1",
+      "approval": {
+        "date": "2026-11-15",
+        "statement": "Approved the GCC runtime with GCC-exception-3.1 in unmodified official NumPy and SciPy wheels only."
+      }
+    },
+    {
+      "package": "scipy",
+      "name": "OpenBLAS",
+      "license": "BSD-3-Clause-Attribution",
+      "approval": {
+        "date": "2026-11-15",
+        "statement": "Approved OpenBLAS BSD-3-Clause-Attribution in unmodified official NumPy and SciPy wheels only."
+      }
+    },
+    {
+      "package": "scipy",
+      "name": "LAPACK",
+      "license": "BSD-3-Clause-Attribution",
+      "approval": {
+        "date": "2026-11-15",
+        "statement": "Approved LAPACK BSD-3-Clause-Attribution in unmodified official NumPy and SciPy wheels only."
+      }
+    },
+    {
+      "package": "scipy",
+      "name": "GCC runtime library",
+      "license": "GPL-3.0-or-later WITH GCC-exception-3.1",
+      "approval": {
+        "date": "2026-11-15",
+        "statement": "Approved the GCC runtime with GCC-exception-3.1 in unmodified official NumPy and SciPy wheels only."
+      }
+    },
+    {
+      "package": "opencv-python-headless",
+      "name": "FFmpeg",
+      "license": "LGPL-2.1-or-later",
+      "approval": {
+        "date": "2026-11-15",
+        "statement": "Approved FFmpeg LGPL-2.1-or-later in unmodified official OpenCV PyPI wheels for local installation only."
+      }
+    },
+    {
+      "package": "opencv-python-headless",
+      "name": "Intel IPP ICV",
+      "license": "LicenseRef-Intel-Simplified-Software-License",
+      "approval": {
+        "date": "2026-11-15",
+        "statement": "Approved Intel IPP ICV under the Intel Simplified Software License in unmodified official OpenCV wheels only."
+      }
+    },
+    {
+      "package": "onnxruntime",
+      "name": "Eigen",
+      "license": "MPL-2.0",
+      "approval": {
+        "date": "2026-11-15",
+        "statement": "Approved Eigen MPL-2.0 in the audited unmodified official ONNX Runtime 1.23.2 Windows wheel only."
+      }
+    }
+  ]
+}

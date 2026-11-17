@@ -8,6 +8,7 @@ import {promisify} from 'node:util';
 import {ROOT, assertProjectOutput} from './project-paths.mjs';
 import {alignmentModel, WHISPERX_RELEASE} from './alignment-contract.mjs';
 import {runAlignmentCommand} from './alignment-runtime.mjs';
+import {bootstrapVenv} from './python-venv.mjs';
 
 const execFileAsync = promisify(execFile);
 const windows = process.platform === 'win32';
@@ -171,19 +172,8 @@ export async function inspectAlignmentRuntime({language='ar'}={}) {
 }
 
 async function bootstrapRuntime(paths, env, python) {
-  if (fs.existsSync(paths.python)) return;
-  const log = path.join(paths.logs, 'bootstrap.log');
-  const candidates = python?[{command:python,args:['-m','venv',paths.venv]}]:windows?[
-    {command:'python',args:['-m','venv',paths.venv]}, {command:'py',args:['-3','-m','venv',paths.venv]},
-  ]:[{command:'python3',args:['-m','venv',paths.venv]}];
-  const failures = [];
-  for (const candidate of candidates) {
-    try {
-      await runAlignmentCommand(candidate.command, candidate.args, {logFile: log, cwd: ROOT, env});
-      if (fs.existsSync(paths.python)) return;
-    } catch (error) { failures.push(error.message); }
-  }
-  throw new Error(`Could not create the dedicated Python runtime. ${failures.join(' | ')}`);
+  await bootstrapVenv({venv: paths.venv, python: paths.python, explicitPython: python, logFile: path.join(paths.logs, 'bootstrap.log'), env,
+    run: (command, args, options) => runAlignmentCommand(command, args, {...options, cwd: ROOT})});
 }
 
 export async function installAlignmentRuntime({language='ar',python}={}) {

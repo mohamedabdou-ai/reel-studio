@@ -1,0 +1,1478 @@
+{
+  "schema": 1,
+  "python": {
+    "min": "3.10",
+    "maxExclusive": "3.14"
+  },
+  "wheelTarget": {
+    "python": "3.11",
+    "implementation": "cp",
+    "platform": "win_amd64"
+  },
+  "packages": [
+    "coloredlogs==15.0.1",
+    "flatbuffers==25.12.19",
+    "humanfriendly==10.0",
+    "mpmath==1.3.0",
+    "numpy==2.2.6",
+    "onnxruntime==1.23.2",
+    "opencv-python-headless==4.12.0.88",
+    "packaging==26.3",
+    "protobuf==7.36.2",
+    "pyreadline3==3.5.6",
+    "scipy==1.15.3",
+    "sympy==1.14.0"
+  ],
+  "wheels": [
+    {
+      "name": "coloredlogs",
+      "version": "15.0.1",
+      "file": "coloredlogs-15.0.1-py2.py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/a7/06/3d6badcf13db419e25b07041d9c7b4a2c331d3f4e7134445ec5df57714cd/coloredlogs-15.0.1-py2.py3-none-any.whl",
+      "bytes": 46018,
+      "sha256": "612ee75c546f53e92e70049c9dbfcc18c935a2b9a53b66085ce9ef6a6e5c0934",
+      "metadataUrl": "https://pypi.org/pypi/coloredlogs/15.0.1/json",
+      "requiresDist": [
+        "humanfriendly (>=9.1)",
+        "capturer (>=2.4) ; extra == 'cron'"
+      ],
+      "licenseExpression": null,
+      "licenseHeader": "MIT",
+      "licenseFiles": [
+        {
+          "path": "coloredlogs-15.0.1.dist-info/LICENSE.txt",
+          "sha256": "0bef4ffb1855b65570304f2018c6d44e4bab97bd5df8716ecd7800014d717267"
+        }
+      ],
+      "license": "MIT",
+      "licenseUrl": "https://pypi.org/pypi/coloredlogs/15.0.1/json",
+      "bundledLicenses": []
+    },
+    {
+      "name": "flatbuffers",
+      "version": "25.12.19",
+      "file": "flatbuffers-25.12.19-py2.py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/e8/2d/d2a548598be01649e2d46231d151a6c56d10b964d94043a335ae56ea2d92/flatbuffers-25.12.19-py2.py3-none-any.whl",
+      "bytes": 26661,
+      "sha256": "7634f50c427838bb021c2d66a3d1168e9d199b0607e6329399f04846d42e20b4",
+      "metadataUrl": "https://pypi.org/pypi/flatbuffers/25.12.19/json",
+      "requiresDist": [],
+      "licenseExpression": null,
+      "licenseHeader": "Apache 2.0",
+      "licenseFiles": [],
+      "license": "Apache-2.0",
+      "licenseUrl": "https://pypi.org/pypi/flatbuffers/25.12.19/json",
+      "bundledLicenses": []
+    },
+    {
+      "name": "humanfriendly",
+      "version": "10.0",
+      "file": "humanfriendly-10.0-py2.py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/f0/0f/310fb31e39e2d734ccaa2c0fb981ee41f7bd5056ce9bc29b2248bd569169/humanfriendly-10.0-py2.py3-none-any.whl",
+      "bytes": 86794,
+      "sha256": "1697e1a8a8f550fd43c2865cd84542fc175a61dcb779b6fee18cf6b6ccba1477",
+      "metadataUrl": "https://pypi.org/pypi/humanfriendly/10.0/json",
+      "requiresDist": [
+        "monotonic ; python_version == \"2.7\"",
+        "pyreadline ; sys_platform == \"win32\" and python_version<\"3.8\"",
+        "pyreadline3 ; sys_platform == \"win32\" and python_version>=\"3.8\""
+      ],
+      "licenseExpression": null,
+      "licenseHeader": "MIT",
+      "licenseFiles": [
+        {
+          "path": "humanfriendly-10.0.dist-info/LICENSE.txt",
+          "sha256": "4ac48f4117809f2734066150450f120b3bb110ac1d3b32170795e0560dbbc1f5"
+        }
+      ],
+      "license": "MIT",
+      "licenseUrl": "https://pypi.org/pypi/humanfriendly/10.0/json",
+      "bundledLicenses": []
+    },
+    {
+      "name": "mpmath",
+      "version": "1.3.0",
+      "file": "mpmath-1.3.0-py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/43/e3/7d92a15f894aa0c9c4b49b8ee9ac9850d6e63b03c9c32c0367a13ae62209/mpmath-1.3.0-py3-none-any.whl",
+      "bytes": 536198,
+      "sha256": "a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c",
+      "metadataUrl": "https://pypi.org/pypi/mpmath/1.3.0/json",
+      "requiresDist": [
+        "pytest (>=4.6) ; extra == 'develop'",
+        "pycodestyle ; extra == 'develop'",
+        "pytest-cov ; extra == 'develop'",
+        "codecov ; extra == 'develop'",
+        "wheel ; extra == 'develop'",
+        "sphinx ; extra == 'docs'",
+        "gmpy2 (>=2.1.0a4) ; (platform_python_implementation != \"PyPy\") and extra == 'gmpy'",
+        "pytest (>=4.6) ; extra == 'tests'"
+      ],
+      "licenseExpression": null,
+      "licenseHeader": "BSD",
+      "licenseFiles": [
+        {
+          "path": "mpmath-1.3.0.dist-info/LICENSE",
+          "sha256": "c26cae81da4508e5e249985777a33821f183223ebb74d7f8cfbf90fe7eef2fb7"
+        }
+      ],
+      "license": "BSD-3-Clause",
+      "licenseUrl": "https://pypi.org/pypi/mpmath/1.3.0/json",
+      "bundledLicenses": []
+    },
+    {
+      "name": "numpy",
+      "version": "2.2.6",
+      "file": "numpy-2.2.6-cp311-cp311-win_amd64.whl",
+      "url": "https://files.pythonhosted.org/packages/31/0a/f354fb7176b81747d870f7991dc763e157a934c717b67b58456bc63da3df/numpy-2.2.6-cp311-cp311-win_amd64.whl",
+      "bytes": 12907455,
+      "sha256": "e8213002e427c69c45a52bbd94163084025f533a55a59d6f9c5b820774ef3303",
+      "metadataUrl": "https://pypi.org/pypi/numpy/2.2.6/json",
+      "requiresDist": [],
+      "licenseExpression": null,
+      "licenseHeader": "Copyright (c) 2005-2024, NumPy Developers.\n         All rights reserved.\n         \n         Redistribution and use in so",
+      "licenseFiles": [
+        {
+          "path": "numpy/ma/LICENSE",
+          "sha256": "d78dbb208b80d92b4d333e41a4baae50d12444f46e53199fa7726a91de6e2da7"
+        },
+        {
+          "path": "numpy/random/LICENSE.md",
+          "sha256": "b4bc2f4fa1c95778f1ed3dd8f14706bece399475b978f9f34b5d3cd72521b48a"
+        },
+        {
+          "path": "numpy/_core/include/numpy/random/LICENSE.txt",
+          "sha256": "d544761558b510866c21f7e8a2d5716fca76e0b98117e3b6b86314db7244d150"
+        },
+        {
+          "path": "numpy-2.2.6.dist-info/LICENSE.txt",
+          "sha256": "14256cc3a2c9d32ac284da96b937feb44f72dd90bee2317ac3020166846ad99d"
+        }
+      ],
+      "license": "BSD-3-Clause",
+      "licenseUrl": "https://pypi.org/pypi/numpy/2.2.6/json",
+      "bundledLicenses": [
+        {
+          "name": "lapack-lite",
+          "license": "BSD-3-Clause",
+          "licenseUrl": "https://pypi.org/pypi/numpy/2.2.6/json",
+          "source": "official-pypi-wheel",
+          "licenseFile": "numpy-2.2.6.dist-info/LICENSE.txt",
+          "licenseSha256": "14256cc3a2c9d32ac284da96b937feb44f72dd90bee2317ac3020166846ad99d",
+          "binaryFiles": [
+            "numpy/fft/_pocketfft_umath.cp311-win_amd64.pyd",
+            "numpy/linalg/lapack_lite.cp311-win_amd64.pyd",
+            "numpy/linalg/_umath_linalg.cp311-win_amd64.pyd",
+            "numpy/random/bit_generator.cp311-win_amd64.pyd",
+            "numpy/random/mtrand.cp311-win_amd64.pyd",
+            "numpy/random/_bounded_integers.cp311-win_amd64.pyd",
+            "numpy/random/_common.cp311-win_amd64.pyd",
+            "numpy/random/_generator.cp311-win_amd64.pyd",
+            "numpy/random/_mt19937.cp311-win_amd64.pyd",
+            "numpy/random/_pcg64.cp311-win_amd64.pyd",
+            "numpy/random/_philox.cp311-win_amd64.pyd",
+            "numpy/random/_sfc64.cp311-win_amd64.pyd",
+            "numpy/_core/_multiarray_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_multiarray_umath.cp311-win_amd64.pyd",
+            "numpy/_core/_operand_flag_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_rational_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_simd.cp311-win_amd64.pyd",
+            "numpy/_core/_struct_ufunc_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_umath_tests.cp311-win_amd64.pyd",
+            "numpy.libs/libscipy_openblas64_-13e2df515630b4a41f92893938845698.dll",
+            "numpy.libs/msvcp140-263139962577ecda4cd9469ca360a746.dll"
+          ]
+        },
+        {
+          "name": "dragon4",
+          "license": "MIT",
+          "licenseUrl": "https://pypi.org/pypi/numpy/2.2.6/json",
+          "source": "official-pypi-wheel",
+          "licenseFile": "numpy-2.2.6.dist-info/LICENSE.txt",
+          "licenseSha256": "14256cc3a2c9d32ac284da96b937feb44f72dd90bee2317ac3020166846ad99d",
+          "binaryFiles": [
+            "numpy/fft/_pocketfft_umath.cp311-win_amd64.pyd",
+            "numpy/linalg/lapack_lite.cp311-win_amd64.pyd",
+            "numpy/linalg/_umath_linalg.cp311-win_amd64.pyd",
+            "numpy/random/bit_generator.cp311-win_amd64.pyd",
+            "numpy/random/mtrand.cp311-win_amd64.pyd",
+            "numpy/random/_bounded_integers.cp311-win_amd64.pyd",
+            "numpy/random/_common.cp311-win_amd64.pyd",
+            "numpy/random/_generator.cp311-win_amd64.pyd",
+            "numpy/random/_mt19937.cp311-win_amd64.pyd",
+            "numpy/random/_pcg64.cp311-win_amd64.pyd",
+            "numpy/random/_philox.cp311-win_amd64.pyd",
+            "numpy/random/_sfc64.cp311-win_amd64.pyd",
+            "numpy/_core/_multiarray_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_multiarray_umath.cp311-win_amd64.pyd",
+            "numpy/_core/_operand_flag_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_rational_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_simd.cp311-win_amd64.pyd",
+            "numpy/_core/_struct_ufunc_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_umath_tests.cp311-win_amd64.pyd",
+            "numpy.libs/libscipy_openblas64_-13e2df515630b4a41f92893938845698.dll",
+            "numpy.libs/msvcp140-263139962577ecda4cd9469ca360a746.dll"
+          ]
+        },
+        {
+          "name": "libdivide",
+          "license": "Zlib",
+          "licenseUrl": "https://pypi.org/pypi/numpy/2.2.6/json",
+          "source": "official-pypi-wheel",
+          "licenseFile": "numpy-2.2.6.dist-info/LICENSE.txt",
+          "licenseSha256": "14256cc3a2c9d32ac284da96b937feb44f72dd90bee2317ac3020166846ad99d",
+          "binaryFiles": [
+            "numpy/fft/_pocketfft_umath.cp311-win_amd64.pyd",
+            "numpy/linalg/lapack_lite.cp311-win_amd64.pyd",
+            "numpy/linalg/_umath_linalg.cp311-win_amd64.pyd",
+            "numpy/random/bit_generator.cp311-win_amd64.pyd",
+            "numpy/random/mtrand.cp311-win_amd64.pyd",
+            "numpy/random/_bounded_integers.cp311-win_amd64.pyd",
+            "numpy/random/_common.cp311-win_amd64.pyd",
+            "numpy/random/_generator.cp311-win_amd64.pyd",
+            "numpy/random/_mt19937.cp311-win_amd64.pyd",
+            "numpy/random/_pcg64.cp311-win_amd64.pyd",
+            "numpy/random/_philox.cp311-win_amd64.pyd",
+            "numpy/random/_sfc64.cp311-win_amd64.pyd",
+            "numpy/_core/_multiarray_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_multiarray_umath.cp311-win_amd64.pyd",
+            "numpy/_core/_operand_flag_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_rational_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_simd.cp311-win_amd64.pyd",
+            "numpy/_core/_struct_ufunc_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_umath_tests.cp311-win_amd64.pyd",
+            "numpy.libs/libscipy_openblas64_-13e2df515630b4a41f92893938845698.dll",
+            "numpy.libs/msvcp140-263139962577ecda4cd9469ca360a746.dll"
+          ],
+          "approval": {
+            "date": "2026-11-15",
+            "statement": "Approved libdivide under Zlib in unmodified official NumPy wheels only."
+          }
+        },
+        {
+          "name": "OpenBLAS",
+          "license": "BSD-3-Clause",
+          "licenseUrl": "https://pypi.org/pypi/numpy/2.2.6/json",
+          "source": "official-pypi-wheel",
+          "licenseFile": "numpy-2.2.6.dist-info/LICENSE.txt",
+          "licenseSha256": "14256cc3a2c9d32ac284da96b937feb44f72dd90bee2317ac3020166846ad99d",
+          "binaryFiles": [
+            "numpy/fft/_pocketfft_umath.cp311-win_amd64.pyd",
+            "numpy/linalg/lapack_lite.cp311-win_amd64.pyd",
+            "numpy/linalg/_umath_linalg.cp311-win_amd64.pyd",
+            "numpy/random/bit_generator.cp311-win_amd64.pyd",
+            "numpy/random/mtrand.cp311-win_amd64.pyd",
+            "numpy/random/_bounded_integers.cp311-win_amd64.pyd",
+            "numpy/random/_common.cp311-win_amd64.pyd",
+            "numpy/random/_generator.cp311-win_amd64.pyd",
+            "numpy/random/_mt19937.cp311-win_amd64.pyd",
+            "numpy/random/_pcg64.cp311-win_amd64.pyd",
+            "numpy/random/_philox.cp311-win_amd64.pyd",
+            "numpy/random/_sfc64.cp311-win_amd64.pyd",
+            "numpy/_core/_multiarray_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_multiarray_umath.cp311-win_amd64.pyd",
+            "numpy/_core/_operand_flag_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_rational_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_simd.cp311-win_amd64.pyd",
+            "numpy/_core/_struct_ufunc_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_umath_tests.cp311-win_amd64.pyd",
+            "numpy.libs/libscipy_openblas64_-13e2df515630b4a41f92893938845698.dll",
+            "numpy.libs/msvcp140-263139962577ecda4cd9469ca360a746.dll"
+          ]
+        },
+        {
+          "name": "LAPACK",
+          "license": "BSD-3-Clause-Attribution",
+          "licenseUrl": "https://pypi.org/pypi/numpy/2.2.6/json",
+          "source": "official-pypi-wheel",
+          "licenseFile": "numpy-2.2.6.dist-info/LICENSE.txt",
+          "licenseSha256": "14256cc3a2c9d32ac284da96b937feb44f72dd90bee2317ac3020166846ad99d",
+          "binaryFiles": [
+            "numpy/fft/_pocketfft_umath.cp311-win_amd64.pyd",
+            "numpy/linalg/lapack_lite.cp311-win_amd64.pyd",
+            "numpy/linalg/_umath_linalg.cp311-win_amd64.pyd",
+            "numpy/random/bit_generator.cp311-win_amd64.pyd",
+            "numpy/random/mtrand.cp311-win_amd64.pyd",
+            "numpy/random/_bounded_integers.cp311-win_amd64.pyd",
+            "numpy/random/_common.cp311-win_amd64.pyd",
+            "numpy/random/_generator.cp311-win_amd64.pyd",
+            "numpy/random/_mt19937.cp311-win_amd64.pyd",
+            "numpy/random/_pcg64.cp311-win_amd64.pyd",
+            "numpy/random/_philox.cp311-win_amd64.pyd",
+            "numpy/random/_sfc64.cp311-win_amd64.pyd",
+            "numpy/_core/_multiarray_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_multiarray_umath.cp311-win_amd64.pyd",
+            "numpy/_core/_operand_flag_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_rational_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_simd.cp311-win_amd64.pyd",
+            "numpy/_core/_struct_ufunc_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_umath_tests.cp311-win_amd64.pyd",
+            "numpy.libs/libscipy_openblas64_-13e2df515630b4a41f92893938845698.dll",
+            "numpy.libs/msvcp140-263139962577ecda4cd9469ca360a746.dll"
+          ],
+          "approval": {
+            "date": "2026-11-15",
+            "statement": "Approved LAPACK BSD-3-Clause-Attribution in unmodified official NumPy and SciPy wheels only."
+          }
+        },
+        {
+          "name": "GCC runtime library",
+          "license": "GPL-3.0-or-later WITH GCC-exception-3.1",
+          "licenseUrl": "https://pypi.org/pypi/numpy/2.2.6/json",
+          "source": "official-pypi-wheel",
+          "licenseFile": "numpy-2.2.6.dist-info/LICENSE.txt",
+          "licenseSha256": "14256cc3a2c9d32ac284da96b937feb44f72dd90bee2317ac3020166846ad99d",
+          "binaryFiles": [
+            "numpy/fft/_pocketfft_umath.cp311-win_amd64.pyd",
+            "numpy/linalg/lapack_lite.cp311-win_amd64.pyd",
+            "numpy/linalg/_umath_linalg.cp311-win_amd64.pyd",
+            "numpy/random/bit_generator.cp311-win_amd64.pyd",
+            "numpy/random/mtrand.cp311-win_amd64.pyd",
+            "numpy/random/_bounded_integers.cp311-win_amd64.pyd",
+            "numpy/random/_common.cp311-win_amd64.pyd",
+            "numpy/random/_generator.cp311-win_amd64.pyd",
+            "numpy/random/_mt19937.cp311-win_amd64.pyd",
+            "numpy/random/_pcg64.cp311-win_amd64.pyd",
+            "numpy/random/_philox.cp311-win_amd64.pyd",
+            "numpy/random/_sfc64.cp311-win_amd64.pyd",
+            "numpy/_core/_multiarray_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_multiarray_umath.cp311-win_amd64.pyd",
+            "numpy/_core/_operand_flag_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_rational_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_simd.cp311-win_amd64.pyd",
+            "numpy/_core/_struct_ufunc_tests.cp311-win_amd64.pyd",
+            "numpy/_core/_umath_tests.cp311-win_amd64.pyd",
+            "numpy.libs/libscipy_openblas64_-13e2df515630b4a41f92893938845698.dll",
+            "numpy.libs/msvcp140-263139962577ecda4cd9469ca360a746.dll"
+          ],
+          "approval": {
+            "date": "2026-11-15",
+            "statement": "Approved the GCC runtime with GCC-exception-3.1 in unmodified official NumPy and SciPy wheels only."
+          }
+        }
+      ]
+    },
+    {
+      "name": "onnxruntime",
+      "version": "1.23.2",
+      "file": "onnxruntime-1.23.2-cp311-cp311-win_amd64.whl",
+      "url": "https://files.pythonhosted.org/packages/3a/db/1b4a62e23183a0c3fe441782462c0ede9a2a65c6bbffb9582fab7c7a0d38/onnxruntime-1.23.2-cp311-cp311-win_amd64.whl",
+      "bytes": 13468349,
+      "sha256": "902c756d8b633ce0dedd889b7c08459433fbcf35e9c38d1c03ddc020f0648c6e",
+      "metadataUrl": "https://pypi.org/pypi/onnxruntime/1.23.2/json",
+      "requiresDist": [
+        "coloredlogs",
+        "flatbuffers",
+        "numpy>=1.21.6",
+        "packaging",
+        "protobuf",
+        "sympy"
+      ],
+      "licenseExpression": null,
+      "licenseHeader": "MIT License",
+      "licenseFiles": [
+        {
+          "path": "onnxruntime/LICENSE",
+          "sha256": "c250d6278f0b47a6439fb7592b08b58a55eb9f535aa49a1db63211c3f982b674"
+        },
+        {
+          "path": "onnxruntime/ThirdPartyNotices.txt",
+          "sha256": "e00f828e0a33de591a355ae6606d2625f5758da7d2c844db7821c9dd3e3647b6"
+        }
+      ],
+      "license": "MIT",
+      "licenseUrl": "https://pypi.org/pypi/onnxruntime/1.23.2/json",
+      "bundledLicenses": [
+        {
+          "name": "Eigen",
+          "license": "MPL-2.0",
+          "licenseUrl": "https://pypi.org/pypi/onnxruntime/1.23.2/json",
+          "source": "official-pypi-wheel",
+          "licenseFile": "onnxruntime/ThirdPartyNotices.txt",
+          "licenseSha256": "e00f828e0a33de591a355ae6606d2625f5758da7d2c844db7821c9dd3e3647b6",
+          "binaryFiles": [
+            "onnxruntime/capi/onnxruntime.dll",
+            "onnxruntime/capi/onnxruntime_pybind11_state.pyd"
+          ],
+          "description": "Eigen non-blocking thread pool",
+          "binaryEvidence": [
+            {
+              "package": "onnxruntime",
+              "binary": "onnxruntime/capi/onnxruntime.dll",
+              "sha256": "93457c4f17904d0ab98f3e9ac27ed153993f4b5b769337cbfd6f4c528fb0a509",
+              "imports": [
+                "ADVAPI32.dll",
+                "KERNEL32.dll",
+                "MSVCP140.dll",
+                "MSVCP140_1.dll",
+                "SETUPAPI.dll",
+                "VCRUNTIME140.dll",
+                "VCRUNTIME140_1.dll",
+                "api-ms-win-core-path-l1-1-0.dll",
+                "api-ms-win-crt-convert-l1-1-0.dll",
+                "api-ms-win-crt-filesystem-l1-1-0.dll",
+                "api-ms-win-crt-heap-l1-1-0.dll",
+                "api-ms-win-crt-locale-l1-1-0.dll",
+                "api-ms-win-crt-math-l1-1-0.dll",
+                "api-ms-win-crt-runtime-l1-1-0.dll",
+                "api-ms-win-crt-stdio-l1-1-0.dll",
+                "api-ms-win-crt-string-l1-1-0.dll",
+                "api-ms-win-crt-time-l1-1-0.dll",
+                "dbghelp.dll",
+                "dxgi.dll"
+              ],
+              "markers": [
+                "EigenNonBlockingThreadPool.h",
+                "ThreadPoolInterface@Eigen",
+                "oneDNN execution provider is not enabled in this build."
+              ],
+              "markerOffsets": {
+                "ThreadPoolInterface@Eigen": 15288980,
+                "EigenNonBlockingThreadPool.h": 13589295,
+                "oneDNN execution provider is not enabled in this build.": 13081736
+              }
+            },
+            {
+              "package": "onnxruntime",
+              "binary": "onnxruntime/capi/onnxruntime_pybind11_state.pyd",
+              "sha256": "967a5a75907657e538256c6361c6c40a51127ac7984a36e9f11b6b02329deac8",
+              "imports": [
+                "ADVAPI32.dll",
+                "KERNEL32.dll",
+                "MSVCP140.dll",
+                "MSVCP140_1.dll",
+                "SETUPAPI.dll",
+                "VCRUNTIME140.dll",
+                "VCRUNTIME140_1.dll",
+                "api-ms-win-core-path-l1-1-0.dll",
+                "api-ms-win-crt-convert-l1-1-0.dll",
+                "api-ms-win-crt-filesystem-l1-1-0.dll",
+                "api-ms-win-crt-heap-l1-1-0.dll",
+                "api-ms-win-crt-locale-l1-1-0.dll",
+                "api-ms-win-crt-math-l1-1-0.dll",
+                "api-ms-win-crt-runtime-l1-1-0.dll",
+                "api-ms-win-crt-stdio-l1-1-0.dll",
+                "api-ms-win-crt-string-l1-1-0.dll",
+                "api-ms-win-crt-time-l1-1-0.dll",
+                "dbghelp.dll",
+                "dxgi.dll",
+                "python311.dll"
+              ],
+              "markers": [
+                "EigenNonBlockingThreadPool.h",
+                "ThreadPoolInterface@Eigen",
+                "oneDNN execution provider is not enabled in this build."
+              ],
+              "markerOffsets": {
+                "ThreadPoolInterface@Eigen": 18672468,
+                "EigenNonBlockingThreadPool.h": 16102191,
+                "oneDNN execution provider is not enabled in this build.": 15462544
+              }
+            }
+          ],
+          "sourceEvidence": {
+            "component": "Eigen non-blocking thread pool",
+            "license": "MPL-2.0",
+            "finding": "Present: official source path and Eigen RTTI appear in both CPU binaries.",
+            "source": "https://raw.githubusercontent.com/microsoft/onnxruntime/v1.23.2/include/onnxruntime/core/platform/EigenNonBlockingThreadPool.h",
+            "sourceSha256": "0abf19a83eedf5d53de6b87679991bbd023d7c9f0e2b7832402cc9deb574cb19",
+            "licenseHeaderLines": [
+              6,
+              7,
+              8
+            ]
+          },
+          "approval": {
+            "date": "2026-11-15",
+            "statement": "Approved Eigen MPL-2.0 in the audited unmodified official ONNX Runtime 1.23.2 Windows wheel only."
+          }
+        }
+      ],
+      "binaryAudit": {
+        "schema": 1,
+        "method": "PE import tables plus embedded ASCII markers; exact wheel and binary hashes. No package code loaded or installed.",
+        "binaries": [
+          {
+            "package": "onnxruntime",
+            "binary": "onnxruntime/capi/onnxruntime.dll",
+            "sha256": "93457c4f17904d0ab98f3e9ac27ed153993f4b5b769337cbfd6f4c528fb0a509",
+            "imports": [
+              "ADVAPI32.dll",
+              "KERNEL32.dll",
+              "MSVCP140.dll",
+              "MSVCP140_1.dll",
+              "SETUPAPI.dll",
+              "VCRUNTIME140.dll",
+              "VCRUNTIME140_1.dll",
+              "api-ms-win-core-path-l1-1-0.dll",
+              "api-ms-win-crt-convert-l1-1-0.dll",
+              "api-ms-win-crt-filesystem-l1-1-0.dll",
+              "api-ms-win-crt-heap-l1-1-0.dll",
+              "api-ms-win-crt-locale-l1-1-0.dll",
+              "api-ms-win-crt-math-l1-1-0.dll",
+              "api-ms-win-crt-runtime-l1-1-0.dll",
+              "api-ms-win-crt-stdio-l1-1-0.dll",
+              "api-ms-win-crt-string-l1-1-0.dll",
+              "api-ms-win-crt-time-l1-1-0.dll",
+              "dbghelp.dll",
+              "dxgi.dll"
+            ],
+            "markers": [
+              "EigenNonBlockingThreadPool.h",
+              "ThreadPoolInterface@Eigen",
+              "oneDNN execution provider is not enabled in this build."
+            ],
+            "markerOffsets": {
+              "ThreadPoolInterface@Eigen": 15288980,
+              "EigenNonBlockingThreadPool.h": 13589295,
+              "oneDNN execution provider is not enabled in this build.": 13081736
+            }
+          },
+          {
+            "package": "onnxruntime",
+            "binary": "onnxruntime/capi/onnxruntime_providers_shared.dll",
+            "sha256": "056da4c9eec7a635ff79b8209b52ad1f6930528780257733955db3cdbcb59358",
+            "imports": [
+              "KERNEL32.dll",
+              "VCRUNTIME140.dll",
+              "api-ms-win-crt-runtime-l1-1-0.dll"
+            ],
+            "markers": [],
+            "markerOffsets": {}
+          },
+          {
+            "package": "onnxruntime",
+            "binary": "onnxruntime/capi/onnxruntime_pybind11_state.pyd",
+            "sha256": "967a5a75907657e538256c6361c6c40a51127ac7984a36e9f11b6b02329deac8",
+            "imports": [
+              "ADVAPI32.dll",
+              "KERNEL32.dll",
+              "MSVCP140.dll",
+              "MSVCP140_1.dll",
+              "SETUPAPI.dll",
+              "VCRUNTIME140.dll",
+              "VCRUNTIME140_1.dll",
+              "api-ms-win-core-path-l1-1-0.dll",
+              "api-ms-win-crt-convert-l1-1-0.dll",
+              "api-ms-win-crt-filesystem-l1-1-0.dll",
+              "api-ms-win-crt-heap-l1-1-0.dll",
+              "api-ms-win-crt-locale-l1-1-0.dll",
+              "api-ms-win-crt-math-l1-1-0.dll",
+              "api-ms-win-crt-runtime-l1-1-0.dll",
+              "api-ms-win-crt-stdio-l1-1-0.dll",
+              "api-ms-win-crt-string-l1-1-0.dll",
+              "api-ms-win-crt-time-l1-1-0.dll",
+              "dbghelp.dll",
+              "dxgi.dll",
+              "python311.dll"
+            ],
+            "markers": [
+              "EigenNonBlockingThreadPool.h",
+              "ThreadPoolInterface@Eigen",
+              "oneDNN execution provider is not enabled in this build."
+            ],
+            "markerOffsets": {
+              "ThreadPoolInterface@Eigen": 18672468,
+              "EigenNonBlockingThreadPool.h": 16102191,
+              "oneDNN execution provider is not enabled in this build.": 15462544
+            }
+          },
+          {
+            "package": "opencv-python-headless",
+            "binary": "cv2/cv2.pyd",
+            "sha256": "129e0ffa58a12fe971678b9fb820d3c2d45ce7529b386c37df9e10b51c06f93e",
+            "imports": [
+              "KERNEL32.dll",
+              "MF.dll",
+              "MFPlat.DLL",
+              "MFReadWrite.dll",
+              "OLEAUT32.dll",
+              "SHLWAPI.dll",
+              "WSOCK32.dll",
+              "ole32.dll",
+              "python3.dll"
+            ],
+            "markers": [
+              "ippicv"
+            ],
+            "markerOffsets": {
+              "ippicv": 58107693
+            }
+          },
+          {
+            "package": "opencv-python-headless",
+            "binary": "cv2/opencv_videoio_ffmpeg4120_64.dll",
+            "sha256": "a0f01e4ee5e97b4a513cd70f01fafadc0dd187ba5d1293cb7fc6b77e7d17c631",
+            "imports": [
+              "KERNEL32.dll",
+              "MFPlat.DLL",
+              "Secur32.dll",
+              "USER32.dll",
+              "WS2_32.dll",
+              "bcrypt.dll",
+              "msvcrt.dll",
+              "ole32.dll"
+            ],
+            "markers": [],
+            "markerOffsets": {}
+          }
+        ],
+        "intelOnnxruntime": {
+          "finding": "MKL notice is generic for this CPU wheel: no MKL/oneDNN import and binary explicitly says oneDNN is disabled.",
+          "limitation": "This does not prove absence of every statically linked Intel-authored instruction; no additional Intel Simplified licence entitlement is assumed."
+        },
+        "eigen": {
+          "component": "Eigen non-blocking thread pool",
+          "license": "MPL-2.0",
+          "finding": "Present: official source path and Eigen RTTI appear in both CPU binaries.",
+          "source": "https://raw.githubusercontent.com/microsoft/onnxruntime/v1.23.2/include/onnxruntime/core/platform/EigenNonBlockingThreadPool.h",
+          "sourceSha256": "0abf19a83eedf5d53de6b87679991bbd023d7c9f0e2b7832402cc9deb574cb19",
+          "licenseHeaderLines": [
+            6,
+            7,
+            8
+          ]
+        }
+      }
+    },
+    {
+      "name": "opencv-python-headless",
+      "version": "4.12.0.88",
+      "file": "opencv_python_headless-4.12.0.88-cp37-abi3-win_amd64.whl",
+      "url": "https://files.pythonhosted.org/packages/f2/35/0858e9e71b36948eafbc5e835874b63e515179dc3b742cbe3d76bc683439/opencv_python_headless-4.12.0.88-cp37-abi3-win_amd64.whl",
+      "bytes": 38923559,
+      "sha256": "86b413bdd6c6bf497832e346cd5371995de148e579b9774f8eba686dee3f5528",
+      "metadataUrl": "https://pypi.org/pypi/opencv-python-headless/4.12.0.88/json",
+      "requiresDist": [
+        "numpy<2.0; python_version < \"3.9\"",
+        "numpy<2.3.0,>=2; python_version >= \"3.9\""
+      ],
+      "licenseExpression": null,
+      "licenseHeader": "Apache 2.0",
+      "licenseFiles": [
+        {
+          "path": "cv2/LICENSE-3RD-PARTY.txt",
+          "sha256": "d8ec888320fcb9d99317a77af4a4a3a91208676067ec1fa9bc1967a522411730"
+        },
+        {
+          "path": "cv2/LICENSE.txt",
+          "sha256": "edef0fac1eb08d29d34563f724742e078da2513e196133a12c6ad9ff01e26107"
+        },
+        {
+          "path": "cv2/data/haarcascade_license_plate_rus_16stages.xml",
+          "sha256": "4d1c44bf7a1bc4e204fa25b046ed0acffd7f713cc13fe2958b6977125c60ddea"
+        },
+        {
+          "path": "opencv_python_headless-4.12.0.88.dist-info/LICENSE-3RD-PARTY.txt",
+          "sha256": "d8ec888320fcb9d99317a77af4a4a3a91208676067ec1fa9bc1967a522411730"
+        },
+        {
+          "path": "opencv_python_headless-4.12.0.88.dist-info/LICENSE.txt",
+          "sha256": "edef0fac1eb08d29d34563f724742e078da2513e196133a12c6ad9ff01e26107"
+        }
+      ],
+      "license": "Apache-2.0",
+      "licenseUrl": "https://pypi.org/pypi/opencv-python-headless/4.12.0.88/json",
+      "bundledLicenses": [
+        {
+          "name": "FFmpeg",
+          "license": "LGPL-2.1-or-later",
+          "licenseUrl": "https://pypi.org/pypi/opencv-python-headless/4.12.0.88/json",
+          "source": "official-pypi-wheel",
+          "licenseFile": "cv2/LICENSE-3RD-PARTY.txt",
+          "licenseSha256": "d8ec888320fcb9d99317a77af4a4a3a91208676067ec1fa9bc1967a522411730",
+          "binaryFiles": [
+            "cv2/opencv_videoio_ffmpeg4120_64.dll"
+          ],
+          "approval": {
+            "date": "2026-11-15",
+            "statement": "Approved FFmpeg LGPL-2.1-or-later in unmodified official OpenCV PyPI wheels for local installation only."
+          }
+        },
+        {
+          "name": "Intel IPP ICV",
+          "license": "LicenseRef-Intel-Simplified-Software-License",
+          "licenseUrl": "https://pypi.org/pypi/opencv-python-headless/4.12.0.88/json",
+          "source": "official-pypi-wheel",
+          "licenseFile": "cv2/LICENSE-3RD-PARTY.txt",
+          "licenseSha256": "d8ec888320fcb9d99317a77af4a4a3a91208676067ec1fa9bc1967a522411730",
+          "binaryFiles": [
+            "cv2/cv2.pyd"
+          ],
+          "binaryEvidence": [
+            {
+              "package": "opencv-python-headless",
+              "binary": "cv2/cv2.pyd",
+              "sha256": "129e0ffa58a12fe971678b9fb820d3c2d45ce7529b386c37df9e10b51c06f93e",
+              "imports": [
+                "KERNEL32.dll",
+                "MF.dll",
+                "MFPlat.DLL",
+                "MFReadWrite.dll",
+                "OLEAUT32.dll",
+                "SHLWAPI.dll",
+                "WSOCK32.dll",
+                "ole32.dll",
+                "python3.dll"
+              ],
+              "markers": [
+                "ippicv"
+              ],
+              "markerOffsets": {
+                "ippicv": 58107693
+              }
+            }
+          ],
+          "approval": {
+            "date": "2026-11-15",
+            "statement": "Approved Intel IPP ICV under the Intel Simplified Software License in unmodified official OpenCV wheels only."
+          }
+        }
+      ]
+    },
+    {
+      "name": "packaging",
+      "version": "26.3",
+      "file": "packaging-26.3-py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/63/34/ba1c580383c9eada3711951fef0795c80b829a078d72188184bcab9dd527/packaging-26.3-py3-none-any.whl",
+      "bytes": 129956,
+      "sha256": "d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c",
+      "metadataUrl": "https://pypi.org/pypi/packaging/26.3/json",
+      "requiresDist": [],
+      "licenseExpression": "Apache-2.0 OR BSD-2-Clause",
+      "licenseHeader": "",
+      "licenseFiles": [
+        {
+          "path": "packaging/licenses/__init__.py",
+          "sha256": "590d12eee73ddbec53b4e9ee5bfc64d9cb3aacb4940e8ebcba260757ce56740b"
+        },
+        {
+          "path": "packaging/licenses/_spdx.py",
+          "sha256": "596ec35e2ca0ebcba9fd8343ff0a51625af548786257815f24b41f7e08613314"
+        },
+        {
+          "path": "packaging-26.3.dist-info/licenses/LICENSE",
+          "sha256": "cad1ef5bd340d73e074ba614d26f7deaca5c7940c3d8c34852e65c4909686c48"
+        },
+        {
+          "path": "packaging-26.3.dist-info/licenses/LICENSE.APACHE",
+          "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+        },
+        {
+          "path": "packaging-26.3.dist-info/licenses/LICENSE.BSD",
+          "sha256": "b70e7e9b742f1cc6f948b34c16aa39ffece94196364bc88ff0d2180f0028fac5"
+        }
+      ],
+      "license": "BSD-2-Clause",
+      "licenseUrl": "https://pypi.org/pypi/packaging/26.3/json",
+      "bundledLicenses": []
+    },
+    {
+      "name": "protobuf",
+      "version": "7.36.2",
+      "file": "protobuf-7.36.2-cp310-abi3-win_amd64.whl",
+      "url": "https://files.pythonhosted.org/packages/8a/55/b77bda4e5e5f5971fb51b07663694690e9afdb9402136c16a522bd621cad/protobuf-7.36.2-cp310-abi3-win_amd64.whl",
+      "bytes": 456514,
+      "sha256": "a300819d441e078a5608c0d3c709796bb548136058fda017ae51d425b44fd353",
+      "metadataUrl": "https://pypi.org/pypi/protobuf/7.36.2/json",
+      "requiresDist": [],
+      "licenseExpression": null,
+      "licenseHeader": "3-Clause BSD License",
+      "licenseFiles": [
+        {
+          "path": "protobuf-7.36.2.dist-info/LICENSE",
+          "sha256": "6e5e117324afd944dcf67f36cf329843bc1a92229a8cd9bb573d7a83130fea7d"
+        }
+      ],
+      "license": "BSD-3-Clause",
+      "licenseUrl": "https://pypi.org/pypi/protobuf/7.36.2/json",
+      "bundledLicenses": []
+    },
+    {
+      "name": "pyreadline3",
+      "version": "3.5.6",
+      "file": "pyreadline3-3.5.6-py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/f7/5e/35c856e186b74678c24927847ad9895a51f1bc02a0c6126477a6c6040064/pyreadline3-3.5.6-py3-none-any.whl",
+      "bytes": 85243,
+      "sha256": "8449b734232e42a5dcd74048e39b60db2839a4c38cf3ae2bf7707d58b5389c0d",
+      "metadataUrl": "https://pypi.org/pypi/pyreadline3/3.5.6/json",
+      "requiresDist": [
+        "build; extra == \"dev\"",
+        "flake8; extra == \"dev\"",
+        "mypy; extra == \"dev\"",
+        "pytest; extra == \"dev\"",
+        "twine; extra == \"dev\""
+      ],
+      "licenseExpression": null,
+      "licenseHeader": "BSD",
+      "licenseFiles": [
+        {
+          "path": "pyreadline3-3.5.6.dist-info/licenses/LICENSE.md",
+          "sha256": "8fc4d8de61b40533023b16e64528d13371a2e9c68677df79ed5e93ba570471bd"
+        }
+      ],
+      "license": "BSD-3-Clause",
+      "licenseUrl": "https://pypi.org/pypi/pyreadline3/3.5.6/json",
+      "bundledLicenses": []
+    },
+    {
+      "name": "scipy",
+      "version": "1.15.3",
+      "file": "scipy-1.15.3-cp311-cp311-win_amd64.whl",
+      "url": "https://files.pythonhosted.org/packages/ab/a7/0ddaf514ce8a8714f6ed243a2b391b41dbb65251affe21ee3077ec45ea9a/scipy-1.15.3-cp311-cp311-win_amd64.whl",
+      "bytes": 41246504,
+      "sha256": "ae48a786a28412d744c62fd7816a4118ef97e5be0bee968ce8f0a2fba7acf3bb",
+      "metadataUrl": "https://pypi.org/pypi/scipy/1.15.3/json",
+      "requiresDist": [
+        "numpy<2.5,>=1.23.5",
+        "pytest; extra == \"test\"",
+        "pytest-cov; extra == \"test\"",
+        "pytest-timeout; extra == \"test\"",
+        "pytest-xdist; extra == \"test\"",
+        "asv; extra == \"test\"",
+        "mpmath; extra == \"test\"",
+        "gmpy2; extra == \"test\"",
+        "threadpoolctl; extra == \"test\"",
+        "scikit-umfpack; extra == \"test\"",
+        "pooch; extra == \"test\"",
+        "hypothesis>=6.30; extra == \"test\"",
+        "array-api-strict<2.1.1,>=2.0; extra == \"test\"",
+        "Cython; extra == \"test\"",
+        "meson; extra == \"test\"",
+        "ninja; sys_platform != \"emscripten\" and extra == \"test\"",
+        "sphinx<8.0.0,>=5.0.0; extra == \"doc\"",
+        "intersphinx_registry; extra == \"doc\"",
+        "pydata-sphinx-theme>=0.15.2; extra == \"doc\"",
+        "sphinx-copybutton; extra == \"doc\"",
+        "sphinx-design>=0.4.0; extra == \"doc\"",
+        "matplotlib>=3.5; extra == \"doc\"",
+        "numpydoc; extra == \"doc\"",
+        "jupytext; extra == \"doc\"",
+        "myst-nb; extra == \"doc\"",
+        "pooch; extra == \"doc\"",
+        "jupyterlite-sphinx>=0.19.1; extra == \"doc\"",
+        "jupyterlite-pyodide-kernel; extra == \"doc\"",
+        "mypy==1.10.0; extra == \"dev\"",
+        "typing_extensions; extra == \"dev\"",
+        "types-psutil; extra == \"dev\"",
+        "pycodestyle; extra == \"dev\"",
+        "ruff>=0.0.292; extra == \"dev\"",
+        "cython-lint>=0.12.2; extra == \"dev\"",
+        "rich-click; extra == \"dev\"",
+        "doit>=0.36.0; extra == \"dev\"",
+        "pydevtool; extra == \"dev\""
+      ],
+      "licenseExpression": null,
+      "licenseHeader": "Copyright (c) 2001-2002 Enthought, Inc. 2003-2024, SciPy Developers.\n         All rights reserved.\n         \n         Re",
+      "licenseFiles": [
+        {
+          "path": "scipy/fft/_pocketfft/LICENSE.md",
+          "sha256": "c04661685cff9d8035fe1c4c3ab357e7f7633cafc06a73e9d90c3c5fede8a86a"
+        },
+        {
+          "path": "scipy/sparse/linalg/_eigen/arpack/COPYING",
+          "sha256": "fcb3c6c7de1460cf7d0863c3c5996e518eb8015a2eced36911f3da178440b3df"
+        },
+        {
+          "path": "scipy/spatial/qhull_src/COPYING.txt",
+          "sha256": "962452e737df7c743a3dc2744232071028b8c0450e7674a55057c330ea1977eb"
+        },
+        {
+          "path": "scipy/_lib/_uarray/LICENSE",
+          "sha256": "e4c4acc31e8287066d7c995d26e3ef902ca1977ee187b260b11c278366503811"
+        },
+        {
+          "path": "scipy-1.15.3.dist-info/LICENSE.txt",
+          "sha256": "f250e7cef15fbd99e8680093d112d7aa7579535b99995268df6c89ac926eb607"
+        }
+      ],
+      "license": "BSD-3-Clause",
+      "licenseUrl": "https://pypi.org/pypi/scipy/1.15.3/json",
+      "bundledLicenses": [
+        {
+          "name": "OpenBLAS",
+          "license": "BSD-3-Clause-Attribution",
+          "licenseUrl": "https://pypi.org/pypi/scipy/1.15.3/json",
+          "source": "official-pypi-wheel",
+          "licenseFile": "scipy-1.15.3.dist-info/LICENSE.txt",
+          "licenseSha256": "f250e7cef15fbd99e8680093d112d7aa7579535b99995268df6c89ac926eb607",
+          "binaryFiles": [
+            "scipy/cluster/_hierarchy.cp311-win_amd64.pyd",
+            "scipy/cluster/_optimal_leaf_ordering.cp311-win_amd64.pyd",
+            "scipy/cluster/_vq.cp311-win_amd64.pyd",
+            "scipy/fft/_pocketfft/pypocketfft.cp311-win_amd64.pyd",
+            "scipy/fftpack/convolve.cp311-win_amd64.pyd",
+            "scipy/integrate/_dop.cp311-win_amd64.pyd",
+            "scipy/integrate/_lsoda.cp311-win_amd64.pyd",
+            "scipy/integrate/_odepack.cp311-win_amd64.pyd",
+            "scipy/integrate/_quadpack.cp311-win_amd64.pyd",
+            "scipy/integrate/_test_multivariate.cp311-win_amd64.pyd",
+            "scipy/integrate/_test_odeint_banded.cp311-win_amd64.pyd",
+            "scipy/integrate/_vode.cp311-win_amd64.pyd",
+            "scipy/interpolate/_bspl.cp311-win_amd64.pyd",
+            "scipy/interpolate/_dfitpack.cp311-win_amd64.pyd",
+            "scipy/interpolate/_dierckx.cp311-win_amd64.pyd",
+            "scipy/interpolate/_fitpack.cp311-win_amd64.pyd",
+            "scipy/interpolate/_interpnd.cp311-win_amd64.pyd",
+            "scipy/interpolate/_ppoly.cp311-win_amd64.pyd",
+            "scipy/interpolate/_rbfinterp_pythran.cp311-win_amd64.pyd",
+            "scipy/interpolate/_rgi_cython.cp311-win_amd64.pyd",
+            "scipy/io/_test_fortran.cp311-win_amd64.pyd",
+            "scipy/io/matlab/_mio5_utils.cp311-win_amd64.pyd",
+            "scipy/io/matlab/_mio_utils.cp311-win_amd64.pyd",
+            "scipy/io/matlab/_streams.cp311-win_amd64.pyd",
+            "scipy/io/_fast_matrix_market/_fmm_core.cp311-win_amd64.pyd",
+            "scipy/linalg/cython_blas.cp311-win_amd64.pyd",
+            "scipy/linalg/cython_lapack.cp311-win_amd64.pyd",
+            "scipy/linalg/_cythonized_array_utils.cp311-win_amd64.pyd",
+            "scipy/linalg/_decomp_interpolative.cp311-win_amd64.pyd",
+            "scipy/linalg/_decomp_lu_cython.cp311-win_amd64.pyd",
+            "scipy/linalg/_decomp_update.cp311-win_amd64.pyd",
+            "scipy/linalg/_fblas.cp311-win_amd64.pyd",
+            "scipy/linalg/_flapack.cp311-win_amd64.pyd",
+            "scipy/linalg/_linalg_pythran.cp311-win_amd64.pyd",
+            "scipy/linalg/_matfuncs_expm.cp311-win_amd64.pyd",
+            "scipy/linalg/_matfuncs_sqrtm_triu.cp311-win_amd64.pyd",
+            "scipy/linalg/_solve_toeplitz.cp311-win_amd64.pyd",
+            "scipy/ndimage/_ctest.cp311-win_amd64.pyd",
+            "scipy/ndimage/_cytest.cp311-win_amd64.pyd",
+            "scipy/ndimage/_nd_image.cp311-win_amd64.pyd",
+            "scipy/ndimage/_ni_label.cp311-win_amd64.pyd",
+            "scipy/ndimage/_rank_filter_1d.cp311-win_amd64.pyd",
+            "scipy/odr/__odrpack.cp311-win_amd64.pyd",
+            "scipy/optimize/_bglu_dense.cp311-win_amd64.pyd",
+            "scipy/optimize/_cobyla.cp311-win_amd64.pyd",
+            "scipy/optimize/_cython_nnls.cp311-win_amd64.pyd",
+            "scipy/optimize/_direct.cp311-win_amd64.pyd",
+            "scipy/optimize/_group_columns.cp311-win_amd64.pyd",
+            "scipy/optimize/_lbfgsb.cp311-win_amd64.pyd",
+            "scipy/optimize/_lsap.cp311-win_amd64.pyd",
+            "scipy/optimize/_minpack.cp311-win_amd64.pyd",
+            "scipy/optimize/_moduleTNC.cp311-win_amd64.pyd",
+            "scipy/optimize/_pava_pybind.cp311-win_amd64.pyd",
+            "scipy/optimize/_slsqp.cp311-win_amd64.pyd",
+            "scipy/optimize/_zeros.cp311-win_amd64.pyd",
+            "scipy/optimize/cython_optimize/_zeros.cp311-win_amd64.pyd",
+            "scipy/optimize/_highspy/_core.cp311-win_amd64.pyd",
+            "scipy/optimize/_highspy/_highs_options.cp311-win_amd64.pyd",
+            "scipy/optimize/_lsq/givens_elimination.cp311-win_amd64.pyd",
+            "scipy/optimize/_trlib/_trlib.cp311-win_amd64.pyd",
+            "scipy/signal/_max_len_seq_inner.cp311-win_amd64.pyd",
+            "scipy/signal/_peak_finding_utils.cp311-win_amd64.pyd",
+            "scipy/signal/_sigtools.cp311-win_amd64.pyd",
+            "scipy/signal/_sosfilt.cp311-win_amd64.pyd",
+            "scipy/signal/_spline.cp311-win_amd64.pyd",
+            "scipy/signal/_upfirdn_apply.cp311-win_amd64.pyd",
+            "scipy/sparse/_csparsetools.cp311-win_amd64.pyd",
+            "scipy/sparse/_sparsetools.cp311-win_amd64.pyd",
+            "scipy/sparse/csgraph/_flow.cp311-win_amd64.pyd",
+            "scipy/sparse/csgraph/_matching.cp311-win_amd64.pyd",
+            "scipy/sparse/csgraph/_min_spanning_tree.cp311-win_amd64.pyd",
+            "scipy/sparse/csgraph/_reordering.cp311-win_amd64.pyd",
+            "scipy/sparse/csgraph/_shortest_path.cp311-win_amd64.pyd",
+            "scipy/sparse/csgraph/_tools.cp311-win_amd64.pyd",
+            "scipy/sparse/csgraph/_traversal.cp311-win_amd64.pyd",
+            "scipy/sparse/linalg/_dsolve/_superlu.cp311-win_amd64.pyd",
+            "scipy/sparse/linalg/_eigen/arpack/_arpack.cp311-win_amd64.pyd",
+            "scipy/sparse/linalg/_propack/_cpropack.cp311-win_amd64.pyd",
+            "scipy/sparse/linalg/_propack/_dpropack.cp311-win_amd64.pyd",
+            "scipy/sparse/linalg/_propack/_spropack.cp311-win_amd64.pyd",
+            "scipy/sparse/linalg/_propack/_zpropack.cp311-win_amd64.pyd",
+            "scipy/spatial/_ckdtree.cp311-win_amd64.pyd",
+            "scipy/spatial/_distance_pybind.cp311-win_amd64.pyd",
+            "scipy/spatial/_distance_wrap.cp311-win_amd64.pyd",
+            "scipy/spatial/_hausdorff.cp311-win_amd64.pyd",
+            "scipy/spatial/_qhull.cp311-win_amd64.pyd",
+            "scipy/spatial/_voronoi.cp311-win_amd64.pyd",
+            "scipy/spatial/transform/_rotation.cp311-win_amd64.pyd",
+            "scipy/special/cython_special.cp311-win_amd64.pyd",
+            "scipy/special/libsf_error_state.dll",
+            "scipy/special/_comb.cp311-win_amd64.pyd",
+            "scipy/special/_ellip_harm_2.cp311-win_amd64.pyd",
+            "scipy/special/_gufuncs.cp311-win_amd64.pyd",
+            "scipy/special/_specfun.cp311-win_amd64.pyd",
+            "scipy/special/_special_ufuncs.cp311-win_amd64.pyd",
+            "scipy/special/_test_internal.cp311-win_amd64.pyd",
+            "scipy/special/_ufuncs.cp311-win_amd64.pyd",
+            "scipy/special/_ufuncs_cxx.cp311-win_amd64.pyd",
+            "scipy/stats/_ansari_swilk_statistics.cp311-win_amd64.pyd",
+            "scipy/stats/_biasedurn.cp311-win_amd64.pyd",
+            "scipy/stats/_mvn.cp311-win_amd64.pyd",
+            "scipy/stats/_qmc_cy.cp311-win_amd64.pyd",
+            "scipy/stats/_sobol.cp311-win_amd64.pyd",
+            "scipy/stats/_stats.cp311-win_amd64.pyd",
+            "scipy/stats/_stats_pythran.cp311-win_amd64.pyd",
+            "scipy/stats/_levy_stable/levyst.cp311-win_amd64.pyd",
+            "scipy/stats/_rcont/rcont.cp311-win_amd64.pyd",
+            "scipy/stats/_unuran/unuran_wrapper.cp311-win_amd64.pyd",
+            "scipy/_lib/messagestream.cp311-win_amd64.pyd",
+            "scipy/_lib/_ccallback_c.cp311-win_amd64.pyd",
+            "scipy/_lib/_fpumode.cp311-win_amd64.pyd",
+            "scipy/_lib/_test_ccallback.cp311-win_amd64.pyd",
+            "scipy/_lib/_test_deprecation_call.cp311-win_amd64.pyd",
+            "scipy/_lib/_test_deprecation_def.cp311-win_amd64.pyd",
+            "scipy/_lib/_uarray/_uarray.cp311-win_amd64.pyd",
+            "scipy.libs/libscipy_openblas-f07f5a5d207a3a47104dca54d6d0c86a.dll"
+          ],
+          "approval": {
+            "date": "2026-11-15",
+            "statement": "Approved OpenBLAS BSD-3-Clause-Attribution in unmodified official NumPy and SciPy wheels only."
+          }
+        },
+        {
+          "name": "LAPACK",
+          "license": "BSD-3-Clause-Attribution",
+          "licenseUrl": "https://pypi.org/pypi/scipy/1.15.3/json",
+          "source": "official-pypi-wheel",
+          "licenseFile": "scipy-1.15.3.dist-info/LICENSE.txt",
+          "licenseSha256": "f250e7cef15fbd99e8680093d112d7aa7579535b99995268df6c89ac926eb607",
+          "binaryFiles": [
+            "scipy/cluster/_hierarchy.cp311-win_amd64.pyd",
+            "scipy/cluster/_optimal_leaf_ordering.cp311-win_amd64.pyd",
+            "scipy/cluster/_vq.cp311-win_amd64.pyd",
+            "scipy/fft/_pocketfft/pypocketfft.cp311-win_amd64.pyd",
+            "scipy/fftpack/convolve.cp311-win_amd64.pyd",
+            "scipy/integrate/_dop.cp311-win_amd64.pyd",
+            "scipy/integrate/_lsoda.cp311-win_amd64.pyd",
+            "scipy/integrate/_odepack.cp311-win_amd64.pyd",
+            "scipy/integrate/_quadpack.cp311-win_amd64.pyd",
+            "scipy/integrate/_test_multivariate.cp311-win_amd64.pyd",
+            "scipy/integrate/_test_odeint_banded.cp311-win_amd64.pyd",
+            "scipy/integrate/_vode.cp311-win_amd64.pyd",
+            "scipy/interpolate/_bspl.cp311-win_amd64.pyd",
+            "scipy/interpolate/_dfitpack.cp311-win_amd64.pyd",
+            "scipy/interpolate/_dierckx.cp311-win_amd64.pyd",
+            "scipy/interpolate/_fitpack.cp311-win_amd64.pyd",
+            "scipy/interpolate/_interpnd.cp311-win_amd64.pyd",
+            "scipy/interpolate/_ppoly.cp311-win_amd64.pyd",
+            "scipy/interpolate/_rbfinterp_pythran.cp311-win_amd64.pyd",
+            "scipy/interpolate/_rgi_cython.cp311-win_amd64.pyd",
+            "scipy/io/_test_fortran.cp311-win_amd64.pyd",
+            "scipy/io/matlab/_mio5_utils.cp311-win_amd64.pyd",
+            "scipy/io/matlab/_mio_utils.cp311-win_amd64.pyd",
+            "scipy/io/matlab/_streams.cp311-win_amd64.pyd",
+            "scipy/io/_fast_matrix_market/_fmm_core.cp311-win_amd64.pyd",
+            "scipy/linalg/cython_blas.cp311-win_amd64.pyd",
+            "scipy/linalg/cython_lapack.cp311-win_amd64.pyd",
+            "scipy/linalg/_cythonized_array_utils.cp311-win_amd64.pyd",
+            "scipy/linalg/_decomp_interpolative.cp311-win_amd64.pyd",
+            "scipy/linalg/_decomp_lu_cython.cp311-win_amd64.pyd",
+            "scipy/linalg/_decomp_update.cp311-win_amd64.pyd",
+            "scipy/linalg/_fblas.cp311-win_amd64.pyd",
+            "scipy/linalg/_flapack.cp311-win_amd64.pyd",
+            "scipy/linalg/_linalg_pythran.cp311-win_amd64.pyd",
+            "scipy/linalg/_matfuncs_expm.cp311-win_amd64.pyd",
+            "scipy/linalg/_matfuncs_sqrtm_triu.cp311-win_amd64.pyd",
+            "scipy/linalg/_solve_toeplitz.cp311-win_amd64.pyd",
+            "scipy/ndimage/_ctest.cp311-win_amd64.pyd",
+            "scipy/ndimage/_cytest.cp311-win_amd64.pyd",
+            "scipy/ndimage/_nd_image.cp311-win_amd64.pyd",
+            "scipy/ndimage/_ni_label.cp311-win_amd64.pyd",
+            "scipy/ndimage/_rank_filter_1d.cp311-win_amd64.pyd",
+            "scipy/odr/__odrpack.cp311-win_amd64.pyd",
+            "scipy/optimize/_bglu_dense.cp311-win_amd64.pyd",
+            "scipy/optimize/_cobyla.cp311-win_amd64.pyd",
+            "scipy/optimize/_cython_nnls.cp311-win_amd64.pyd",
+            "scipy/optimize/_direct.cp311-win_amd64.pyd",
+            "scipy/optimize/_group_columns.cp311-win_amd64.pyd",
+            "scipy/optimize/_lbfgsb.cp311-win_amd64.pyd",
+            "scipy/optimize/_lsap.cp311-win_amd64.pyd",
+            "scipy/optimize/_minpack.cp311-win_amd64.pyd",
+            "scipy/optimize/_moduleTNC.cp311-win_amd64.pyd",
+            "scipy/optimize/_pava_pybind.cp311-win_amd64.pyd",
+            "scipy/optimize/_slsqp.cp311-win_amd64.pyd",
+            "scipy/optimize/_zeros.cp311-win_amd64.pyd",
+            "scipy/optimize/cython_optimize/_zeros.cp311-win_amd64.pyd",
+            "scipy/optimize/_highspy/_core.cp311-win_amd64.pyd",
+            "scipy/optimize/_highspy/_highs_options.cp311-win_amd64.pyd",
+            "scipy/optimize/_lsq/givens_elimination.cp311-win_amd64.pyd",
+            "scipy/optimize/_trlib/_trlib.cp311-win_amd64.pyd",
+            "scipy/signal/_max_len_seq_inner.cp311-win_amd64.pyd",
+            "scipy/signal/_peak_finding_utils.cp311-win_amd64.pyd",
+            "scipy/signal/_sigtools.cp311-win_amd64.pyd",
+            "scipy/signal/_sosfilt.cp311-win_amd64.pyd",
+            "scipy/signal/_spline.cp311-win_amd64.pyd",
+            "scipy/signal/_upfirdn_apply.cp311-win_amd64.pyd",
+            "scipy/sparse/_csparsetools.cp311-win_amd64.pyd",
+            "scipy/sparse/_sparsetools.cp311-win_amd64.pyd",
+            "scipy/sparse/csgraph/_flow.cp311-win_amd64.pyd",
+            "scipy/sparse/csgraph/_matching.cp311-win_amd64.pyd",
+            "scipy/sparse/csgraph/_min_spanning_tree.cp311-win_amd64.pyd",
+            "scipy/sparse/csgraph/_reordering.cp311-win_amd64.pyd",
+            "scipy/sparse/csgraph/_shortest_path.cp311-win_amd64.pyd",
+            "scipy/sparse/csgraph/_tools.cp311-win_amd64.pyd",
+            "scipy/sparse/csgraph/_traversal.cp311-win_amd64.pyd",
+            "scipy/sparse/linalg/_dsolve/_superlu.cp311-win_amd64.pyd",
+            "scipy/sparse/linalg/_eigen/arpack/_arpack.cp311-win_amd64.pyd",
+            "scipy/sparse/linalg/_propack/_cpropack.cp311-win_amd64.pyd",
+            "scipy/sparse/linalg/_propack/_dpropack.cp311-win_amd64.pyd",
+            "scipy/sparse/linalg/_propack/_spropack.cp311-win_amd64.pyd",
+            "scipy/sparse/linalg/_propack/_zpropack.cp311-win_amd64.pyd",
+            "scipy/spatial/_ckdtree.cp311-win_amd64.pyd",
+            "scipy/spatial/_distance_pybind.cp311-win_amd64.pyd",
+            "scipy/spatial/_distance_wrap.cp311-win_amd64.pyd",
+            "scipy/spatial/_hausdorff.cp311-win_amd64.pyd",
+            "scipy/spatial/_qhull.cp311-win_amd64.pyd",
+            "scipy/spatial/_voronoi.cp311-win_amd64.pyd",
+            "scipy/spatial/transform/_rotation.cp311-win_amd64.pyd",
+            "scipy/special/cython_special.cp311-win_amd64.pyd",
+            "scipy/special/libsf_error_state.dll",
+            "scipy/special/_comb.cp311-win_amd64.pyd",
+            "scipy/special/_ellip_harm_2.cp311-win_amd64.pyd",
+            "scipy/special/_gufuncs.cp311-win_amd64.pyd",
+            "scipy/special/_specfun.cp311-win_amd64.pyd",
+            "scipy/special/_special_ufuncs.cp311-win_amd64.pyd",
+            "scipy/special/_test_internal.cp311-win_amd64.pyd",
+            "scipy/special/_ufuncs.cp311-win_amd64.pyd",
+            "scipy/special/_ufuncs_cxx.cp311-win_amd64.pyd",
+            "scipy/stats/_ansari_swilk_statistics.cp311-win_amd64.pyd",
+            "scipy/stats/_biasedurn.cp311-win_amd64.pyd",
+            "scipy/stats/_mvn.cp311-win_amd64.pyd",
+            "scipy/stats/_qmc_cy.cp311-win_amd64.pyd",
+            "scipy/stats/_sobol.cp311-win_amd64.pyd",
+            "scipy/stats/_stats.cp311-win_amd64.pyd",
+            "scipy/stats/_stats_pythran.cp311-win_amd64.pyd",
+            "scipy/stats/_levy_stable/levyst.cp311-win_amd64.pyd",
+            "scipy/stats/_rcont/rcont.cp311-win_amd64.pyd",
+            "scipy/stats/_unuran/unuran_wrapper.cp311-win_amd64.pyd",
+            "scipy/_lib/messagestream.cp311-win_amd64.pyd",
+            "scipy/_lib/_ccallback_c.cp311-win_amd64.pyd",
+            "scipy/_lib/_fpumode.cp311-win_amd64.pyd",
+            "scipy/_lib/_test_ccallback.cp311-win_amd64.pyd",
+            "scipy/_lib/_test_deprecation_call.cp311-win_amd64.pyd",
+            "scipy/_lib/_test_deprecation_def.cp311-win_amd64.pyd",
+            "scipy/_lib/_uarray/_uarray.cp311-win_amd64.pyd",
+            "scipy.libs/libscipy_openblas-f07f5a5d207a3a47104dca54d6d0c86a.dll"
+          ],
+          "approval": {
+            "date": "2026-11-15",
+            "statement": "Approved LAPACK BSD-3-Clause-Attribution in unmodified official NumPy and SciPy wheels only."
+          }
+        },
+        {
+          "name": "GCC runtime library",
+          "license": "GPL-3.0-or-later WITH GCC-exception-3.1",
+          "licenseUrl": "https://pypi.org/pypi/scipy/1.15.3/json",
+          "source": "official-pypi-wheel",
+          "licenseFile": "scipy-1.15.3.dist-info/LICENSE.txt",
+          "licenseSha256": "f250e7cef15fbd99e8680093d112d7aa7579535b99995268df6c89ac926eb607",
+          "binaryFiles": [
+            "scipy/cluster/_hierarchy.cp311-win_amd64.pyd",
+            "scipy/cluster/_optimal_leaf_ordering.cp311-win_amd64.pyd",
+            "scipy/cluster/_vq.cp311-win_amd64.pyd",
+            "scipy/fft/_pocketfft/pypocketfft.cp311-win_amd64.pyd",
+            "scipy/fftpack/convolve.cp311-win_amd64.pyd",
+            "scipy/integrate/_dop.cp311-win_amd64.pyd",
+            "scipy/integrate/_lsoda.cp311-win_amd64.pyd",
+            "scipy/integrate/_odepack.cp311-win_amd64.pyd",
+            "scipy/integrate/_quadpack.cp311-win_amd64.pyd",
+            "scipy/integrate/_test_multivariate.cp311-win_amd64.pyd",
+            "scipy/integrate/_test_odeint_banded.cp311-win_amd64.pyd",
+            "scipy/integrate/_vode.cp311-win_amd64.pyd",
+            "scipy/interpolate/_bspl.cp311-win_amd64.pyd",
+            "scipy/interpolate/_dfitpack.cp311-win_amd64.pyd",
+            "scipy/interpolate/_dierckx.cp311-win_amd64.pyd",
+            "scipy/interpolate/_fitpack.cp311-win_amd64.pyd",
+            "scipy/interpolate/_interpnd.cp311-win_amd64.pyd",
+            "scipy/interpolate/_ppoly.cp311-win_amd64.pyd",
+            "scipy/interpolate/_rbfinterp_pythran.cp311-win_amd64.pyd",
+            "scipy/interpolate/_rgi_cython.cp311-win_amd64.pyd",
+            "scipy/io/_test_fortran.cp311-win_amd64.pyd",
+            "scipy/io/matlab/_mio5_utils.cp311-win_amd64.pyd",
+            "scipy/io/matlab/_mio_utils.cp311-win_amd64.pyd",
+            "scipy/io/matlab/_streams.cp311-win_amd64.pyd",
+            "scipy/io/_fast_matrix_market/_fmm_core.cp311-win_amd64.pyd",
+            "scipy/linalg/cython_blas.cp311-win_amd64.pyd",
+            "scipy/linalg/cython_lapack.cp311-win_amd64.pyd",
+            "scipy/linalg/_cythonized_array_utils.cp311-win_amd64.pyd",
+            "scipy/linalg/_decomp_interpolative.cp311-win_amd64.pyd",
+            "scipy/linalg/_decomp_lu_cython.cp311-win_amd64.pyd",
+            "scipy/linalg/_decomp_update.cp311-win_amd64.pyd",
+            "scipy/linalg/_fblas.cp311-win_amd64.pyd",
+            "scipy/linalg/_flapack.cp311-win_amd64.pyd",
+            "scipy/linalg/_linalg_pythran.cp311-win_amd64.pyd",
+            "scipy/linalg/_matfuncs_expm.cp311-win_amd64.pyd",
+            "scipy/linalg/_matfuncs_sqrtm_triu.cp311-win_amd64.pyd",
+            "scipy/linalg/_solve_toeplitz.cp311-win_amd64.pyd",
+            "scipy/ndimage/_ctest.cp311-win_amd64.pyd",
+            "scipy/ndimage/_cytest.cp311-win_amd64.pyd",
+            "scipy/ndimage/_nd_image.cp311-win_amd64.pyd",
+            "scipy/ndimage/_ni_label.cp311-win_amd64.pyd",
+            "scipy/ndimage/_rank_filter_1d.cp311-win_amd64.pyd",
+            "scipy/odr/__odrpack.cp311-win_amd64.pyd",
+            "scipy/optimize/_bglu_dense.cp311-win_amd64.pyd",
+            "scipy/optimize/_cobyla.cp311-win_amd64.pyd",
+            "scipy/optimize/_cython_nnls.cp311-win_amd64.pyd",
+            "scipy/optimize/_direct.cp311-win_amd64.pyd",
+            "scipy/optimize/_group_columns.cp311-win_amd64.pyd",
+            "scipy/optimize/_lbfgsb.cp311-win_amd64.pyd",
+            "scipy/optimize/_lsap.cp311-win_amd64.pyd",
+            "scipy/optimize/_minpack.cp311-win_amd64.pyd",
+            "scipy/optimize/_moduleTNC.cp311-win_amd64.pyd",
+            "scipy/optimize/_pava_pybind.cp311-win_amd64.pyd",
+            "scipy/optimize/_slsqp.cp311-win_amd64.pyd",
+            "scipy/optimize/_zeros.cp311-win_amd64.pyd",
+            "scipy/optimize/cython_optimize/_zeros.cp311-win_amd64.pyd",
+            "scipy/optimize/_highspy/_core.cp311-win_amd64.pyd",
+            "scipy/optimize/_highspy/_highs_options.cp311-win_amd64.pyd",
+            "scipy/optimize/_lsq/givens_elimination.cp311-win_amd64.pyd",
+            "scipy/optimize/_trlib/_trlib.cp311-win_amd64.pyd",
+            "scipy/signal/_max_len_seq_inner.cp311-win_amd64.pyd",
+            "scipy/signal/_peak_finding_utils.cp311-win_amd64.pyd",
+            "scipy/signal/_sigtools.cp311-win_amd64.pyd",
+            "scipy/signal/_sosfilt.cp311-win_amd64.pyd",
+            "scipy/signal/_spline.cp311-win_amd64.pyd",
+            "scipy/signal/_upfirdn_apply.cp311-win_amd64.pyd",
+            "scipy/sparse/_csparsetools.cp311-win_amd64.pyd",
+            "scipy/sparse/_sparsetools.cp311-win_amd64.pyd",
+            "scipy/sparse/csgraph/_flow.cp311-win_amd64.pyd",
+            "scipy/sparse/csgraph/_matching.cp311-win_amd64.pyd",
+            "scipy/sparse/csgraph/_min_spanning_tree.cp311-win_amd64.pyd",
+            "scipy/sparse/csgraph/_reordering.cp311-win_amd64.pyd",
+            "scipy/sparse/csgraph/_shortest_path.cp311-win_amd64.pyd",
+            "scipy/sparse/csgraph/_tools.cp311-win_amd64.pyd",
+            "scipy/sparse/csgraph/_traversal.cp311-win_amd64.pyd",
+            "scipy/sparse/linalg/_dsolve/_superlu.cp311-win_amd64.pyd",
+            "scipy/sparse/linalg/_eigen/arpack/_arpack.cp311-win_amd64.pyd",
+            "scipy/sparse/linalg/_propack/_cpropack.cp311-win_amd64.pyd",
+            "scipy/sparse/linalg/_propack/_dpropack.cp311-win_amd64.pyd",
+            "scipy/sparse/linalg/_propack/_spropack.cp311-win_amd64.pyd",
+            "scipy/sparse/linalg/_propack/_zpropack.cp311-win_amd64.pyd",
+            "scipy/spatial/_ckdtree.cp311-win_amd64.pyd",
+            "scipy/spatial/_distance_pybind.cp311-win_amd64.pyd",
+            "scipy/spatial/_distance_wrap.cp311-win_amd64.pyd",
+            "scipy/spatial/_hausdorff.cp311-win_amd64.pyd",
+            "scipy/spatial/_qhull.cp311-win_amd64.pyd",
+            "scipy/spatial/_voronoi.cp311-win_amd64.pyd",
+            "scipy/spatial/transform/_rotation.cp311-win_amd64.pyd",
+            "scipy/special/cython_special.cp311-win_amd64.pyd",
+            "scipy/special/libsf_error_state.dll",
+            "scipy/special/_comb.cp311-win_amd64.pyd",
+            "scipy/special/_ellip_harm_2.cp311-win_amd64.pyd",
+            "scipy/special/_gufuncs.cp311-win_amd64.pyd",
+            "scipy/special/_specfun.cp311-win_amd64.pyd",
+            "scipy/special/_special_ufuncs.cp311-win_amd64.pyd",
+            "scipy/special/_test_internal.cp311-win_amd64.pyd",
+            "scipy/special/_ufuncs.cp311-win_amd64.pyd",
+            "scipy/special/_ufuncs_cxx.cp311-win_amd64.pyd",
+            "scipy/stats/_ansari_swilk_statistics.cp311-win_amd64.pyd",
+            "scipy/stats/_biasedurn.cp311-win_amd64.pyd",
+            "scipy/stats/_mvn.cp311-win_amd64.pyd",
+            "scipy/stats/_qmc_cy.cp311-win_amd64.pyd",
+            "scipy/stats/_sobol.cp311-win_amd64.pyd",
+            "scipy/stats/_stats.cp311-win_amd64.pyd",
+            "scipy/stats/_stats_pythran.cp311-win_amd64.pyd",
+            "scipy/stats/_levy_stable/levyst.cp311-win_amd64.pyd",
+            "scipy/stats/_rcont/rcont.cp311-win_amd64.pyd",
+            "scipy/stats/_unuran/unuran_wrapper.cp311-win_amd64.pyd",
+            "scipy/_lib/messagestream.cp311-win_amd64.pyd",
+            "scipy/_lib/_ccallback_c.cp311-win_amd64.pyd",
+            "scipy/_lib/_fpumode.cp311-win_amd64.pyd",
+            "scipy/_lib/_test_ccallback.cp311-win_amd64.pyd",
+            "scipy/_lib/_test_deprecation_call.cp311-win_amd64.pyd",
+            "scipy/_lib/_test_deprecation_def.cp311-win_amd64.pyd",
+            "scipy/_lib/_uarray/_uarray.cp311-win_amd64.pyd",
+            "scipy.libs/libscipy_openblas-f07f5a5d207a3a47104dca54d6d0c86a.dll"
+          ],
+          "approval": {
+            "date": "2026-11-15",
+            "statement": "Approved the GCC runtime with GCC-exception-3.1 in unmodified official NumPy and SciPy wheels only."
+          }
+        }
+      ]
+    },
+    {
+      "name": "sympy",
+      "version": "1.14.0",
+      "file": "sympy-1.14.0-py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/a2/09/77d55d46fd61b4a135c444fc97158ef34a095e5681d0a6c10b75bf356191/sympy-1.14.0-py3-none-any.whl",
+      "bytes": 6299353,
+      "sha256": "e091cc3e99d2141a0ba2847328f5479b05d94a6635cb96148ccb3f34671bd8f5",
+      "metadataUrl": "https://pypi.org/pypi/sympy/1.14.0/json",
+      "requiresDist": [
+        "mpmath<1.4,>=1.1.0",
+        "pytest>=7.1.0; extra == \"dev\"",
+        "hypothesis>=6.70.0; extra == \"dev\""
+      ],
+      "licenseExpression": null,
+      "licenseHeader": "BSD",
+      "licenseFiles": [
+        {
+          "path": "sympy/parsing/latex/LICENSE.txt",
+          "sha256": "007bc30a58fa40a996e772047120de4eaf31f5110e4f9c3b5f93fcdfbe2eaca1"
+        },
+        {
+          "path": "sympy-1.14.0.dist-info/licenses/AUTHORS",
+          "sha256": "82b1038521b0696c63c90b31ed4a0a2c9c4c16871c648b157b07ca44b6f18f8d"
+        },
+        {
+          "path": "sympy-1.14.0.dist-info/licenses/LICENSE",
+          "sha256": "07a5e9819f727b4986ad2829c7a29a6320d42575f720eb24d71b7fef573a0286"
+        }
+      ],
+      "license": "BSD-3-Clause",
+      "licenseUrl": "https://pypi.org/pypi/sympy/1.14.0/json",
+      "bundledLicenses": []
+    }
+  ],
+  "models": {
+    "keys": null,
+    "yamnet": null,
+    "yamnetClassMap": null,
+    "det": {
+      "file": "ch_PP-OCRv5_mobile_det.onnx",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.4.0/onnx/PP-OCRv5/det/ch_PP-OCRv5_mobile_det.onnx",
+      "sha256": "4d97c44a20d30a81aad087d6a396b08f786c4635742afc391f6621f5c6ae78ae",
+      "bytes": 4819576,
+      "license": "Apache-2.0",
+      "licenseUrl": "https://github.com/RapidAI/RapidOCR/blob/v3.4.2/LICENSE",
+      "bundledLicenses": [],
+      "officialHashManifest": "https://raw.githubusercontent.com/RapidAI/RapidOCR/v3.4.2/python/rapidocr/default_models.yaml"
+    },
+    "rec": {
+      "file": "arabic_PP-OCRv4_rec_infer.onnx",
+      "url": "https://www.modelscope.cn/models/RapidAI/RapidOCR/resolve/v3.4.0/onnx/PP-OCRv4/rec/arabic_PP-OCRv4_rec_infer.onnx",
+      "sha256": "4a9011bef71687bb84288dc86ad2471bd5d37b717ddf672dd156f9e7a5601bac",
+      "bytes": 7685206,
+      "license": "Apache-2.0",
+      "licenseUrl": "https://github.com/RapidAI/RapidOCR/blob/v3.4.2/LICENSE",
+      "bundledLicenses": [],
+      "officialHashManifest": "https://raw.githubusercontent.com/RapidAI/RapidOCR/v3.4.2/python/rapidocr/default_models.yaml"
+    }
+  },
+  "ocr": {
+    "backend": "local-onnx",
+    "visualOrder": false,
+    "orderVerified": true,
+    "characterSource": {
+      "source": "ONNX embedded character metadata",
+      "sha256": "637c27c88512c22089bef927b34ada08f748dc132ac70facd68d8202384c2726",
+      "characters": 161,
+      "externalFileRequired": false
+    }
+  },
+  "acquisition": {
+    "wheelBytes": 114212604,
+    "modelBytes": 12504782,
+    "retained": false,
+    "cachePolicy": "Discard all downloaded staging and wheel/bytecode caches after verified install; no worktree archive dependency. Re-download requires a new user yes."
+  },
+  "licenseException": {
+    "approvedOn": "2026-11-15",
+    "scope": "Named components only inside unmodified official PyPI wheels, downloaded at add-on install time; never committed or redistributed.",
+    "components": [
+      {
+        "package": "numpy",
+        "name": "libdivide",
+        "license": "Zlib",
+        "approval": {
+          "date": "2026-11-15",
+          "statement": "Approved libdivide under Zlib in unmodified official NumPy wheels only."
+        }
+      },
+      {
+        "package": "numpy",
+        "name": "LAPACK",
+        "license": "BSD-3-Clause-Attribution",
+        "approval": {
+          "date": "2026-11-15",
+          "statement": "Approved LAPACK BSD-3-Clause-Attribution in unmodified official NumPy and SciPy wheels only."
+        }
+      },
+      {
+        "package": "numpy",
+        "name": "GCC runtime library",
+        "license": "GPL-3.0-or-later WITH GCC-exception-3.1",
+        "approval": {
+          "date": "2026-11-15",
+          "statement": "Approved the GCC runtime with GCC-exception-3.1 in unmodified official NumPy and SciPy wheels only."
+        }
+      },
+      {
+        "package": "scipy",
+        "name": "OpenBLAS",
+        "license": "BSD-3-Clause-Attribution",
+        "approval": {
+          "date": "2026-11-15",
+          "statement": "Approved OpenBLAS BSD-3-Clause-Attribution in unmodified official NumPy and SciPy wheels only."
+        }
+      },
+      {
+        "package": "scipy",
+        "name": "LAPACK",
+        "license": "BSD-3-Clause-Attribution",
+        "approval": {
+          "date": "2026-11-15",
+          "statement": "Approved LAPACK BSD-3-Clause-Attribution in unmodified official NumPy and SciPy wheels only."
+        }
+      },
+      {
+        "package": "scipy",
+        "name": "GCC runtime library",
+        "license": "GPL-3.0-or-later WITH GCC-exception-3.1",
+        "approval": {
+          "date": "2026-11-15",
+          "statement": "Approved the GCC runtime with GCC-exception-3.1 in unmodified official NumPy and SciPy wheels only."
+        }
+      },
+      {
+        "package": "opencv-python-headless",
+        "name": "FFmpeg",
+        "license": "LGPL-2.1-or-later",
+        "approval": {
+          "date": "2026-11-15",
+          "statement": "Approved FFmpeg LGPL-2.1-or-later in unmodified official OpenCV PyPI wheels for local installation only."
+        }
+      },
+      {
+        "package": "opencv-python-headless",
+        "name": "Intel IPP ICV",
+        "license": "LicenseRef-Intel-Simplified-Software-License",
+        "approval": {
+          "date": "2026-11-15",
+          "statement": "Approved Intel IPP ICV under the Intel Simplified Software License in unmodified official OpenCV wheels only."
+        }
+      },
+      {
+        "package": "onnxruntime",
+        "name": "Eigen",
+        "license": "MPL-2.0",
+        "approval": {
+          "date": "2026-11-15",
+          "statement": "Approved Eigen MPL-2.0 in the audited unmodified official ONNX Runtime 1.23.2 Windows wheel only."
+        }
+      }
+    ],
+    "eigenDecision": {
+      "approvedOn": "2026-11-15",
+      "package": "onnxruntime",
+      "version": "1.23.2",
+      "name": "Eigen",
+      "license": "MPL-2.0",
+      "binary": "onnxruntime/capi/onnxruntime.dll",
+      "scope": "Inside the unmodified official PyPI wheel, downloaded at add-on install time; never committed or redistributed.",
+      "statement": "Approved Eigen MPL-2.0 in the audited unmodified official ONNX Runtime 1.23.2 Windows wheel only."
+    },
+    "onnxIntelScope": "Intel code under the same Intel Simplified licence only if binary-backed evidence proves inclusion. No such entitlement used for this wheel."
+  },
+  "audit": {
+    "status": "approved",
+    "checkedAt": "2026-11-15T16:56:01.866390+00:00",
+    "blockers": [],
+    "eigenDecision": {
+      "approvedOn": "2026-11-15",
+      "package": "onnxruntime",
+      "version": "1.23.2",
+      "name": "Eigen",
+      "license": "MPL-2.0",
+      "binary": "onnxruntime/capi/onnxruntime.dll",
+      "scope": "Inside the unmodified official PyPI wheel, downloaded at add-on install time; never committed or redistributed.",
+      "statement": "Approved Eigen MPL-2.0 in the audited unmodified official ONNX Runtime 1.23.2 Windows wheel only."
+    },
+    "removed": "RapidOCR and every sole dependency excluded from the selected closure; transient downloads are discarded after verified installation, while hashes and provenance remain in pins.",
+    "intelFinding": {
+      "finding": "MKL notice is generic for this CPU wheel: no MKL/oneDNN import and binary explicitly says oneDNN is disabled.",
+      "limitation": "This does not prove absence of every statically linked Intel-authored instruction; no additional Intel Simplified licence entitlement is assumed."
+    },
+    "optionalYamnet": "Not downloaded: exact official artifact/licence not verified; local spectral rules remain available."
+  }
+}

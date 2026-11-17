@@ -58,13 +58,13 @@ export async function writeTranscriptionChunk(directory, identity, result) {
   await writeTranscriptionJson(path.join(directory, 'chunk-manifest.json'), { schema: TRANSCRIPTION_SCHEMA, cacheKey: transcriptionCacheKey(identity), identity, sha256: await sha256File(file) });
 }
 
-export async function runTranscriptionCommand(executable, args, logFile, { timeout = 120000 } = {}) {
+export async function runTranscriptionCommand(executable, args, logFile, { timeout = 120000, signal } = {}) {
   assertTranscriptionOutputPath(logFile);
   const log = await fsp.open(logFile, 'w');
   try {
     await new Promise((resolve, reject) => {
 
-      const child = spawn(executable, args, { windowsHide: true, stdio: ['ignore', log.fd, log.fd], timeout, cwd: ROOT, env: process.env });
+      const child = spawn(executable, args, { windowsHide: true, signal, stdio: ['ignore', log.fd, log.fd], timeout, cwd: ROOT, env: process.env });
       child.once('error', reject);
       child.once('close', (code, signal) => code === 0 ? resolve() : reject(Object.assign(new Error('Command failed'), { code, signal })));
     });
@@ -73,8 +73,8 @@ export async function runTranscriptionCommand(executable, args, logFile, { timeo
   } finally { await log.close(); }
 }
 
-async function probeAudio(ffprobe, media) {
-  const { stdout } = await execute(ffprobe, ['-v', 'error', '-select_streams', 'a:0', '-show_streams', '-show_format', '-of', 'json', media], { windowsHide: true, encoding: 'utf8', timeout: 30000, maxBuffer: 4 * 1024 * 1024, env: process.env });
+async function probeAudio(ffprobe, media, signal) {
+  const { stdout } = await execute(ffprobe, ['-v', 'error', '-select_streams', 'a:0', '-show_streams', '-show_format', '-of', 'json', media], { windowsHide: true, signal, encoding: 'utf8', timeout: 30000, maxBuffer: 4 * 1024 * 1024, env: process.env });
   const probe = JSON.parse(stdout);
   const stream = probe.streams?.[0];
   if (!stream) throw new Error(`No audio stream in ${path.basename(media)}.`);
@@ -104,23 +104,24 @@ export async function transcriptionCodeIdentity({
   };
 }
 
-async function transcribeChunk({ chunk, total, decodedMs, identity, options, runtime, model, ffmpeg, ffprobe, onProgress }) {
+async function transcribeChunk({ chunk, total, decodedMs, identity, options, runtime, model, ffmpeg, ffprobe, onProgress, signal, onRun }) {
   const directory = assertTranscriptionOutputPath(path.join(ROOT, 'state', 'cache', 'transcript-chunks', transcriptionCacheKey(identity)));
   const existing = options.force ? null : await readTranscriptionChunk(directory, identity);
   if (existing) return { ...existing, chunk, cached: true, cacheDir: directory };
   await fsp.mkdir(directory, { recursive: true });
   const attempt = path.join(directory, `attempt-${randomUUID()}`);
   await fsp.mkdir(attempt);
+  onRun?.();
   const startedAt = performance.now();
   const durationMs = chunk.endMs - chunk.startMs;
   const wav = path.join(attempt, 'audio-16k.wav');
   onProgress(chunkProgressLine({ chunk, total, threads: options.threads, decodedMs }));
-  await runTranscriptionCommand(ffmpeg, ['-hide_banner', '-nostdin', '-y', '-i', options.media, '-ss', (chunk.startMs / 1000).toFixed(3), '-t', (durationMs / 1000).toFixed(3), '-map', '0:a:0', '-vn', '-ac', '1', '-ar', '16000', '-c:a', 'pcm_s16le', wav], path.join(attempt, 'ffmpeg.log'));
-  const converted = await probeAudio(ffprobe, wav);
+  await runTranscriptionCommand(ffmpeg, ['-hide_banner', '-nostdin', '-y', '-i', options.media, '-ss', (chunk.startMs / 1000).toFixed(3), '-t', (durationMs / 1000).toFixed(3), '-map', '0:a:0', '-vn', '-ac', '1', '-ar', '16000', '-c:a', 'pcm_s16le', wav], path.join(attempt, 'ffmpeg.log'),{signal});
+  const converted = await probeAudio(ffprobe, wav, signal);
   if (converted.codec !== 'pcm_s16le' || converted.sampleRate !== 16000 || converted.channels !== 1 || Math.abs(converted.durationMs - durationMs) > 50) throw new Error(`Chunk audio does not match 16 kHz mono PCM or its requested duration: ${wav}.`);
   const outputPrefix = path.join(attempt, 'whisper');
   const cliArgs = whisperArguments({ options, runtime, model, wav, outputPrefix });
-  await runTranscriptionCommand(runtime.executable, cliArgs, path.join(attempt, 'whisper.log'), { timeout: 20 * 60000 });
+  await runTranscriptionCommand(runtime.executable, cliArgs, path.join(attempt, 'whisper.log'), { timeout: 20 * 60000, signal });
   const raw = JSON.parse(await fsp.readFile(`${outputPrefix}.json`, 'utf8'));
   if (!Array.isArray(raw.transcription)) throw new Error(`Whisper did not produce valid JSON: ${outputPrefix}.json.`);
   const result = { raw, durationMs, elapsedMs: Math.round(performance.now() - startedAt), command: { executable: runtime.executable, args: cliArgs }, rawFile: `${outputPrefix}.json`, logFile: path.join(attempt, 'whisper.log'), audioFile: wav };
@@ -128,7 +129,8 @@ async function transcribeChunk({ chunk, total, decodedMs, identity, options, run
   return { ...result, chunk, cached: false, cacheDir: directory };
 }
 
-export async function transcribeMedia(args, { onProgress = message => console.error(message) } = {}) {
+export async function transcribeMedia(args, { onProgress = message => console.error(message), signal, onRun } = {}) {
+  signal?.throwIfAborted();
   const startTime = performance.now();
   const options = normalizeTranscriptionOptions(args);
   const source = await fsp.realpath(options.media);
@@ -145,7 +147,7 @@ export async function transcribeMedia(args, { onProgress = message => console.er
   if (!fs.existsSync(ffmpeg) || !fs.existsSync(ffprobe)) throw new Error('Project-local Tools/bin/ffmpeg.exe and ffprobe.exe are required.');
   onProgress('Hashing source and model; checking the installed CPU runtime.');
   const [sourceSha256, model, actualRuntime, audioProbe, ffmpegSha256] = await Promise.all([
-    sha256File(source), resolveWhisperModel(options.model), inspectWhisperRuntime(runtime.directory, { expectedBinaryFiles: runtime.binaryFiles }), probeAudio(ffprobe, source), sha256File(ffmpeg),
+    sha256File(source), resolveWhisperModel(options.model), inspectWhisperRuntime(runtime.directory, { expectedBinaryFiles: runtime.binaryFiles }), probeAudio(ffprobe, source, signal), sha256File(ffmpeg),
   ]);
   runtime = { ...runtime, ...actualRuntime };
   if (options.vad && (!runtime.capabilities.vadFlag || !runtime.vad?.path || !fs.existsSync(runtime.vad.path))) throw new Error('The VAD model is unavailable. Run node scripts/studio.mjs setup.');
@@ -176,10 +178,12 @@ export async function transcribeMedia(args, { onProgress = message => console.er
   const results = [];
   const decodedMs = [];
   for (const chunk of chunks) {
-    const result = await transcribeChunk({ chunk, total: chunks.length, decodedMs, identity: { ...decodeIdentity, startMs: chunk.startMs, endMs: chunk.endMs }, options, runtime, model, ffmpeg, ffprobe, onProgress });
+    signal?.throwIfAborted();
+    const result = await transcribeChunk({ chunk, total: chunks.length, decodedMs, identity: { ...decodeIdentity, startMs: chunk.startMs, endMs: chunk.endMs }, options, runtime, model, ffmpeg, ffprobe, onProgress, signal, onRun });
     if (!result.cached) decodedMs.push(result.elapsedMs);
     results.push(result);
   }
+  signal?.throwIfAborted();
   const sourceAfter = await fsp.stat(source);
   if (sourceAfter.size !== sourceStat.size || sourceAfter.mtimeMs !== sourceStat.mtimeMs) throw new Error('Source changed during transcription; cached output was not promoted.');
   const merged = mergeTranscriptionChunks(results);

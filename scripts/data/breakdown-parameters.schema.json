@@ -1,0 +1,383 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Local parameterized accuracy suite",
+  "$comment": "Runtime validation also checks filesystem containment, frame/sample alignment, source ranges, clipping, and visible picture swaps. No parameter files are discovered automatically.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "reels"
+  ],
+  "properties": {
+    "schema": {
+      "const": 1
+    },
+    "reels": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {
+        "$ref": "#/$defs/reel"
+      }
+    }
+  },
+  "$defs": {
+    "color": {
+      "type": "string",
+      "pattern": "^#[a-fA-F0-9]{6}$"
+    },
+    "box": {
+      "description": "Normalized [x,y,width,height], within the canvas; runtime checks the pixel footprint.",
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      }
+    },
+    "gain": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 2
+    },
+    "beats": {
+      "type": "array",
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {
+        "type": "number",
+        "minimum": 0,
+        "exclusiveMaximum": 16
+      }
+    },
+    "speech": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "file",
+        "durationSec"
+      ],
+      "properties": {
+        "file": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Explicit local audio/video under Raw/ or Projects/<project>/ only. Relative paths start at the studio root. Absolute and resolved paths must pass the same allow-list; state/, Tools/, external paths and network URLs are forbidden."
+        },
+        "sourceStartSec": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 86400,
+          "default": 0
+        },
+        "targetStartSec": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 180,
+          "default": 0
+        },
+        "durationSec": {
+          "type": "number",
+          "minimum": 0.001,
+          "maximum": 180
+        },
+        "gain": {
+          "$ref": "#/$defs/gain",
+          "default": 1
+        }
+      }
+    },
+    "reel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "durationSec",
+        "bpm",
+        "mode"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{0,63}$"
+        },
+        "durationSec": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 180
+        },
+        "fps": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 120,
+          "default": 30
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 32,
+          "maximum": 1080,
+          "multipleOf": 2,
+          "default": 540
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 32,
+          "maximum": 1920,
+          "multipleOf": 2,
+          "default": 960
+        },
+        "bpm": {
+          "type": "number",
+          "minimum": 40,
+          "maximum": 240
+        },
+        "beatPhaseSec": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Initial phase in seconds, at most one beat period."
+        },
+        "mode": {
+          "enum": [
+            "bed",
+            "dry",
+            "silence"
+          ],
+          "description": "bed adds sustained non-percussive tones; dry keeps the configured drums; silence makes the source WAV exactly zero and forbids speech/effects. Every MP4 is encoded with AAC: a silence reel tests the detector after codec round-trip and does not guarantee exact PCM zeroes. The exact-silence fast path is pinned separately in tests/breakdown-pcm.test.mjs."
+        },
+        "gains": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "bed": {
+              "$ref": "#/$defs/gain"
+            },
+            "kick": {
+              "$ref": "#/$defs/gain"
+            },
+            "hat": {
+              "$ref": "#/$defs/gain"
+            },
+            "snare": {
+              "$ref": "#/$defs/gain"
+            },
+            "speech": {
+              "$ref": "#/$defs/gain"
+            },
+            "sfx": {
+              "$ref": "#/$defs/gain"
+            }
+          }
+        },
+        "drumPattern": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "none",
+                "kick",
+                "kit",
+                "kickless"
+              ]
+            },
+            "syncopation": {
+              "type": "boolean"
+            },
+            "cycleBeats": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 16
+            },
+            "kickBeats": {
+              "$ref": "#/$defs/beats"
+            },
+            "hatBeats": {
+              "$ref": "#/$defs/beats"
+            },
+            "snareBeats": {
+              "$ref": "#/$defs/beats"
+            }
+          }
+        },
+        "effects": {
+          "type": "array",
+          "maxItems": 256,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "timeSec"
+            ],
+            "properties": {
+              "type": {
+                "enum": [
+                  "pop",
+                  "impact",
+                  "ding",
+                  "click",
+                  "whoosh",
+                  "riser",
+                  "hit"
+                ]
+              },
+              "timeSec": {
+                "type": "number",
+                "minimum": 0
+              },
+              "gain": {
+                "$ref": "#/$defs/gain"
+              },
+              "placement": {
+                "enum": [
+                  "exact",
+                  "on-beat",
+                  "off-beat"
+                ]
+              }
+            }
+          }
+        },
+        "speech": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "#/$defs/speech"
+          }
+        },
+        "picture": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "background",
+            "box",
+            "color"
+          ],
+          "properties": {
+            "background": {
+              "$ref": "#/$defs/color"
+            },
+            "box": {
+              "$ref": "#/$defs/box"
+            },
+            "color": {
+              "$ref": "#/$defs/color"
+            }
+          }
+        },
+        "pictureSwaps": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "timeSec",
+              "box",
+              "color"
+            ],
+            "properties": {
+              "timeSec": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "box": {
+                "$ref": "#/$defs/box"
+              },
+              "color": {
+                "$ref": "#/$defs/color"
+              }
+            }
+          }
+        },
+        "captions": {
+          "type": "array",
+          "maxItems": 128,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "startSec",
+              "endSec",
+              "text"
+            ],
+            "properties": {
+              "startSec": {
+                "type": "number",
+                "minimum": 0
+              },
+              "endSec": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "zone": {
+                "enum": [
+                  "top",
+                  "bottom"
+                ]
+              }
+            }
+          }
+        },
+        "timbre": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Optional drum timbres; defaults are byte-identical to the original parameter waveform.",
+          "properties": {
+            "kickClickAmount": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "default": 0,
+              "description": "Added high-frequency kick attack; zero keeps the original sine kick."
+            },
+            "hatBrightness": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "default": 0,
+              "description": "Blend toward differentiated noise; zero keeps the original white hat."
+            },
+            "snareToneHz": {
+              "type": "number",
+              "minimum": 80,
+              "maximum": 1000,
+              "default": 190,
+              "description": "Frequency of the existing 20% snare-tone component."
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "silence"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "speech": {
+                "maxItems": 0
+              },
+              "effects": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

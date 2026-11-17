@@ -5,8 +5,8 @@ import {createHash} from 'node:crypto';
 import {ROOT,slug,relativePath,checkedPath,readJson,atomicJson,withFileLock,fileSnapshot} from './job-paths.mjs';
 
 const OWNER='reel-studio-production-handoff-v1';
-const ROLES=['analysis','editorial','assets','sound','edit','qa','delivery'];
-const INPUT_ROLES=['source','transcript','intake','profile','asset','brief','edit','editorial-plan','copy'];
+const ROLES=['breakdown','analysis','editorial','assets','sound','edit','qa','delivery'];
+const INPUT_ROLES=['source','reference','transcript','intake','profile','asset','brief','edit','editorial-plan','copy'];
 const hash=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const now=()=>new Date().toISOString();
 function object(value,keys,label){

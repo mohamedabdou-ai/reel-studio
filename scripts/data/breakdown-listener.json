@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "provider": "gemini",
+  "api": "generateContent",
+  "model": "gemini-3.8-flash",
+  "checked":
+    "2026-11-16",
+  "docs": [
+    "https://aistudio.google.com/docs/models/gemini-3.8-flash",
+    "https://aistudio.google.com/docs/pricing",
+    "https://aistudio.google.com/docs/video-understanding",
+    "https://aistudio.google.com/docs/files",
+    "https://aistudio.google.com/api-reference/generate-content"
+  ],
+  "price": {"input": 0.75, "output": 3.75, "until": "2026-12-31", "after": {"input": 1.5, "output": 7.5}},
+  "tokens": {"perFrame": 258, "audioPerSecond": 32, "prompt": 2500, "typicalOutput": 3000},
+  "videoFps": 2,
+  "maxOutputTokens": 8192,
+  "maxDurationSec": 180,
+  "maxBytes": 2000000000,
+  "processingTimeoutMs": 300000,
+  "dataUse": "On a free-tier key Google may use the sent video and the answer to improve its products; on a paid (billing-linked) key it does not. Google deletes uploaded files after 48 hours; the studio deletes its upload right after the answer."
+}

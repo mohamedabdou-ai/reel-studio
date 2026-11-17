@@ -14,13 +14,13 @@ const profile=JSON.parse(await fs.readFile(new URL('../PROFILE.example.json',imp
 const words=[{text:'قبل',startMs:0,endMs:300,confidence:1},{text:'ما',startMs:320,endMs:500,confidence:1},{text:'تبدأ',startMs:520,endMs:900,confidence:1},{text:'خطة',startMs:920,endMs:1300,confidence:1},{text:'جديدة',startMs:1320,endMs:1700,confidence:0.4}];
 const ids=report=>Object.fromEntries(report.checks.map(item=>[item.id,item.status]));
 
-async function fixture(t,role){
+async function fixture(t,role,inputRole='copy'){
   const id=`accept-test-${randomUUID().slice(0,8)}`,root=`Projects/${id}`;
   await fs.mkdir(path.join(ROOT,root),{recursive:true});
   t.after(async()=>{assert.match(id,/^accept-test-/);await fs.rm(path.join(ROOT,root),{recursive:true,force:true});});
   const put=async(file,data)=>{await fs.mkdir(path.dirname(path.join(ROOT,file)),{recursive:true});await fs.writeFile(path.join(ROOT,file),typeof data==='string'?data:JSON.stringify(data,null,2)+'\n','utf8');return file;};
   const copy=await put(`${root}/copy.md`,'Illustrative copy.');
-  const request=await put(`${root}/production-request.json`,{version:1,id,runId:'r1',mode:'graphics',interaction:'delegated',objective:'Accept-test run.',inputs:[{role:'copy',path:copy}],tasks:[{id:'t1',role,objective:'Do the role.',dependsOn:[]}]});
+  const request=await put(`${root}/production-request.json`,{version:1,id,runId:'r1',mode:'graphics',interaction:'delegated',objective:'Accept-test run.',inputs:[{role:inputRole,path:copy}],tasks:[{id:'t1',role,objective:'Do the role.',dependsOn:[]}]});
   await createProductionPlan(request);
   const task=`${root}/production/r1/tasks/t1`;
   return {id,root,task,put};
@@ -203,4 +203,46 @@ test('accept.json carries the claim basis; foreign folders and role mismatches a
   assert.equal((await acceptTask({role:'qa',task:f.task})).basisHash,claim.basisHash);
   await assert.rejects(acceptTask({role:'sound',task:f.task}),/Packet role is qa/);
   await assert.rejects(acceptTask({role:'qa',task:'Outputs/x'}),/owned Projects/);
+});
+
+test('breakdown acceptance needs the layers, the visual review, sound questions and a draft DNA', async t => {
+  const f = await fixture(t, 'breakdown'), ref = 'ref-444444444444', dir = `Projects/${f.id}/style-analysis/${ref}`;
+  await f.put(`${f.task}/breakdown-summary.md`, `# Breakdown\n\nReference ${ref}: 12 shots, 3 need confirmation.\n`);
+  await f.put(`${f.task}/questions.md`, '1. sound.tempo: tap along with the music for ten seconds.\n');
+  await f.put(`${dir}/breakdown.json`, {schema: 1, referenceId: ref, reviewQueue: ['C02', 'sound.tempo']});
+  for (const file of ['BREAKDOWN.md', 'studio-recipe.md', 'report/report.html']) await f.put(`${dir}/${file}`, 'x');
+  await f.put(`${dir}/review_tasks.json`, {tasks: []});
+  await f.put(`Projects/${f.id}/STYLE_DNA.json`, {status: 'draft', generatedBy: 'breakdown', baseStyle: null, references: [{id: ref}]});
+  const report = await acceptTask({role: 'breakdown', task: f.task});
+  assert.equal(report.ok, true, JSON.stringify(report.checks));
+  await f.put(`${f.task}/questions.md`, 'No questions.\n');
+  const bad = await acceptTask({role: 'breakdown', task: f.task});
+  assert.equal(ids(bad)[`sound-questions-${ref}`], 'fail');
+});
+
+test('breakdown packets retain named reference inputs and acceptance fails for missing artifacts', async t => {
+  const f = await fixture(t, 'breakdown', 'reference');
+  const packet = JSON.parse(await fs.readFile(path.join(ROOT, f.task, 'packet.json'), 'utf8'));
+  assert.equal(packet.role, 'breakdown');
+  assert.equal(packet.inputs[0].role, 'reference');
+  assert.equal(packet.definition, 'instructions/agents/breakdown.md');
+  const report = await acceptTask({role: 'breakdown', task: f.task});
+  assert.equal(report.ok, false);
+  assert.equal(ids(report).summary, 'fail');
+  assert.equal(ids(report).questions, 'fail');
+  assert.equal(ids(report).dna, 'fail');
+});
+
+test('breakdown DNA acceptance requires explicit baseStyle null in the draft or proposal', async t => {
+  const f = await fixture(t, 'breakdown'), ref = 'ref-555555555555';
+  await f.put(`${f.task}/breakdown-summary.md`, `# Breakdown\n\nReference ${ref}.\n`);
+  await f.put(`${f.task}/questions.md`, 'No sound questions.\n');
+  const draft = {status: 'draft', generatedBy: 'breakdown', references: [{id: ref}]};
+  const live = `Projects/${f.id}/STYLE_DNA.json`, proposal = `Projects/${f.id}/STYLE_DNA.proposal.json`;
+  for (const bad of [draft, {...draft, baseStyle: 'grid-glide'}, {...draft, baseStyle: false}]) {
+    await f.put(live, bad); await f.put(proposal, bad);
+    assert.equal(ids(await acceptTask({role: 'breakdown', task: f.task})).dna, 'fail');
+  }
+  await f.put(proposal, {...draft, baseStyle: null});
+  assert.equal(ids(await acceptTask({role: 'breakdown', task: f.task})).dna, 'pass');
 });

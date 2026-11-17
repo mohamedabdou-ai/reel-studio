@@ -181,8 +181,55 @@ test('nothing is written until every guide validates',async t=>{
 
 test('every distributed agent definition has a current generated copy',async()=>{
   const {syncAssistantGuides,GUIDES,AGENT_ROLES}=await implementation();
-  assert.deepEqual(AGENT_ROLES,['analysis','editorial','assets','sound','edit','qa','delivery','eval-judge']);
+  assert.deepEqual(AGENT_ROLES,['analysis','editorial','assets','sound','edit','qa','delivery','breakdown','eval-judge']);
   assert.equal(GUIDES.length,1+AGENT_ROLES.length);
   const result=await syncAssistantGuides(ROOT,{check:true});
   assert.equal(result.ok,true,`Drifted: ${result.guides.filter(guide=>!guide.ok).map(guide=>guide.generated).join(', ')}. Run node scripts/sync-assistant-guides.mjs.`);
+});
+
+test('a named finished reference is routed to the breakdown worker in every guide',async()=>{
+  const read=file=>fs.readFile(path.join(ROOT,file),'utf8').then(text=>text.split(/\r?\n/));
+  const skill=(await read(CANONICAL)).join(' ');
+  for(const phrase of ['«فكّك الريل ده»','"break down this reel"','«اعمل تسجيلي بنفس أسلوب الريل ده»','(../../../instructions/agents/breakdown.md)','never replace your style choice'])assert.ok(skill.includes(phrase),phrase);
+  const learningLines=await read('instructions/STYLE-LEARNING.md'),learning=learningLines.join(' ');
+  const steps=learningLines.filter(line=>/^[0-9]+[.] /.test(line)).map(line=>line.slice(0,2));
+  assert.deepEqual(steps,['1.','2.','3.','4.'],'The inspection steps keep one numbering.');
+  const third=learningLines.find(line=>line.startsWith('3. '));
+  for(const kept of ['Run the breakdown first','agents/breakdown.md','needs-confirmation','Inspect motion frame by frame','do not establish easing, audio cues or sequence','If only part of a reference is available'])assert.ok(third.includes(kept),kept);
+  assert.equal(learning.split('Inspect the opening, middle, important idea transitions and ending').length,2,'The coverage sentence appears once.');
+  assert.ok(!learning.includes('You cannot hear the reference'));
+  for(const kept of ['breakdown.mjs inspect','STYLE_DNA.proposal.json','status: "draft"','baseStyle: null','suggestions, never decisions'])assert.ok(learning.includes(kept),kept);
+  const readme=await read('instructions/agents/README.md');
+  const firstRule=readme[readme.indexOf('## Staffing rule')+2];
+  assert.match(firstRule,/^- A named finished reference.*breakdown worker first, alone/);
+  const managerLines=await read('instructions/PRODUCTION-MANAGER.md'),manager=managerLines.join(' ');
+  const firstRow=managerLines[managerLines.findIndex(line=>line.startsWith('| --- |'))+1];
+  assert.ok(firstRow.startsWith('| breakdown | `agents/breakdown.md` · sonnet |'),'The breakdown row leads the team table.');
+  assert.ok(manager.includes('breakdown first when the request names a finished reference'));
+  assert.match(manager,/Supported input roles are source, reference,/);
+  assert.match(manager,/roles are the team's breakdown, analysis,/);
+});
+test("the listener step belongs to the manager, needs the creator's yes and a key the creator saves themselves",async()=>{
+  const read=file=>fs.readFile(path.join(ROOT,file),'utf8').then(text=>text.split(/\r?\n/));
+  const learningLines=await read('instructions/STYLE-LEARNING.md'),learning=learningLines.join(' ');
+  for(const kept of ['breakdown.mjs listen','--consent yes','listener-key','--heard-by creator','estimateUsd','dataUse','keyPresent','GEMINI_API_KEY','review-ears.template.json'])assert.ok(learning.includes(kept),kept);
+  assert.match(learning,/creator to run `node scripts\/breakdown\.mjs listener-key` in their own terminal/);
+  assert.match(learning,/Never ask for the key in chat and never type it/);
+  assert.match(learning,/Run `listen` without consent\. It sends nothing/);
+  assert.match(learning,/Never fill a sound answer from images or from your own guess/);
+  assert.match(learning,/never receives the creator's own recordings/);
+  assert.ok(learning.indexOf('Optional: let the listener hear the reference')>0&&learning.indexOf('Optional: let the listener hear the reference')<learning.indexOf('## Give every claim an evidence record'));
+  assert.deepEqual(learningLines.filter(line=>/^[0-9]+[.] /.test(line)).map(line=>line.slice(0,2)),['1.','2.','3.','4.'],'The listener step adds no numbered inspection step.');
+  const worker=(await read('instructions/agents/breakdown.md')).join(' ');
+  const never=worker.slice(worker.indexOf('## Never'),worker.indexOf('## Knowledge'));
+  for(const kept of ['listen --consent','listener-key','apply-review --heard-by'])assert.ok(never.includes(kept),kept);
+  assert.match(worker,/`heard` now means the listener or the creator's ear; a `needs-confirmation` heard item is not a rule/);
+  const manager=(await read('instructions/PRODUCTION-MANAGER.md')).join(' ');
+  assert.match(manager,/`listen` and the creator's ear answers are manager actions after the creator's yes/);
+  const skill=(await read(CANONICAL)).join(' ');
+  for(const phrase of ['«خلّي Gemini يسمع الريل»','"let it listen"',"only with the creator's yes for that reference"])assert.ok(skill.includes(phrase),phrase);
+  const claude=(await read(GENERATED)).join(' ');
+  assert.ok(claude.includes('«خلّي Gemini يسمع الريل»'),'The generated Claude copy carries the listener routing.');
+  const claudeWorker=(await read('.claude/agents/reel-breakdown.md')).join(' ');
+  assert.ok(claudeWorker.includes('listen --consent')&&claudeWorker.includes('listener-key'),'The generated worker keeps the Never list.');
 });

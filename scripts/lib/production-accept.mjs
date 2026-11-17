@@ -6,7 +6,7 @@ import {checkText} from './text-check.mjs';
 import {checkArabic,installedFonts} from './arabic-check.mjs';
 import {loadSoundCatalog} from './job-sound.mjs';
 
-export const ACCEPT_ROLES=Object.freeze(['analysis','editorial','assets','sound','edit','qa','delivery']);
+export const ACCEPT_ROLES=Object.freeze(['breakdown','analysis','editorial','assets','sound','edit','qa','delivery']);
 const BANDS_FILE='scripts/data/sound-bands.json';
 /** Air sweeps: the -sweep twins the policy places only with the brief's "sweeps": true, and bare sweep ids. Landings keep their old ids (directional-whoosh, highlight-swipe). */
 export const SWEEP_RECIPE=/-sweep$|^(?:whoosh|swipe|sweep|riser)$/;
@@ -224,7 +224,32 @@ async function acceptDelivery({task,project}){
   return checks;
 }
 
-const BY_ROLE={analysis:acceptAnalysis,editorial:acceptEditorial,assets:acceptAssets,sound:acceptSound,edit:acceptEdit,qa:acceptQa,delivery:acceptDelivery};
+const AUDIO_REVIEW=id=>id==='sound.bed'||id==='sound.tempo'||/^X\d{2,}$/.test(id);
+const json=text=>{try{return JSON.parse(text);}catch{return null;}};
+async function acceptBreakdown({task,project}){
+  const checks=[];
+  const summary=await exists(`${task}/breakdown-summary.md`)?await read(`${task}/breakdown-summary.md`):'';
+  const refs=[...new Set(summary.match(/ref-[0-9a-f]{12}/g)??[])];
+  checks.push(check('summary',refs.length>0,'breakdown-summary.md names at least one reference id'));
+  const questions=await exists(`${task}/questions.md`)?await read(`${task}/questions.md`):null;
+  checks.push(check('questions',questions!==null,'questions.md present'));
+  for(const ref of refs){
+    const dir=`Projects/${project}/style-analysis/${ref}`;
+    const b=await load(`${dir}/breakdown.json`,checks);
+    checks.push(check(`breakdown-${ref}`,!!b&&b.schema===1&&b.referenceId===ref,`${dir}/breakdown.json is a schema 1 breakdown of ${ref}`));
+    for(const file of ['BREAKDOWN.md','studio-recipe.md','report/report.html'])checks.push(check(`${file}-${ref}`,await exists(`${dir}/${file}`),`${dir}/${file} present`));
+    if(!b)continue;
+    const queue=b.reviewQueue??[];
+    checks.push(check(`review-${ref}`,!queue.some(id=>!AUDIO_REVIEW(id))||await exists(`${dir}/review_tasks.json`),'the visual review pass ran for pending picture items'));
+    checks.push(check(`sound-questions-${ref}`,queue.filter(AUDIO_REVIEW).every(id=>questions?.includes(id)),'questions.md lists every sound item that needs the creator\'s ear'));
+  }
+  const candidates=[];
+  for(const file of [`Projects/${project}/STYLE_DNA.json`,`Projects/${project}/STYLE_DNA.proposal.json`])if(await exists(file))candidates.push(json(await read(file)));
+  checks.push(check('dna',candidates.some(dna=>dna?.status==='draft'&&dna.generatedBy==='breakdown'&&dna.baseStyle===null&&refs.every(ref=>dna.references?.some(r=>r.id===ref))),'STYLE_DNA.json (or its proposal) is a breakdown draft with baseStyle null that covers every named reference'));
+  return checks;
+}
+
+const BY_ROLE={breakdown:acceptBreakdown,analysis:acceptAnalysis,editorial:acceptEditorial,assets:acceptAssets,sound:acceptSound,edit:acceptEdit,qa:acceptQa,delivery:acceptDelivery};
 
 export async function acceptTask({role,task,transcript,edit,deliver=false}){
   if(!ACCEPT_ROLES.includes(role))throw new Error(`Unknown role: ${role}`);

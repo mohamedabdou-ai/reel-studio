@@ -41,7 +41,8 @@ async function ffmpegIdentity() {
   return { binary: await fileSnapshot('Tools/bin/ffmpeg.exe'), version: (await run('ffmpeg', ['-version'])).stdout.split(/\r?\n/)[0] };
 }
 
-export async function analyzeReframe({ source, startSec = 0, durationSec, sampleFps = 5, analysisMaxEdge = 640, minConfidence = 0.5, force = false, log = () => {} }) {
+export async function analyzeReframe({ source, startSec = 0, durationSec, sampleFps = 5, analysisMaxEdge = 640, minConfidence = 0.5, force = false, log = () => {},threads=2,signal }) {
+  signal?.throwIfAborted();
   if (!Number.isFinite(sampleFps) || sampleFps < 0.5 || sampleFps > 15) throw new Error('Detection sample FPS must be between 0.5 and 15');
   if (!Number.isInteger(analysisMaxEdge) || analysisMaxEdge < 160 || analysisMaxEdge > 1280) throw new Error('Analysis edge must be an integer from 160 to 1280');
   trackingSettings({ minConfidence });
@@ -71,8 +72,9 @@ export async function analyzeReframe({ source, startSec = 0, durationSec, sample
     const width = Math.max(2, Math.round(sourceInfo.geometry.width * factor / 2) * 2);
     const height = Math.max(2, Math.round(sourceInfo.geometry.height * factor / 2) * 2);
     const filter = `select='isnan(prev_selected_t)+gte(t-prev_selected_t,${1 / sampleFps - 1e-7})',scale=${width}:${height},setsar=1,showinfo`;
-    const decode = await run('ffmpeg', ['-hide_banner', '-loglevel', 'info', '-threads', '2', '-ss', String(startSec), '-i', sourceInfo.file,
-      '-t', String(sourceInfo.range.durationSec), '-map', '0:v:0', '-an', '-vf', filter, '-fps_mode', 'vfr', '-threads', '2', path.join(framesDir, 'frame-%06d.png')]);
+    const decoderThreads=String(Math.max(1,Math.min(2,threads)));
+    const decode = await run('ffmpeg', ['-hide_banner', '-loglevel', 'info', '-threads', decoderThreads, '-ss', String(startSec), '-i', sourceInfo.file,
+      '-t', String(sourceInfo.range.durationSec), '-map', '0:v:0', '-an', '-vf', filter, '-fps_mode', 'vfr', '-threads', decoderThreads, path.join(framesDir, 'frame-%06d.png')],{signal});
     const points = [...decode.stderr.matchAll(/Parsed_showinfo_\d+[^\r\n]*\bn:\s*(\d+)[^\r\n]*\bpts_time:([-+0-9.eE]+)/g)]
       .map((match) => ({ index: Number(match[1]), timeSec: Number(match[2]) })).filter((point) => point.timeSec < sourceInfo.range.durationSec - 1e-7);
     const files = (await fs.readdir(framesDir)).filter((file) => /^frame-\d{6}\.png$/.test(file)).sort();
@@ -83,6 +85,7 @@ export async function analyzeReframe({ source, startSec = 0, durationSec, sample
       frames.push({ ...(await snapshotAbsolute(path.join(framesDir, files[i]))), timeSec: Math.max(0, points[i].timeSec), sourceTimeSec: startSec + points[i].timeSec, width, height });
     }
     const detected = await detectFrameFiles(frames, { runtime, minConfidence, log });
+    signal?.throwIfAborted();
     if ((await fileSnapshot(source)).sha256 !== sourceInfo.sourceIdentity.sha256) throw new Error('Source changed during face analysis');
     const payload = { samples: detected.samples, frames, runtime: detected.runtime };
     const analysis = { version: 1, key, identity, source, sourceIdentity: sourceInfo.sourceIdentity, geometry: sourceInfo.geometry, range: sourceInfo.range,

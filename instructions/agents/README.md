@@ -4,6 +4,7 @@ The production manager and creative director (`PRODUCTION-MANAGER.md`) staffs an
 
 ## Staffing rule
 
+- A named finished reference (learn its style, or make a recording in its style) → the breakdown worker first, alone, on every named reference; its draft DNA and recipe go to the editorial worker with the creative brief. A `needs-input` from it (add-on not installed, a changed stored breakdown, hand-edited DNA files) goes to the manager, who asks the creator or settles the file; nobody installs or forces on their own.
 - Short job (default): recording ≤ 90 s, ≤ 8 designed beats, one clip, or authored graphics of that size → the manager performs the roles itself in order: analysis → editorial → assets (only when the plan names media to make) → edit → sound → qa → delivery, and says so («أديت الأدوار بنفسي بالترتيب»).
 - Big job: anything larger, a podcast batch, three or more assets to make, or the creator asks for the team → real sub-agents: analysis alone first; editorial; then edit ∥ assets; then sound on the edit candidate; then the manager integrates, prepares and renders the fast preview; then qa; then delivery. At most 3 workers at once; one heavy command (transcribe, prepare, render, RVM) at a time; never two renders.
 - A host without sub-agents runs the same order itself and says so.
